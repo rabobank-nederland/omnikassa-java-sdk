@@ -12,7 +12,7 @@
     <properties>
         <spring.version>4.3.1.RELEASE</spring.version>
         <freemarker.version>2.3.23</freemarker.version>
-        <jackson-core.version>2.9.10</jackson-core.version>
+        <jackson-core.version>2.10.3</jackson-core.version>
         <logback-classic.version>1.2.3</logback-classic.version>
         <javax.servlet-api.version>3.1.0</javax.servlet-api.version>
     </properties>
