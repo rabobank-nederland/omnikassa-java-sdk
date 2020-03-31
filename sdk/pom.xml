@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>nl.rabobank.oss.omnikassa</groupId>
+    <version>1.9.3-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <artifactId>omnikassa-sdk</artifactId>
+    <name>https://github.com/rabobank-nederland/omnikassa-java-sdk</name>
+
+    <properties>
+        <slf4j-api.version>1.7.21</slf4j-api.version>
+        <unirest-java.version>1.4.9</unirest-java.version>
+        <commons-lang3.version>3.4</commons-lang3.version>
+        <joda-time.version>2.9.6</joda-time.version>
+        <junit.version>4.12</junit.version>
+        <mockito-core.version>3.0.0</mockito-core.version>
+        <jsonassert.version>1.3.0</jsonassert.version>
+        <equalsverifier.version>3.1.9</equalsverifier.version>
+        <java.version>1.8</java.version>
+        <maven-jar-plugin.version>3.1.2</maven-jar-plugin.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
+        <maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
+    </properties>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <organization>
+        <name>Rabobank</name>
+        <url>https://www.rabobank.nl</url>
+    </organization>
+    <developers>
+        <developer>
+            <name>Rabobank OmniKassa</name>
+            <email>contact@omnikassa.rabobank.nl</email>
+            <organization>Rabobank</organization>
+            <organizationUrl>https://www.rabobank.nl</organizationUrl>
+        </developer>
+    </developers>
+
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <name>Payment Savings Releases</name>
+            <url>https://maven.rabobank.nl/nexus/content/repositories/payments-savings-release</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshot</id>
+            <name>Payment Savings Snapshots</name>
+            <url>https://maven.rabobank.nl/nexus/content/repositories/payments-savings-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <scm>
+        <connection>scm:git:git@github.com:rabobank-nederland/omnikassa-java-sdk.git</connection>
+        <developerConnection>scm:git:git@github.com:rabobank-nederland/omnikassa-java-sdk.git</developerConnection>
+        <url>git@github.com:rabobank-nederland/omnikassa-java-sdk.git</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.mashape.unirest</groupId>
+            <artifactId>unirest-java</artifactId>
+            <version>${unirest-java.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang3.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>${joda-time.version}</version>
+        </dependency>
+
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito-core.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>nl.jqno.equalsverifier</groupId>
+            <artifactId>equalsverifier</artifactId>
+            <version>${equalsverifier.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.skyscreamer</groupId>
+            <artifactId>jsonassert</artifactId>
+            <version>${jsonassert.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <!-- write the version number and other implementation information to the MANIFEST.MF file -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <version>${maven-jar-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven-javadoc-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${maven-source-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
