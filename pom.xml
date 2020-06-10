@@ -21,14 +21,6 @@
         <maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
         <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
         <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
-        <jacoco-maven-plugin.version>0.7.5.201505241946</jacoco-maven-plugin.version>
-
-        <sonar.host.url>http://sonar.ximedes.com</sonar.host.url>
-        <sonar.java.source>${java.version}</sonar.java.source>
-        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
-        <sonar.jacoco.reportPath>target/junit.jacoco.exec</sonar.jacoco.reportPath>
-        <sonar.exclusions>src/main/java/nl/rabobank/gict/payments_savings/omnikassa_frontend/test/webshop/**/*
-        </sonar.exclusions>
     </properties>
 
     <modules>
@@ -50,11 +42,6 @@
                 <plugin>
                     <artifactId>maven-release-plugin</artifactId>
                     <version>${maven-release-plugin.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.jacoco</groupId>
-                    <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>${jacoco-maven-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
