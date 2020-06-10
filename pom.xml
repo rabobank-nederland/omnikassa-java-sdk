@@ -36,13 +36,6 @@
         <module>example-integration</module>
     </modules>
 
-    <scm>
-        <developerConnection>${scm.developerConnection}</developerConnection>
-        <connection>${scm.connection}</connection>
-        <url>${scm.url}</url>
-        <tag>HEAD</tag>
-    </scm>
-
     <build>
         <pluginManagement>
             <plugins>
