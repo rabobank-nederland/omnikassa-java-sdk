@@ -130,23 +130,48 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <configuration>
-                    <destFile>${sonar.jacoco.reportPath}</destFile>
                     <append>true</append>
                 </configuration>
                 <executions>
                     <execution>
-                        <id>default-prepare-agent</id>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
+                        <configuration>
+                            <destFile>${project.build.directory}/jacoco-ut.exec</destFile>
+                        </configuration>
                     </execution>
                     <execution>
-                        <id>default-report</id>
+                        <id>pre-integration-prepare</id>
+                        <goals>
+                            <goal>prepare-agent-integration</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>merge</goal>
+                        </goals>
+                        <configuration>
+                            <fileSets>
+                                <fileSet>
+                                    <directory>${project.build.directory}</directory>
+                                    <includes>
+                                        <include>*.exec</include>
+                                    </includes>
+                                </fileSet>
+                            </fileSets>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>merged-report-generation</id>
                         <phase>verify</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
                     </execution>
+
                     <execution>
                         <id>default-check</id>
                         <goals>
@@ -160,7 +185,7 @@
                                         <limit>
                                             <counter>COMPLEXITY</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>0.25</minimum>
+                                            <minimum>0.00</minimum>
                                         </limit>
                                     </limits>
                                 </rule>
