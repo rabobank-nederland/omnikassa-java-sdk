@@ -4,6 +4,8 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.Lang
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.PaymentBrandForce;
 
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.Map;
 
 import static java.util.Collections.singletonList;
 import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.Currency.EUR;
@@ -27,6 +29,8 @@ public class MerchantOrderTestFactory {
                 .withPaymentBrand(IDEAL)
                 .withPaymentBrandForce(PaymentBrandForce.FORCE_ALWAYS)
                 .withInitiatingParty("LIGHTSPEED")
+                .withSkipHppResultPage(true)
+                .withPaymentBrandMetaData(getPaymentBrandMetaData())
                 .build();
     }
 
@@ -37,5 +41,9 @@ public class MerchantOrderTestFactory {
                 .withLanguage(Language.NL)
                 .withMerchantReturnURL("http://localhost/")
                 .withDescription("An example description");
+    }
+
+    private static Map<String, String> getPaymentBrandMetaData() {
+        return Collections.singletonMap("issuerId", "RABONL2U");
     }
 }

@@ -1,14 +1,5 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk;
 
-import org.apache.commons.codec.binary.Base64;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.connector.ApiConnector;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.connector.TokenProviderSpy;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.InvalidAccessTokenException;
@@ -19,22 +10,32 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.Signable;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.MerchantOrderRequest;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.ApiNotification;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.ApiNotificationBuilder;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.IdealIssuersResponse;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.Issuer;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.IssuerLogo;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderResponseBuilder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponseBuilder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.PaymentBrandsResponse;
+import org.apache.commons.codec.binary.Base64;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.Environment.SANDBOX;
 import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.connector.TokenProvider.FieldName.REFRESH_TOKEN;
+import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.JSONObjectCreator.createJSONObjectForIdealIssuer;
+import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.JSONObjectCreator.createJSONObjectForPaymentBrands;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
@@ -210,22 +211,34 @@ public class EndpointTest {
         assertThat(response.getPaymentBrands().get(1).isActive(), is(false));
     }
 
-    private JSONObject createJSONObjectForPaymentBrands() {
-        JSONArray paymentBrands = new JSONArray();
-        paymentBrands.put(createPaymentBrand("IDEAL", "Active"));
-        paymentBrands.put(createPaymentBrand("PAYPAL", "Inactive"));
+    @Test
+    public void retrieveIdealIssuers() throws RabobankSdkException {
+        tokenProvider.setValidAccessToken();
+        IdealIssuersResponse idealIssuersResponse = new IdealIssuersResponse(createJSONObjectForIdealIssuer());
+        when(apiConnector.retrieveIdealIssuers(any())).thenReturn(idealIssuersResponse);
 
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("paymentBrands", paymentBrands);
+        IdealIssuersResponse response = endpoint.retrieveIdealIssuers();
 
-        return jsonObject;
+        assertIdealIssuersResponse(response);
     }
 
-    private Map<String, String> createPaymentBrand(String name, String status) {
-        Map<String, String> paymentBrand = new HashMap<>();
-        paymentBrand.put("name", name);
-        paymentBrand.put("status", status);
-        return paymentBrand;
+    private void assertIdealIssuersResponse(IdealIssuersResponse response) {
+        assertThat(response, notNullValue());
+        assertThat(response.getIssuers(), notNullValue());
+        assertThat(response.getIssuers().size(), is(1));
+
+
+        Issuer issuer = response.getIssuers().get(0);
+        assertThat(issuer.getId(), is("ASNBNL21"));
+        assertThat(issuer.getName(), is("ASN Bank"));
+        assertThat(issuer.getCountryNames(), is("Nederland"));
+
+
+        assertThat(issuer.getLogos(), notNullValue());
+        assertThat(issuer.getLogos().size(), is(1));
+        IssuerLogo logo = issuer.getLogos().get(0);
+        assertThat(logo.getUrl(), is("http://rabobank.nl/static/issuersASNBNL21.png"));
+        assertThat(logo.getMimeType(), is("image/png"));
     }
 
     private MerchantOrderStatusResponse prepareMerchantOrderStatusResponseWithValidSignature() {
