@@ -76,8 +76,36 @@
         </tr>
         <tr>
             <td>
+                <label for="issuer_id">Issuer ID:</label>
+                <select name="issuerId" id="issuer_id">
+                    <option value="" selected="selected"></option>
+                    <option Value="ABNANL2A">ABN Amro</option>
+                    <option Value="ASNBNL21">ASN Bank</option>
+                    <option value="BUNQNL2A">bunq</option>
+                    <option value="FVLBNL22">F. van Lanschot Bankiers</option>
+                    <option Value="HANDNL2A">Handelsbanken</option>
+                    <option VALUE="INGBNL2A">ING</option>
+                    <option VALUE="KNABNL2H">KNAB</option>
+                    <option Value="RABONL2U">Rabobank</option>
+                    <option Value="RBRBNL21">Regio Bank</option>
+                    <option Value="SNSBNL2A">SNS Bank</option>
+                    <option Value="TRIONL2U">Triodos Bank</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
                 <label for="initiating_party">initiating Party</label>
                 <input type="text" name="initiatingParty" id="initiating_party">
+            </td>
+        </tr>
+    </table>
+    <br />
+    <table>
+        <tr>
+            <td>
+                <label for="skip_hpp_result_page">Skip HPP result page?</label>
+                <input type="checkbox" id="skip_hpp_result_page" name="skipHppResultPage" value="true">
             </td>
         </tr>
         <tr>
@@ -85,7 +113,5 @@
                 <input type="submit" value="place order" id="place_order">
             </td>
         </tr>
-
-
     </table>
 </form>

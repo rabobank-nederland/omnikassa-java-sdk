@@ -1,6 +1,5 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model;
 
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.IdealIssuersResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

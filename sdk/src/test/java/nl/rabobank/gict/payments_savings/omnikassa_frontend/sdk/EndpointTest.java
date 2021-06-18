@@ -136,7 +136,7 @@ public class EndpointTest {
         endpoint.announce(MerchantOrderTestFactory.any());
     }
 
-    @Test
+    @Test(expected = Test.None.class)
     public void retrieveAnnouncement_HappyFlow() throws RabobankSdkException {
         MerchantOrderStatusResponse merchantOrderStatusResponseJson = prepareMerchantOrderStatusResponseWithValidSignature();
 

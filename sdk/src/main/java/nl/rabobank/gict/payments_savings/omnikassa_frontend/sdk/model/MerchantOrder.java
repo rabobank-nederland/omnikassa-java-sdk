@@ -43,7 +43,7 @@ public final class MerchantOrder {
         this.paymentBrand = builder.paymentBrand;
         this.paymentBrandForce = builder.paymentBrandForce;
         this.initiatingParty = builder.initiatingParty;
-        this.paymentBrandMetaData = Collections.unmodifiableMap(builder.paymentBrandMetaData);
+        this.paymentBrandMetaData = builder.paymentBrandMetaData;
         this.skipHppResultPage = builder.skipHppResultPage;
     }
     public String getInitiatingParty() {

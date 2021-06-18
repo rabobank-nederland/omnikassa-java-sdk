@@ -18,6 +18,10 @@
     <p><input type="submit" value="retrieve Payment Brands" id="retrieve_payment_brands"></p>
 </form>
 
+<form method="get" action="/webshop/retrieveIdealIssuers">
+    <p><input type="submit" value="retrieve iDEAL issuers" id="retrieve_ideal_issuers"></p>
+</form>
+
 </body>
 
 </html>

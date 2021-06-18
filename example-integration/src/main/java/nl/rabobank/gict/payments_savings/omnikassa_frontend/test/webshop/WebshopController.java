@@ -25,7 +25,6 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.P
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.test.webshop.model.CustomTokenProvider;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.test.webshop.model.WebShopOrder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.test.webshop.model.enums.PaymentStatusMessage;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -51,6 +50,7 @@ import static java.math.RoundingMode.HALF_UP;
 import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.Currency.EUR;
 import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.PaymentCompletedResponse.newPaymentCompletedResponse;
 import static org.apache.commons.lang3.EnumUtils.isValidEnum;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
 @Controller
@@ -60,11 +60,11 @@ class WebshopController {
     private static final String FAKE_WEBSHOP = "fake-webshop";
 
     private int iterator = 0;
-    private Map<Integer, WebShopOrder> webShopOrderMap = new HashMap<>();
-    private Endpoint endpoint;
+    private final Map<Integer, WebShopOrder> webShopOrderMap = new HashMap<>();
+    private final Endpoint endpoint;
     private ApiNotification latestApiNotification;
-    private byte[] signingKey = getSigningKey("c2VjcmV0");
-    private Logger logger = Logger.getLogger(WebshopController.class.toString());
+    private final byte[] signingKey = getSigningKey("c2VjcmV0");
+    private final Logger logger = Logger.getLogger(WebshopController.class.toString());
     private String loggingPath;
 
     WebshopController() {
@@ -88,10 +88,10 @@ class WebshopController {
     }
 
     @PostMapping(value = "/webhook")
-    ResponseEntity webhook(@RequestBody ApiNotification apiNotification) {
+    ResponseEntity<Void> webhook(@RequestBody ApiNotification apiNotification) {
         logger.info("webhook is called");
         latestApiNotification = apiNotification;
-        return new ResponseEntity(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping(value = "/payment/complete")
@@ -186,8 +186,11 @@ class WebshopController {
         CustomerInformation customerInformation = createCustomerInformation(request);
         PaymentBrand paymentBrand = createPaymentBrand(request);
         PaymentBrandForce paymentBrandForce = getEnum(PaymentBrandForce.class, request.getParameter("paymentBrandForce"));
+        String preselectedIssuerId = getPreselectedIssuerId(request);
+        boolean skipHppResultPage = parseBoolean(request.getParameter("skipHppResultPage"));
         String initiatingParty = request.getParameter("initiatingParty");
-        return webShopOrderMap.get(iterator).prepareMerchantOrder(customerInformation, shippingDetails, billingDetails, paymentBrand, paymentBrandForce, initiatingParty);
+        return webShopOrderMap.get(iterator).prepareMerchantOrder(customerInformation, shippingDetails, billingDetails,
+                paymentBrand, paymentBrandForce, preselectedIssuerId, initiatingParty, skipHppResultPage);
     }
 
     private CustomerInformation createCustomerInformation(HttpServletRequest request) {
@@ -266,6 +269,11 @@ class WebshopController {
             return null;
         }
         return getEnum(PaymentBrand.class, paymentBrand);
+    }
+
+    private String getPreselectedIssuerId(HttpServletRequest request) {
+        String preselectedIssuerId = request.getParameter("issuerId");
+        return isBlank(preselectedIssuerId) ? null : preselectedIssuerId;
     }
 
     private <E extends Enum<E>> E getEnum(Class<E> clazz, String value) {

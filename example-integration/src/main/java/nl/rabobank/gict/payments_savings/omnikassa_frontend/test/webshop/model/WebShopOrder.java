@@ -11,19 +11,22 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.order_deta
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import static java.math.BigDecimal.ZERO;
 import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.Currency.EUR;
 import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.Language.NL;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
 public class WebShopOrder {
     private static final String MERCHANT_RETURN_URL = "http://localhost:8082/webshop/payment/complete";
 
-    private int orderId;
+    private final int orderId;
 
-    private List<OrderItem> orderItems = new ArrayList<>();
+    private final List<OrderItem> orderItems = new ArrayList<>();
 
     public WebShopOrder(int orderId) {
         this.orderId = orderId;
@@ -42,7 +45,9 @@ public class WebShopOrder {
                                               Address billingDetails,
                                               PaymentBrand paymentBrand,
                                               PaymentBrandForce paymentBrandForce,
-                                              String initiatingParty) {
+                                              String preselectedIssuerId,
+                                              String initiatingParty,
+                                              boolean skipHppResultPage) {
         return new Builder()
                 .withMerchantOrderId(String.valueOf(orderId))
                 .withAmount(Money.fromEuros(EUR, getTotalPrice()))
@@ -55,8 +60,18 @@ public class WebShopOrder {
                 .withOrderItems(orderItems)
                 .withPaymentBrand(paymentBrand)
                 .withPaymentBrandForce(paymentBrandForce)
+                .withPaymentBrandMetaData(preparePaymentBrandMetaData(preselectedIssuerId))
                 .withInitiatingParty(initiatingParty)
+                .withSkipHppResultPage(skipHppResultPage)
                 .build();
+    }
+
+    private Map<String, String> preparePaymentBrandMetaData(String preselectedIssuerId) {
+        if (isBlank(preselectedIssuerId)) {
+            return null;
+        }
+
+        return Collections.singletonMap("issuerId", preselectedIssuerId);
     }
 
     private BigDecimal getTotalPrice() {
