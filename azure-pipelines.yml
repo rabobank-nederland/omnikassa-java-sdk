@@ -65,6 +65,8 @@ jobs:
           fortifyServerName: $(fortifyServiceConnection)
           fortifyApplicationName: ps_omnikassa-java-sdk_fortify
           fortifyApplicationVersion: 1.0
+          additionalScanParams: '-exclude $(System.DefaultWorkingDirectory)/example-integration/**/* -exclude $(System.DefaultWorkingDirectory)/sdk/src/test/**/*'
+          buildAnalyzerParams: '-exclude $(System.DefaultWorkingDirectory)/example-integration/**/* -exclude $(System.DefaultWorkingDirectory)/sdk/src/test/**/*'
       - task: NexusIqPipelineTask@1
         displayName: Nexus IQ policy evaluation
 #        condition: eq(variables.isMain, true)
