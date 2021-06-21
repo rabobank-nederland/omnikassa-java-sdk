@@ -5,8 +5,23 @@ trigger:
       - refs/heads/feature/*
 name: $(date:yyyyMMdd)$(rev:.r)
 jobs:
+  - job: "credScan_and_post_analysis"
+    displayName: "CredScan"
+    pool:
+      name: Rabo-Windows-Production
+    steps:
+      - checkout: self
+        persistCredentials: True
+      - task: CredScan@2
+        displayName: Run Credential Scanner
+      - task: PostAnalysis@1
+        displayName: Post Analysis
+        inputs:
+          CredScan: true
+          ToolLogsNotFoundAction: Error
   - job: "build_test_and_quality_checks"
     displayName: "Build"
+    dependsOn: credScan_and_post_analysis
     pool:
       name: Rabo-Linux-Production
     steps:
@@ -14,7 +29,7 @@ jobs:
         persistCredentials: True
       - task: Maven@3
         name: "clean_install"
-        displayName: 'Compile'
+        displayName: 'Compile and test'
         inputs:
           goals: clean install
           options: -Dsha1=.$(Build.BuildNumber)
