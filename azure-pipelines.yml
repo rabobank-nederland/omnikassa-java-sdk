@@ -1,8 +1,4 @@
 variables:
-  - name: BuildParameters.mavenPOMFile
-    value: pom.xml
-  - name: isMain
-    value: $[startsWith(variables['Build.SourceBranch'], 'refs/heads/master')]
   - group: ContinuousIntegrationCredentails
 trigger:
   branches:
@@ -11,33 +7,13 @@ trigger:
       - refs/heads/feature/*
 name: $(date:yyyyMMdd)$(rev:.r)
 jobs:
-  - job: "credScan_and_post_analysis"
-    displayName: "CredScan"
-    pool:
-      name: Rabo-Windows-Production
-    steps:
-      - checkout: self
-        persistCredentials: True
-      - task: CredScan@2
-        displayName: Run Credential Scanner
-      - task: PostAnalysis@1
-        displayName: Post Analysis
-        inputs:
-          CredScan: true
-          ToolLogsNotFoundAction: Error
   - job: "build_test_and_quality_checks"
     displayName: "Build"
-    dependsOn: credScan_and_post_analysis
     pool:
       name: Rabo-Linux-Production
     steps:
       - checkout: self
         persistCredentials: True
-      - task: SonarQubePrepare@4
-        displayName: Prepare analysis on SonarQube
-        inputs:
-          SonarQube: $(sonarQubeServiceConnection)
-          scannerMode: Other
       - task: Maven@3
         name: "clean install"
         displayName: 'Compile'
@@ -45,33 +21,3 @@ jobs:
           goals: clean install
           options: -Dsha1=.$(Build.BuildNumber)
           jdkVersion: 8
-      - task: Maven@3
-        name: "sonar"
-        displayName: 'Sonar Analysis'
-        inputs:
-          sonarQubeRunAnalysis: true
-          options: -Dsha1=.$(Build.BuildNumber) -DskipTests
-          jdkVersion: 11
-      - task: SonarQubePublish@4
-        displayName: Publish Quality Gate Result
-      - task: FortifySCA@5
-        displayName: Run Fortify
-#        condition: eq(variables.isMain, true)
-        inputs:
-          applicationType: java
-          buildSourceVersion: 1.8
-          fortifyBuildId: java-sdk-parent-$(Build.BuildNumber)
-          runFortifyUpload: true
-          fortifyServerName: $(fortifyServiceConnection)
-          fortifyApplicationName: ps_omnikassa-java-sdk_fortify
-          fortifyApplicationVersion: 1.0
-          additionalScanParams: '-exclude $(System.DefaultWorkingDirectory)/example-integration/**/* -exclude $(System.DefaultWorkingDirectory)/sdk/src/test/**/*'
-          buildAnalyzerParams: '-exclude $(System.DefaultWorkingDirectory)/example-integration/**/* -exclude $(System.DefaultWorkingDirectory)/sdk/src/test/**/*'
-      - task: NexusIqPipelineTask@1
-        displayName: Nexus IQ policy evaluation
-#        condition: eq(variables.isMain, true)
-        continueOnError: true
-        inputs:
-          nexusIqService: $(nexusServiceConnection)
-          applicationId: omnikassa-frontend-sdk-java
-          stage: release
