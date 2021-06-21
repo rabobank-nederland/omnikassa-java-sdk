@@ -52,3 +52,15 @@ jobs:
           jdkVersion: 11
       - task: SonarQubePublish@4
         displayName: Publish Quality Gate Result
+      - task: FortifySCA@5
+        displayName: Run Fortify
+        inputs:
+          applicationType: java
+          buildSourceVersion: 1.8
+          fortifyBuildId: java-sdk-parent-$(Build.BuildNumber)
+          runFortifyUpload: true
+          fortifyServerName: $(fortifyServiceConnection)
+          fortifyApplicationName: ps_omnikassa-java-sdk_fortify
+          fortifyApplicationVersion: 1.0
+          additionalScanParams: '-exclude $(System.DefaultWorkingDirectory)/example-integration/**/* -exclude $(System.DefaultWorkingDirectory)/sdk/src/test/**/*'
+          buildAnalyzerParams: '-exclude $(System.DefaultWorkingDirectory)/example-integration/**/* -exclude $(System.DefaultWorkingDirectory)/sdk/src/test/**/*'
