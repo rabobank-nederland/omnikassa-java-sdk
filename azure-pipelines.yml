@@ -16,6 +16,7 @@ jobs:
         displayName: Run Credential Scanner
       - task: PostAnalysis@1
         displayName: Post Analysis
+        continueOnError: true
         inputs:
           CredScan: true
           ToolLogsNotFoundAction: Error
