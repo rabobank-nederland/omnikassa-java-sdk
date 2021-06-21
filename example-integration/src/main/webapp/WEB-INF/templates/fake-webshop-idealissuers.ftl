@@ -8,10 +8,9 @@
 <p id="idealIssuers">
     <table class="idealIssuers">
     <tr>
-        <td>Ideal Issuers</td>
         <td>id</td>
         <td>name</td>
-        <td>logo url</td>
+        <td>logo</td>
         <td>mime type</td>
         <td>country names</td>
     </tr>
@@ -19,7 +18,7 @@
         <tr>
             <td>${idealIssuer.id}</td>
             <td>${idealIssuer.name}</td>
-            <td>${idealIssuer.logos[0].url}</td>
+            <td><img src=${idealIssuer.logos[0].url} alt=${idealIssuer.name} width="50" height="50" /></td>
             <td>${idealIssuer.logos[0].mimeType}</td>
             <td>${idealIssuer.countryNames}</td>
         </tr>

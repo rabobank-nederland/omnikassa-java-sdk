@@ -150,9 +150,16 @@ class WebshopController {
 
     @GetMapping("/retrieveIdealIssuers")
     String retrieveIdealIssuers(ModelMap model) throws RabobankSdkException {
-        IdealIssuersResponse issuersResponse = endpoint.retrieveIdealIssuers();
-        model.addAttribute("idealIssuers", issuersResponse.getIssuers());
+        IdealIssuersResponse idealIssuersResponse = endpoint.retrieveIdealIssuers();
+        model.addAttribute("idealIssuers", idealIssuersResponse.getIssuers());
         return "fake-webshop-idealissuers";
+    }
+
+    @PostMapping("/refreshIdealIssuers")
+    String refreshIdealIssuers(ModelMap model) throws RabobankSdkException {
+        IdealIssuersResponse idealIssuersResponse = endpoint.retrieveIdealIssuers();
+        model.addAttribute("idealIssuers", idealIssuersResponse.getIssuers());
+        return FAKE_WEBSHOP;
     }
 
     private void logOrderUpdate(List<MerchantOrderResult> orderResults) {

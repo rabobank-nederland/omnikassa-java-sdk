@@ -76,21 +76,16 @@
         </tr>
         <tr>
             <td>
-                <label for="issuer_id">Issuer ID:</label>
-                <select name="issuerId" id="issuer_id">
+                <label for="idealIssuers">Issuer ID:</label>
+                <select name="issuerId" id="idealIssuers">
                     <option value="" selected="selected"></option>
-                    <option Value="ABNANL2A">ABN Amro</option>
-                    <option Value="ASNBNL21">ASN Bank</option>
-                    <option value="BUNQNL2A">bunq</option>
-                    <option value="FVLBNL22">F. van Lanschot Bankiers</option>
-                    <option Value="HANDNL2A">Handelsbanken</option>
-                    <option VALUE="INGBNL2A">ING</option>
-                    <option VALUE="KNABNL2H">KNAB</option>
-                    <option Value="RABONL2U">Rabobank</option>
-                    <option Value="RBRBNL21">Regio Bank</option>
-                    <option Value="SNSBNL2A">SNS Bank</option>
-                    <option Value="TRIONL2U">Triodos Bank</option>
+                    <#if idealIssuers??>
+                        <#list idealIssuers as idealIssuer>
+                            <option value="${idealIssuer.id}">${idealIssuer.name}</option>
+                        </#list>
+                    </#if>
                 </select>
+                <input type="submit" name="refreshIssuersId" value="Refresh" formaction="/webshop/refreshIdealIssuers" />
             </td>
         </tr>
         <tr>

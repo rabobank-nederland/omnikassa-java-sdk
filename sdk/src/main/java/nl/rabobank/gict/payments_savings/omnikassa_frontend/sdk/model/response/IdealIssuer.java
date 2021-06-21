@@ -11,7 +11,7 @@ import java.util.Objects;
 /**
  * Contains details about an issuer.
  */
-public class Issuer {
+public final class IdealIssuer {
     /**
      * The id of the issuer, which is meant for machines.
      * Use this if you want to communicate this particular issuer with an API endpoint.
@@ -26,26 +26,26 @@ public class Issuer {
     /**
      * Can potentially contain multiple formats of the same logo.
      */
-    private final List<IssuerLogo> logos;
+    private final List<IdealIssuerLogo> logos;
 
     private final String countryNames;
 
-    public Issuer(JSONObject jsonObject) {
+    public IdealIssuer(JSONObject jsonObject) {
         id = jsonObject.getString("id");
         name = jsonObject.getString("name");
-        logos = parseLogos(jsonObject.getJSONArray("logos"));
+        logos = Collections.unmodifiableList(parseLogos(jsonObject.getJSONArray("logos")));
         countryNames = jsonObject.getString("countryNames");
     }
 
-    private List<IssuerLogo> parseLogos(JSONArray jsonLogosArray) {
+    private List<IdealIssuerLogo> parseLogos(JSONArray jsonLogosArray) {
         if (jsonLogosArray == null) {
             return Collections.emptyList();
         }
 
-        List<IssuerLogo> parsedLogos = new ArrayList<>();
+        List<IdealIssuerLogo> parsedLogos = new ArrayList<>();
         for (Object logo: jsonLogosArray) {
             JSONObject jsonLogo = (JSONObject) logo;
-            parsedLogos.add(new IssuerLogo(jsonLogo));
+            parsedLogos.add(new IdealIssuerLogo(jsonLogo));
         }
 
         return parsedLogos;
@@ -59,7 +59,7 @@ public class Issuer {
         return name;
     }
 
-    public List<IssuerLogo> getLogos() {
+    public List<IdealIssuerLogo> getLogos() {
         return logos;
     }
 
@@ -75,8 +75,8 @@ public class Issuer {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Issuer issuer = (Issuer) o;
-        return id.equals(issuer.id) && name.equals(issuer.name) && logos.equals(issuer.logos) && countryNames.equals(issuer.countryNames);
+        IdealIssuer idealIssuer = (IdealIssuer) o;
+        return id.equals(idealIssuer.id) && name.equals(idealIssuer.name) && logos.equals(idealIssuer.logos) && countryNames.equals(idealIssuer.countryNames);
     }
 
     @Override

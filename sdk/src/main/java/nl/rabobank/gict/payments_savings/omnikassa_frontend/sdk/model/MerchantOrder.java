@@ -116,7 +116,7 @@ public final class MerchantOrder {
         private PaymentBrandForce paymentBrandForce;
         private Map<String, String> paymentBrandMetaData = Collections.emptyMap();
         private String initiatingParty;
-        private boolean skipHppResultPage;
+        private boolean skipHppResultPage = false;
 
         /**
          * @param merchantOrderId | Must not be `null`

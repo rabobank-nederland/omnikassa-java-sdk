@@ -10,9 +10,9 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.Signable;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.MerchantOrderRequest;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.ApiNotification;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.ApiNotificationBuilder;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.IdealIssuer;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.IdealIssuerLogo;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.IdealIssuersResponse;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.Issuer;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.IssuerLogo;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderResponseBuilder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponse;
@@ -30,8 +30,8 @@ import java.util.UUID;
 
 import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.Environment.SANDBOX;
 import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.connector.TokenProvider.FieldName.REFRESH_TOKEN;
-import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.JSONObjectCreator.createJSONObjectForIdealIssuer;
-import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.JSONObjectCreator.createJSONObjectForPaymentBrands;
+import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.JSONObjectCreator.createJSONObjectForIdealIssuer;
+import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.JSONObjectCreator.createJSONObjectForPaymentBrands;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -228,16 +228,16 @@ public class EndpointTest {
         assertThat(response.getIssuers().size(), is(1));
 
 
-        Issuer issuer = response.getIssuers().get(0);
-        assertThat(issuer.getId(), is("ASNBNL21"));
-        assertThat(issuer.getName(), is("ASN Bank"));
-        assertThat(issuer.getCountryNames(), is("Nederland"));
+        IdealIssuer idealIssuer = response.getIssuers().get(0);
+        assertThat(idealIssuer.getId(), is("ASNBNL21"));
+        assertThat(idealIssuer.getName(), is("ASN Bank"));
+        assertThat(idealIssuer.getCountryNames(), is("Nederland"));
 
 
-        assertThat(issuer.getLogos(), notNullValue());
-        assertThat(issuer.getLogos().size(), is(1));
-        IssuerLogo logo = issuer.getLogos().get(0);
-        assertThat(logo.getUrl(), is("http://rabobank.nl/static/issuersASNBNL21.png"));
+        assertThat(idealIssuer.getLogos(), notNullValue());
+        assertThat(idealIssuer.getLogos().size(), is(1));
+        IdealIssuerLogo logo = idealIssuer.getLogos().get(0);
+        assertThat(logo.getUrl(), is("http://rabobank.nl/static/issuers/ASNBNL21.png"));
         assertThat(logo.getMimeType(), is("image/png"));
     }
 

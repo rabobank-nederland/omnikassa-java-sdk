@@ -8,7 +8,7 @@ import java.util.Objects;
  * Contains details about an issuer logo.
  * This can be used for displaying the logo of a particular issuer.
  */
-public class IssuerLogo {
+public final class IdealIssuerLogo {
     /**
      * A publicly accessible URL where you can download the logo of the issuer.
      */
@@ -19,7 +19,7 @@ public class IssuerLogo {
      */
     private final String mimeType;
 
-    public IssuerLogo(JSONObject jsonObject) {
+    public IdealIssuerLogo(JSONObject jsonObject) {
         url = jsonObject.getString("url");
         mimeType = jsonObject.getString("mimeType");
     }
@@ -40,7 +40,7 @@ public class IssuerLogo {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        IssuerLogo that = (IssuerLogo) o;
+        IdealIssuerLogo that = (IdealIssuerLogo) o;
         return url.equals(that.url) && mimeType.equals(that.mimeType);
     }
 

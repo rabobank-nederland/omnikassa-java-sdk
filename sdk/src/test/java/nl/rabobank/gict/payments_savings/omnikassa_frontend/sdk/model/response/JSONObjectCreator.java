@@ -1,4 +1,4 @@
-package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model;
+package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -42,7 +42,7 @@ public final class JSONObjectCreator {
 
         JSONArray jsonLogosArray = new JSONArray();
         JSONObject jsonLogo = new JSONObject();
-        jsonLogo.put("url", "http://rabobank.nl/static/issuersASNBNL21.png")
+        jsonLogo.put("url", "http://rabobank.nl/static/issuers/ASNBNL21.png")
                 .put("mimeType", "image/png");
         jsonLogosArray.put(jsonLogo);
 
