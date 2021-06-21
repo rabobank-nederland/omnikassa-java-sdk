@@ -33,6 +33,9 @@ jobs:
         inputs:
           SonarQube: $(sonarQubeServiceConnection)
           scannerMode: Other
+          extraProperties: |
+            sonar.exclusions=**/example-integration/**
+            sonar.projectKey=nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.java:java-sdk-parent
       - task: Maven@3
         name: "clean_install"
         displayName: 'Compile and test'
