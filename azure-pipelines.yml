@@ -28,6 +28,11 @@ jobs:
     steps:
       - checkout: self
         persistCredentials: True
+      - task: SonarQubePrepare@4
+        displayName: Prepare analysis on SonarQube
+        inputs:
+          SonarQube: $(sonarQubeServiceConnection)
+          scannerMode: Other
       - task: Maven@3
         name: "clean_install"
         displayName: 'Compile and test'
@@ -35,3 +40,12 @@ jobs:
           goals: clean install
           options: -Dsha1=.$(Build.BuildNumber)
           jdkVersion: 8
+      - task: Maven@3
+        name: "sonar"
+        displayName: 'Sonar Analysis'
+        inputs:
+          sonarQubeRunAnalysis: true
+          options: -Dsha1=.$(Build.BuildNumber) -DskipTests
+          jdkVersion: 11
+      - task: SonarQubePublish@4
+        displayName: Publish Quality Gate Result
