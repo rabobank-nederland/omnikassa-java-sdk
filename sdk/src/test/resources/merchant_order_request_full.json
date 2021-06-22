@@ -57,5 +57,9 @@
   },
   "paymentBrand": "IDEAL",
   "paymentBrandForce": "FORCE_ALWAYS",
-  "initiatingParty": "LIGHTSPEED"
+  "initiatingParty": "LIGHTSPEED",
+  "paymentBrandMetaData": {
+    "issuerId": "RABONL2U"
+  },
+  "skipHppResultPage": true
 }

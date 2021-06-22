@@ -1,6 +1,7 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.connector;
 
 import com.mashape.unirest.http.exceptions.UnirestException;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.IdealIssuersResponse;
 import org.json.JSONObject;
 
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.IllegalApiResponseException;
@@ -95,6 +96,20 @@ public class ApiConnector {
             @Override
             PaymentBrandsResponse convert(JSONObject result) {
                 return new PaymentBrandsResponse(result);
+            }
+        }.execute();
+    }
+
+    public IdealIssuersResponse retrieveIdealIssuers(final String accessToken) throws RabobankSdkException {
+        return new RequestTemplate<IdealIssuersResponse>() {
+            @Override
+            JSONObject fetch() throws  UnirestException {
+                return jsonTemplate.get("ideal/server/api/v2/issuers", accessToken);
+            }
+
+            @Override
+            IdealIssuersResponse convert(JSONObject result) {
+                return new IdealIssuersResponse(result);
             }
         }.execute();
     }

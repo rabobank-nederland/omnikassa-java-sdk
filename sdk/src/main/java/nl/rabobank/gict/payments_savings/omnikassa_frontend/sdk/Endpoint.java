@@ -1,5 +1,6 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk;
 
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.IdealIssuersResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -124,7 +125,16 @@ public final class Endpoint {
             logAndGetNewToken(e);
             return connector.retrievePaymentBrands(tokenProvider.getAccessToken());
         }
+    }
 
+    public IdealIssuersResponse retrieveIdealIssuers() throws RabobankSdkException {
+        validateAccessToken();
+        try {
+            return connector.retrieveIdealIssuers(tokenProvider.getAccessToken());
+        } catch (InvalidAccessTokenException e) {
+            logAndGetNewToken(e);
+            return connector.retrieveIdealIssuers(tokenProvider.getAccessToken());
+        }
     }
 
     private void logAndGetNewToken(InvalidAccessTokenException e) throws RabobankSdkException {

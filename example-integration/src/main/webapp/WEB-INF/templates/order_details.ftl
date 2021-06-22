@@ -76,8 +76,31 @@
         </tr>
         <tr>
             <td>
+                <label for="idealIssuers">Issuer ID:</label>
+                <select name="issuerId" id="idealIssuers">
+                    <option value="" selected="selected"></option>
+                    <#if idealIssuers??>
+                        <#list idealIssuers as idealIssuer>
+                            <option value="${idealIssuer.id}">${idealIssuer.name}</option>
+                        </#list>
+                    </#if>
+                </select>
+                <input type="submit" name="refreshIssuersId" value="Refresh" formaction="/webshop/refreshIdealIssuers" />
+            </td>
+        </tr>
+        <tr>
+            <td>
                 <label for="initiating_party">initiating Party</label>
                 <input type="text" name="initiatingParty" id="initiating_party">
+            </td>
+        </tr>
+    </table>
+    <br />
+    <table>
+        <tr>
+            <td>
+                <label for="skip_hpp_result_page">Skip HPP result page?</label>
+                <input type="checkbox" id="skip_hpp_result_page" name="skipHppResultPage" value="true">
             </td>
         </tr>
         <tr>
@@ -85,7 +108,5 @@
                 <input type="submit" value="place order" id="place_order">
             </td>
         </tr>
-
-
     </table>
 </form>

@@ -1,16 +1,5 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.test.webshop;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.util.Base64Utils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
-
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.Endpoint;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.connector.TokenProvider;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.RabobankSdkException;
@@ -27,6 +16,7 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.order_deta
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.order_details.OrderItem;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.order_details.OrderItem.Builder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.ApiNotification;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.IdealIssuersResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderResult;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponse;
@@ -35,6 +25,15 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.P
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.test.webshop.model.CustomTokenProvider;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.test.webshop.model.WebShopOrder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.test.webshop.model.enums.PaymentStatusMessage;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.util.Base64Utils;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.FileReader;
@@ -47,23 +46,25 @@ import java.util.Scanner;
 import java.util.logging.Logger;
 
 import static java.lang.Boolean.parseBoolean;
-import static java.math.BigDecimal.ROUND_HALF_UP;
+import static java.math.RoundingMode.HALF_UP;
 import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.Currency.EUR;
 import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.PaymentCompletedResponse.newPaymentCompletedResponse;
 import static org.apache.commons.lang3.EnumUtils.isValidEnum;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
 @Controller
 @RequestMapping("/webshop")
 class WebshopController {
     private static final String BASE_URL = "http://localhost:8081";
+    private static final String FAKE_WEBSHOP = "fake-webshop";
 
     private int iterator = 0;
-    private Map<Integer, WebShopOrder> webShopOrderMap = new HashMap<>();
-    private Endpoint endpoint;
+    private final Map<Integer, WebShopOrder> webShopOrderMap = new HashMap<>();
+    private final Endpoint endpoint;
     private ApiNotification latestApiNotification;
-    private byte[] signingKey = getSigningKey("c2VjcmV0");
-    private Logger logger = Logger.getLogger(WebshopController.class.toString());
+    private final byte[] signingKey = getSigningKey("c2VjcmV0");
+    private final Logger logger = Logger.getLogger(WebshopController.class.toString());
     private String loggingPath;
 
     WebshopController() {
@@ -74,26 +75,26 @@ class WebshopController {
         webShopOrderMap.put(iterator, new WebShopOrder(iterator));
     }
 
-    @RequestMapping(value = "/home", method = RequestMethod.GET)
+    @GetMapping(value = "/home")
     String fakeWebShop() {
-        return "fake-webshop";
+        return FAKE_WEBSHOP;
     }
 
-    @RequestMapping(value = "/orders", method = RequestMethod.POST)
+    @PostMapping(value = "/orders")
     ModelAndView placeOrder(HttpServletRequest request) throws RabobankSdkException {
         MerchantOrderResponse orderResponse = announceOrder(request);
         createNewOrder();
         return new ModelAndView("redirect:" + orderResponse.getRedirectUrl());
     }
 
-    @RequestMapping(value = "/webhook", method = RequestMethod.POST)
-    ResponseEntity webhook(@RequestBody ApiNotification apiNotification) {
+    @PostMapping(value = "/webhook")
+    ResponseEntity<Void> webhook(@RequestBody ApiNotification apiNotification) {
         logger.info("webhook is called");
         latestApiNotification = apiNotification;
-        return new ResponseEntity(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
-    @RequestMapping(value = "/payment/complete", method = RequestMethod.GET)
+    @GetMapping(value = "/payment/complete")
     String paymentComplete(ModelMap modelMap, HttpServletRequest request) throws RabobankSdkException {
         PaymentCompletedResponse notificationCompletedPaymentResponse = createPaymentCompletedResponse(request);
         logger.info("payment with order_id: " + notificationCompletedPaymentResponse.getOrderID() + " has been completed with status: " + notificationCompletedPaymentResponse.getStatus());
@@ -101,14 +102,14 @@ class WebshopController {
         return "fake-webshop-result";
     }
 
-    @RequestMapping(value = "/items", method = RequestMethod.POST)
+    @PostMapping(value = "/items")
     String addItem(HttpServletRequest request) {
         OrderItem orderItem = createOrderItem(request);
         webShopOrderMap.get(iterator).addItem(orderItem);
-        return "fake-webshop";
+        return FAKE_WEBSHOP;
     }
 
-    @RequestMapping(value = "/logs", method = RequestMethod.GET)
+    @GetMapping(value = "/logs")
     String displayLogs(ModelMap model) throws IOException {
         FileReader fileReader = new FileReader(loggingPath);
         Scanner in = new Scanner(fileReader);
@@ -126,7 +127,7 @@ class WebshopController {
         return "fake-webshop-logs";
     }
 
-    @RequestMapping(value = "/retrieveUpdates", method = RequestMethod.GET)
+    @GetMapping(value = "/retrieveUpdates")
     String retrieveUpdates() throws RabobankSdkException {
         if (latestApiNotification != null) {
             logger.info("Retreiving updates...");
@@ -137,7 +138,7 @@ class WebshopController {
                 logOrderUpdate(merchantOrderStatusResponse.getOrderResults());
             }
         }
-        return "fake-webshop";
+        return FAKE_WEBSHOP;
     }
 
     @GetMapping(value = "/retrievePaymentBrands")
@@ -145,6 +146,23 @@ class WebshopController {
         PaymentBrandsResponse paymentBrandsResponse = endpoint.retrievePaymentBrands();
         model.addAttribute("paymentBrands", paymentBrandsResponse.getPaymentBrands());
         return "fake-webshop-paymentbrands";
+    }
+
+    @GetMapping("/retrieveIdealIssuers")
+    String retrieveIdealIssuers(ModelMap model) throws RabobankSdkException {
+        updateModelWithIdealIssuers(model);
+        return "fake-webshop-idealissuers";
+    }
+
+    @PostMapping("/refreshIdealIssuers")
+    String refreshIdealIssuers(ModelMap model) throws RabobankSdkException {
+        updateModelWithIdealIssuers(model);
+        return FAKE_WEBSHOP;
+    }
+
+    private void updateModelWithIdealIssuers(ModelMap model) throws RabobankSdkException {
+        IdealIssuersResponse idealIssuersResponse = endpoint.retrieveIdealIssuers();
+        model.addAttribute("idealIssuers", idealIssuersResponse.getIssuers());
     }
 
     private void logOrderUpdate(List<MerchantOrderResult> orderResults) {
@@ -168,7 +186,7 @@ class WebshopController {
 
     private MerchantOrderResponse announceOrder(HttpServletRequest request) throws RabobankSdkException {
         MerchantOrder merchantOrder = prepareOrder(request);
-        logger.info("Merchant order is Announced with order Id:" + iterator);
+        logger.info(() -> "Merchant order is Announced with order Id: " + iterator);
         return endpoint.announce(merchantOrder);
     }
 
@@ -178,8 +196,11 @@ class WebshopController {
         CustomerInformation customerInformation = createCustomerInformation(request);
         PaymentBrand paymentBrand = createPaymentBrand(request);
         PaymentBrandForce paymentBrandForce = getEnum(PaymentBrandForce.class, request.getParameter("paymentBrandForce"));
+        String preselectedIssuerId = getPreselectedIssuerId(request);
+        boolean skipHppResultPage = parseBoolean(request.getParameter("skipHppResultPage"));
         String initiatingParty = request.getParameter("initiatingParty");
-        return webShopOrderMap.get(iterator).prepareMerchantOrder(customerInformation, shippingDetails, billingDetails, paymentBrand, paymentBrandForce, initiatingParty);
+        return webShopOrderMap.get(iterator).prepareMerchantOrder(customerInformation, shippingDetails, billingDetails,
+                paymentBrand, paymentBrandForce, preselectedIssuerId, initiatingParty, skipHppResultPage);
     }
 
     private CustomerInformation createCustomerInformation(HttpServletRequest request) {
@@ -225,7 +246,7 @@ class WebshopController {
 
         double priceDouble = Double.parseDouble(price) / 100;
         BigDecimal priceBigDecimal = BigDecimal.valueOf(priceDouble);
-        priceBigDecimal = priceBigDecimal.setScale(2, ROUND_HALF_UP);
+        priceBigDecimal = priceBigDecimal.setScale(2, HALF_UP);
         Money amount = Money.fromEuros(EUR, priceBigDecimal);
 
         Money tax = null;
@@ -248,7 +269,7 @@ class WebshopController {
     private Money getTax(double priceDouble) {
         double taxDouble = priceDouble * 0.1;
         BigDecimal taxBigDecimal = BigDecimal.valueOf(taxDouble);
-        taxBigDecimal = taxBigDecimal.setScale(2, ROUND_HALF_UP);
+        taxBigDecimal = taxBigDecimal.setScale(2, HALF_UP);
         return Money.fromEuros(EUR, taxBigDecimal);
     }
 
@@ -258,6 +279,11 @@ class WebshopController {
             return null;
         }
         return getEnum(PaymentBrand.class, paymentBrand);
+    }
+
+    private String getPreselectedIssuerId(HttpServletRequest request) {
+        String preselectedIssuerId = request.getParameter("issuerId");
+        return isBlank(preselectedIssuerId) ? null : preselectedIssuerId;
     }
 
     private <E extends Enum<E>> E getEnum(Class<E> clazz, String value) {

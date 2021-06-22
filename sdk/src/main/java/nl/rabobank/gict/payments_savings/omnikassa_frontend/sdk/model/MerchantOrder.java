@@ -10,6 +10,7 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.order_deta
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public final class MerchantOrder {
 
@@ -24,6 +25,8 @@ public final class MerchantOrder {
     private final CustomerInformation customerInformation;
     private final PaymentBrand paymentBrand;
     private final PaymentBrandForce paymentBrandForce;
+    private final Map<String, String> paymentBrandMetaData;
+    private final boolean skipHppResultPage;
 
     private final String initiatingParty;
 
@@ -40,6 +43,8 @@ public final class MerchantOrder {
         this.paymentBrand = builder.paymentBrand;
         this.paymentBrandForce = builder.paymentBrandForce;
         this.initiatingParty = builder.initiatingParty;
+        this.paymentBrandMetaData = builder.paymentBrandMetaData;
+        this.skipHppResultPage = builder.skipHppResultPage;
     }
     public String getInitiatingParty() {
         return initiatingParty;
@@ -84,8 +89,16 @@ public final class MerchantOrder {
         return paymentBrandForce;
     }
 
+    public Map<String, String> getPaymentBrandMetaData() {
+        return paymentBrandMetaData;
+    }
+
     public CustomerInformation getCustomerInformation() {
         return customerInformation;
+    }
+
+    public boolean skipHppResultPage() {
+        return skipHppResultPage;
     }
 
     public static class Builder {
@@ -101,7 +114,9 @@ public final class MerchantOrder {
         private CustomerInformation customerInformation;
         private PaymentBrand paymentBrand;
         private PaymentBrandForce paymentBrandForce;
+        private Map<String, String> paymentBrandMetaData = Collections.emptyMap();
         private String initiatingParty;
+        private boolean skipHppResultPage = false;
 
         /**
          * @param merchantOrderId | Must not be `null`
@@ -202,6 +217,16 @@ public final class MerchantOrder {
         }
 
         /**
+         * Can be used for supplying extra information about the payment brand.
+         * @param paymentBrandMetaData | Optional
+         * @return Builder
+         */
+        public Builder withPaymentBrandMetaData(Map<String, String> paymentBrandMetaData) {
+            this.paymentBrandMetaData = paymentBrandMetaData;
+            return this;
+        }
+
+        /**
          * @param customerInformation | Optional
          * @return Builder
          */
@@ -216,6 +241,16 @@ public final class MerchantOrder {
          */
         public Builder withInitiatingParty(String initiatingParty) {
             this.initiatingParty = initiatingParty;
+            return this;
+        }
+
+        /**
+         * Set to true if you want the customer to be immediately redirected to your webshop after the payment has concluded.
+         * @param skipHppResultPage | Optional
+         * @return Builder
+         */
+        public Builder withSkipHppResultPage(boolean skipHppResultPage) {
+            this.skipHppResultPage = skipHppResultPage;
             return this;
         }
 

@@ -12,6 +12,8 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.order_deta
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.order_details.CustomerInformation;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.order_details.OrderItem;
 
+import java.util.Map;
+
 /**
  * this class represents an order/transaction of money.
  * Note: merchantOrderId is identification/'name' of the order, hence "abc1234"
@@ -48,6 +50,10 @@ public class MerchantOrderRequest implements JsonConvertible {
         if (paymentBrandForce != null) {
             jsonObject.put("paymentBrandForce", paymentBrandForce.name());
         }
+        Map<String, String> paymentBrandMetaData = merchantOrder.getPaymentBrandMetaData();
+        if (paymentBrandMetaData != null && !paymentBrandMetaData.isEmpty()) {
+            jsonObject.put("paymentBrandMetaData", paymentBrandMetaData);
+        }
         CustomerInformation customerInformation = merchantOrder.getCustomerInformation();
         if (customerInformation != null) {
             jsonObject.put("customerInformation", customerInformation.asJson());
@@ -60,6 +66,7 @@ public class MerchantOrderRequest implements JsonConvertible {
         if (initiatingParty != null) {
             jsonObject.put("initiatingParty", merchantOrder.getInitiatingParty());
         }
+        jsonObject.put("skipHppResultPage", merchantOrder.skipHppResultPage());
         return jsonObject;
     }
 

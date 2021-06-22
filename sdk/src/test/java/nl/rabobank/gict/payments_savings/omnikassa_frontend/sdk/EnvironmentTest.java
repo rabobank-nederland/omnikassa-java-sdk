@@ -5,7 +5,7 @@ import org.junit.Test;
 import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.Environment.PRODUCTION;
 import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.Environment.SANDBOX;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class EnvironmentTest {
 

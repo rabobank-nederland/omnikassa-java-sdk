@@ -54,7 +54,7 @@ public class AccessTokenTest {
         new AccessToken(prepareMalformedJSONObject());
     }
 
-    @Test
+    @Test(expected = Test.None.class)
     public void constructor() {
         new AccessToken("token", prepareCalendar(), 123);
     }
