@@ -8,6 +8,13 @@ trigger:
       - refs/heads/master
       - refs/heads/feature/*
 
+schedules:
+  - cron: "0 18 * * Sun"
+    displayName: Weekly build
+    branches:
+      include:
+        - refs/heads/master
+
 name: $(date:yyyyMMdd)$(rev:.r)
 
 jobs:
@@ -78,10 +85,4 @@ jobs:
         inputs:
           nexusIqService: $(nexusServiceConnection)
           applicationId: omnikassa-frontend-sdk-java
-          stage: release
-      - task: PublishPipelineArtifact@1
-        displayName: Publish artifacts
-        inputs:
-          targetPath: sdk/target/
-          archiveFilePatterns: '*.jar'
-          artifactName: SDK
+\|          stage: release
