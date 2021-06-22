@@ -85,4 +85,4 @@ jobs:
         inputs:
           nexusIqService: $(nexusServiceConnection)
           applicationId: omnikassa-frontend-sdk-java
-\|          stage: release
+          stage: release
