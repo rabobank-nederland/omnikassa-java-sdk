@@ -80,6 +80,8 @@ jobs:
           applicationId: omnikassa-frontend-sdk-java
           stage: release
       - task: PublishPipelineArtifact@1
+        displayName: Publish artifacts
         inputs:
-          targetPath: sdk/target/omnikassa-sdk-$(Build.BuildNumber).jar
+          targetPath: sdk/target/
+          archiveFilePatterns: '*.jar'
           artifactName: SDK
