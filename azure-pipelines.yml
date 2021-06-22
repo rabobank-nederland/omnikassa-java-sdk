@@ -1,9 +1,15 @@
+variables:
+  - name: isMain
+    value: $[startsWith(variables['Build.SourceBranch'], 'refs/heads/master')]
+
 trigger:
   branches:
     include:
       - refs/heads/master
       - refs/heads/feature/*
+
 name: $(date:yyyyMMdd)$(rev:.r)
+
 jobs:
   - job: "credScan_and_post_analysis"
     displayName: "CredScan"
@@ -54,6 +60,7 @@ jobs:
         displayName: Publish Quality Gate Result
       - task: FortifySCA@5
         displayName: Run Fortify
+        condition: eq(variables.isMain, true)
         inputs:
           applicationType: java
           buildSourceVersion: 1.8
@@ -66,6 +73,7 @@ jobs:
           buildAnalyzerParams: '-exclude $(System.DefaultWorkingDirectory)/example-integration/**/* -exclude $(System.DefaultWorkingDirectory)/sdk/src/test/**/* -exclude $(System.DefaultWorkingDirectory)/sdk/target/**/*'
       - task: NexusIqPipelineTask@1
         displayName: Nexus IQ policy evaluation
+        condition: eq(variables.isMain, true)
         continueOnError: true
         inputs:
           nexusIqService: $(nexusServiceConnection)
