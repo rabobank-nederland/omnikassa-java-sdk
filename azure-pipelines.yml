@@ -79,3 +79,8 @@ jobs:
           nexusIqService: $(nexusServiceConnection)
           applicationId: omnikassa-frontend-sdk-java
           stage: release
+      - task: PublishBuildArtifacts@1
+        name: 'publish'
+        displayName: 'Publish Artifact: drop'
+        inputs:
+          PathtoPublish: '$(System.DefaultWorkingDirectory)/sdk/target/*.jar'
