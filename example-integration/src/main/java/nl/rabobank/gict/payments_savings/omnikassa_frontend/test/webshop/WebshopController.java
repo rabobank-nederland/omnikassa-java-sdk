@@ -130,7 +130,7 @@ class WebshopController {
     @GetMapping(value = "/retrieveUpdates")
     String retrieveUpdates() throws RabobankSdkException {
         if (latestApiNotification != null) {
-            logger.info("Retreiving updates...");
+            logger.info("Retrieving updates...");
             MerchantOrderStatusResponse merchantOrderStatusResponse = endpoint.retrieveAnnouncement(latestApiNotification);
             logOrderUpdate(merchantOrderStatusResponse.getOrderResults());
             while (merchantOrderStatusResponse.moreOrderResultsAvailable()) {
