@@ -12,6 +12,12 @@
         </tr>
         <tr>
             <td>
+                <label for="customer_information_full_name">Full name:</label>
+                <input type="text" name="fullName" id="customer_information_full_name">
+            </td>
+        </tr>
+        <tr>
+            <td>
                 <label for="customer_information_birth_date">Birth date:</label>
                 <input type="text" name="birthDate" id="customer_information_birth_date" placeholder="DD-MM-YYYY">
         </tr>
