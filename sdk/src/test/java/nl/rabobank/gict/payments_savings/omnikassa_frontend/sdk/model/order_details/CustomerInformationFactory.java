@@ -12,6 +12,7 @@ public class CustomerInformationFactory {
                 .withEmailAddress("jan.de.ruiter@example.com")
                 .withInitials("J.")
                 .withTelephoneNumber("0031204111111")
+                .withFullName("Jan de Ruiter")
                 .build();
     }
 

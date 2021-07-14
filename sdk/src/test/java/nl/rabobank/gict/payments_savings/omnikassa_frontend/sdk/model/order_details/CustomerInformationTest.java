@@ -16,9 +16,9 @@ import static org.hamcrest.core.Is.is;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
 public class CustomerInformationTest {
-    private CustomerInformation customerInformation = customerInformation().build();
-    private CustomerInformation customerInformationFull = customerInformationFull();
-    private JsonFileConverter converter = new JsonFileConverter();
+    private final CustomerInformation customerInformation = customerInformation().build();
+    private final CustomerInformation customerInformationFull = customerInformationFull();
+    private final JsonFileConverter converter = new JsonFileConverter();
 
     @Test
     public void testFields() {
@@ -27,6 +27,7 @@ public class CustomerInformationTest {
         assertThat(customerInformation.getGender(), nullValue());
         assertThat(customerInformation.getInitials(), nullValue());
         assertThat(customerInformation.getTelephoneNumber(), nullValue());
+        assertThat(customerInformation.getFullName(), nullValue());
     }
 
     @Test
@@ -36,6 +37,7 @@ public class CustomerInformationTest {
         assertThat(customerInformationFull.getGender(), is(M));
         assertThat(customerInformationFull.getInitials(), is("J."));
         assertThat(customerInformationFull.getTelephoneNumber(), is("0031204111111"));
+        assertThat(customerInformationFull.getFullName(), is("Jan de Ruiter"));
     }
 
     @Test

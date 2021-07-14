@@ -3,5 +3,6 @@
   "emailAddress": "jan.de.ruiter@example.com",
   "gender": "M",
   "initials": "J.",
-  "telephoneNumber": "0031204111111"
+  "telephoneNumber": "0031204111111",
+  "fullName": "Jan de Ruiter"
 }

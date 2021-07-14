@@ -16,6 +16,7 @@ public final class CustomerInformation implements JsonConvertible {
     private final String initials;
     private final String telephoneNumber;
     private final Gender gender;
+    private final String fullName;
 
     CustomerInformation(Builder builder) {
         emailAddress = builder.emailAddress;
@@ -23,6 +24,7 @@ public final class CustomerInformation implements JsonConvertible {
         gender = builder.gender;
         initials = builder.initials;
         telephoneNumber = builder.telephoneNumber;
+        fullName = builder.fullName;
     }
 
     public String getEmailAddress() {
@@ -45,6 +47,10 @@ public final class CustomerInformation implements JsonConvertible {
         return dateOfBirth;
     }
 
+    public String getFullName() {
+        return fullName;
+    }
+
     @Override
     public JSONObject asJson() {
         JSONObject jsonObject = new JSONObject();
@@ -53,6 +59,7 @@ public final class CustomerInformation implements JsonConvertible {
         jsonObject.put("gender", getNullSafe(gender));
         jsonObject.put("initials", initials);
         jsonObject.put("telephoneNumber", telephoneNumber);
+        jsonObject.put("fullName", fullName);
 
         return jsonObject;
     }
@@ -66,7 +73,7 @@ public final class CustomerInformation implements JsonConvertible {
 
     @Override
     public int hashCode() {
-        return Objects.hash(emailAddress, dateOfBirth, initials, telephoneNumber, gender);
+        return Objects.hash(emailAddress, dateOfBirth, initials, telephoneNumber, gender, fullName);
     }
 
     @Override
@@ -82,7 +89,8 @@ public final class CustomerInformation implements JsonConvertible {
                Objects.equals(dateOfBirth, that.dateOfBirth) &&
                Objects.equals(initials, that.initials) &&
                Objects.equals(telephoneNumber, that.telephoneNumber) &&
-               gender == that.gender;
+               gender == that.gender &&
+               Objects.equals(fullName, that.fullName);
     }
 
     public static class Builder {
@@ -91,6 +99,7 @@ public final class CustomerInformation implements JsonConvertible {
         private String initials;
         private String telephoneNumber;
         private String dateOfBirth;
+        private String fullName;
 
         /**
          * @param emailAddress | Optional
@@ -144,6 +153,16 @@ public final class CustomerInformation implements JsonConvertible {
          */
         public Builder withDateOfBirth(String dateOfBirth) {
             this.dateOfBirth = dateOfBirth;
+            return this;
+        }
+
+        /**
+         * @param fullName | Optional
+         *                 | Maximum length of '128' characters
+         * @return Builder
+         */
+        public Builder withFullName(String fullName) {
+            this.fullName = fullName;
             return this;
         }
 

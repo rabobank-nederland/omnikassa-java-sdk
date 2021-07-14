@@ -210,6 +210,7 @@ class WebshopController {
                 .withGender(getEnum(Gender.class, request.getParameter("gender")))
                 .withEmailAddress(request.getParameter("email"))
                 .withDateOfBirth(request.getParameter("birthDate"))
+                .withFullName(request.getParameter("fullName"))
                 .build();
     }
 
