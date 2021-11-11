@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>nl.rabobank.oss.omnikassa</groupId>
-    <version>${revision}${sha1}</version>
+    <version>1.9.3-SNAPSHOT</version>
     <packaging>jar</packaging>
     <artifactId>omnikassa-sdk</artifactId>
     <name>https://github.com/rabobank-nederland/omnikassa-java-sdk</name>
