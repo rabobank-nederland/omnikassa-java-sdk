@@ -5,7 +5,7 @@
     <parent>
         <artifactId>java-sdk-parent</artifactId>
         <groupId>nl.rabobank.oss.omnikassa</groupId>
-        <version>${revision}${sha1}</version>
+        <version>1.9.3-SNAPSHOT</version>
     </parent>
     <packaging>war</packaging>
 
