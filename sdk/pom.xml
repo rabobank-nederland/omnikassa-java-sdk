@@ -3,32 +3,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>nl.rabobank.oss.omnikassa</groupId>
-    <version>1.9.3-SNAPSHOT</version>
+    <parent>
+        <artifactId>java-sdk-parent</artifactId>
+        <groupId>nl.rabobank.oss.omnikassa</groupId>
+        <version>1.9.3-SNAPSHOT</version>
+    </parent>
+
     <packaging>jar</packaging>
     <artifactId>omnikassa-sdk</artifactId>
-    <name>https://github.com/rabobank-nederland/omnikassa-java-sdk</name>
-
-    <properties>
-        <slf4j-api.version>1.7.21</slf4j-api.version>
-        <unirest-java.version>1.4.9</unirest-java.version>
-        <commons-lang3.version>3.4</commons-lang3.version>
-        <joda-time.version>2.9.6</joda-time.version>
-        <junit.version>4.13.1</junit.version>
-        <mockito-core.version>3.0.0</mockito-core.version>
-        <jsonassert.version>1.3.0</jsonassert.version>
-        <equalsverifier.version>3.6.1</equalsverifier.version>
-        <maven-jar-plugin.version>3.1.2</maven-jar-plugin.version>
-        <jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
-        <java.version>1.8</java.version>
-        <maven.compiler.source>${java.version}</maven.compiler.source>
-        <maven.compiler.target>${java.version}</maven.compiler.target>
-        <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
-        <maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
-        <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
-        <sonar.java.source>${java.version}</sonar.java.source>
-        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-    </properties>
+    <name>Rabobank OmniKassa - Java SDK - SDK</name>
 
     <licenses>
         <license>
@@ -37,10 +20,12 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+
     <organization>
         <name>Rabobank</name>
         <url>https://www.rabobank.nl</url>
     </organization>
+
     <developers>
         <developer>
             <name>Rabobank OmniKassa</name>
@@ -74,48 +59,36 @@
         <dependency>
             <groupId>com.mashape.unirest</groupId>
             <artifactId>unirest-java</artifactId>
-            <version>${unirest-java.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>${slf4j-api.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>${commons-lang3.version}</version>
         </dependency>
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
-            <version>${joda-time.version}</version>
         </dependency>
 
         <!-- Test dependencies -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>${mockito-core.version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>nl.jqno.equalsverifier</groupId>
             <artifactId>equalsverifier</artifactId>
-            <version>${equalsverifier.version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.skyscreamer</groupId>
             <artifactId>jsonassert</artifactId>
-            <version>${jsonassert.version}</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -124,7 +97,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>${maven-surefire-plugin.version}</version>
                 <configuration>
                     <argLine>-Duser.timezone=Europe/Amsterdam ${surefireArgLine}</argLine>
                 </configuration>
@@ -132,7 +104,6 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>${jacoco-maven-plugin.version}</version>
                 <configuration>
                     <append>true</append>
                 </configuration>
@@ -187,12 +158,10 @@
                         </manifest>
                     </archive>
                 </configuration>
-                <version>${maven-jar-plugin.version}</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>${maven-javadoc-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -205,7 +174,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>${maven-source-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
