@@ -86,3 +86,8 @@ jobs:
           nexusIqService: $(nexusServiceConnection)
           applicationId: omnikassa-frontend-sdk-java
           stage: release
+      - task: PublishPipelineArtifact@1
+        displayName: Publish Artifact
+        condition: succeededOrFailed()
+        inputs:
+          targetPath: $(System.DefaultWorkingDirectory)/release/target/
