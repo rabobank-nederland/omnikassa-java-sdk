@@ -45,6 +45,11 @@
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
     </properties>
 
+    <scm>
+        <connection>scm:git:git@github.com:rabobank-nederland/omnikassa-java-sdk.git</connection>
+        <developerConnection>scm:git:git@github.com:rabobank-nederland/omnikassa-java-sdk.git</developerConnection>
+    </scm>
+
     <modules>
         <module>sdk</module>
         <module>example-integration</module>
