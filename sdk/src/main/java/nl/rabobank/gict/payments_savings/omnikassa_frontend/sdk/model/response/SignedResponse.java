@@ -21,6 +21,8 @@ public abstract class SignedResponse extends Signable {
 
     /**
      * this function validates if the signature of the object is the same as the signature from the api response.
+     * @param signingKey The signing key to validate the signature with.
+     * @throws RabobankSdkException when the signature is invalid.
      */
     public void validateSignature(byte[] signingKey) throws RabobankSdkException {
         String calculatedSignature = calculateSignature(getSignatureData(), signingKey);

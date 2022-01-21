@@ -33,6 +33,10 @@ public class ApiConnector {
 
     /**
      * sends the MerchantOrderRequest to the Rabobank.
+     * @param order containing detail of the order
+     * @param token access token
+     * @return MerchantOrderResponse for requested order
+     * @throws RabobankSdkException when problems occurred during the request, e.g. server not reachable, invalid signature, invalid authentication etc.
      */
     public MerchantOrderResponse announceMerchantOrder(final MerchantOrderRequest order, final String token)
             throws RabobankSdkException {
@@ -52,6 +56,9 @@ public class ApiConnector {
 
     /**
      * retrieves the Announcement data from the Rabobank
+     * @param apiNotification received notification for order
+     * @return MerchantOrderStatusResponse containing the information regarding the order
+     * @throws RabobankSdkException when problems occurred during the request, e.g. server not reachable, invalid signature, invalid authentication etc.
      */
     public MerchantOrderStatusResponse getAnnouncementData(final ApiNotification apiNotification)
             throws RabobankSdkException {

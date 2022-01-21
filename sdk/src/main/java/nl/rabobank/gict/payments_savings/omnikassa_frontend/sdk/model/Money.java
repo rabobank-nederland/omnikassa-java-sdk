@@ -38,6 +38,7 @@ public final class Money implements JsonConvertible {
      *                 | Must be a valid Currency
      * @param amount   | Must not be 'null'
      *                 | Must be greater than zero
+     * @return new instance of Money
      */
     public static Money fromEuros(Currency currency, BigDecimal amount) {
         checkAmount(amount);
