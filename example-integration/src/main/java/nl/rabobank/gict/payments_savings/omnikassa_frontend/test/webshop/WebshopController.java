@@ -25,6 +25,8 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.P
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.test.webshop.model.CustomTokenProvider;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.test.webshop.model.WebShopOrder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.test.webshop.model.enums.PaymentStatusMessage;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -54,23 +56,28 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
 @Controller
+@PropertySource("classpath:application.properties")
 @RequestMapping("/webshop")
 class WebshopController {
-    private static final String BASE_URL = "http://localhost:8081";
     private static final String FAKE_WEBSHOP = "fake-webshop";
 
+    @Value("signing_key")
+    private String signKey;
+    @Value("refresh_token")
+    private String refreshToken;
+    @Value("api_endpoint")
+    private String baseUrl;
     private int iterator = 0;
     private final Map<Integer, WebShopOrder> webShopOrderMap = new HashMap<>();
     private final Endpoint endpoint;
     private ApiNotification latestApiNotification;
-    private final byte[] signingKey = getSigningKey("c2VjcmV0");
+    private final byte[] signingKey = getSigningKey(signKey);
     private final Logger logger = Logger.getLogger(WebshopController.class.toString());
     private String loggingPath;
 
     WebshopController() {
-        String refreshToken = "eyJraWQiOiIrcUNTdzlvL2dGcUMxeVlHWVhHZFBReGFVVTVLYlpPYWVCZjNiOHFrYWxvPSIsImFsZyI6IkVTMjU2In0.eyJta2lkIjoxMDIwLCJleHAiOjE4NDAzNDg2ODJ9.9rtTcltvwk3axrDUdkPEnDNjsN7XoP2Dg5etPbbaGtSJdWZntY1M6uwmXYVsSEEh6CUugrjIWw0z3S5XwbEZaA";
         TokenProvider tokenProvider = new CustomTokenProvider(refreshToken);
-        endpoint = Endpoint.createInstance(BASE_URL, signingKey, tokenProvider);
+        endpoint = Endpoint.createInstance(baseUrl, signingKey, tokenProvider);
 
         webShopOrderMap.put(iterator, new WebShopOrder(iterator));
     }
