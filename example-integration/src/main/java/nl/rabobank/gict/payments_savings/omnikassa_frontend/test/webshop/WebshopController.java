@@ -61,22 +61,20 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 class WebshopController {
     private static final String FAKE_WEBSHOP = "fake-webshop";
 
-    @Value("signing_key")
-    private String signKey;
-    @Value("refresh_token")
-    private String refreshToken;
-    @Value("api_endpoint")
-    private String baseUrl;
     private int iterator = 0;
+    private final String baseUrl;
     private final Map<Integer, WebShopOrder> webShopOrderMap = new HashMap<>();
     private final Endpoint endpoint;
     private ApiNotification latestApiNotification;
-    private final byte[] signingKey = getSigningKey(signKey);
+    private final byte[] signingKey;
     private final Logger logger = Logger.getLogger(WebshopController.class.toString());
     private String loggingPath;
 
-    WebshopController() {
-        TokenProvider tokenProvider = new CustomTokenProvider(refreshToken);
+    WebshopController(@Value("${signing_key}") String key, @Value("${refresh_token}") String token,
+                      @Value("${base_url}") String baseUrl) {
+        this.signingKey = getSigningKey(key);
+        this.baseUrl = baseUrl;
+        TokenProvider tokenProvider = new CustomTokenProvider(token);
         endpoint = Endpoint.createInstance(baseUrl, signingKey, tokenProvider);
 
         webShopOrderMap.put(iterator, new WebShopOrder(iterator));
