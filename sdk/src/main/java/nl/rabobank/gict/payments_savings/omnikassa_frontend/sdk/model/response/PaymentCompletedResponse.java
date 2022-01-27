@@ -24,6 +24,9 @@ public class PaymentCompletedResponse extends SignedResponse {
 
     /**
      * Make use of {@link PaymentCompletedResponse#newPaymentCompletedResponse(String, String, String, byte[])} instead as this constructor does not validate the signature.
+     * @param orderId    The order ID as received by the Rabobank OmniKassa.
+     * @param status     The order status as received by the Rabobank OmniKassa.
+     * @param signature  The signature of the response as received by the Rabobank OmniKassa.
      */
     @Deprecated
     public PaymentCompletedResponse(String orderId, String status, String signature) {

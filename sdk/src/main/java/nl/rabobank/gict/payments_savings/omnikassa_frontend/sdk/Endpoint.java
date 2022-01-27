@@ -42,6 +42,7 @@ public final class Endpoint {
      * @param signingKey    this is the key given by the Rabobank to sign all communication
      * @param tokenProvider this must be your own implementation of the tokenProvider, see developer-manual
      * @deprecated This method is deprecated, use the {@link Endpoint#createInstance(Environment, String, TokenProvider)} instead.
+     * @return new instance of Endpoint
      * Note: for backward compatibility do not remove this method!
      */
     @Deprecated
@@ -56,6 +57,7 @@ public final class Endpoint {
      * @param environment             this is the Url that points to the Rabobank API
      * @param base64encodedSigningKey this is the key given by the Rabobank to sign all communication
      * @param tokenProvider           this must be your own implementation of the tokenProvider, see developer-manual
+     * @return new instance of Endpoint
      */
     public static Endpoint createInstance(Environment environment,
                                           String base64encodedSigningKey,
