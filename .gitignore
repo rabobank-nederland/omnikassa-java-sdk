@@ -71,3 +71,6 @@ fabric.properties
 #########################
 # END JetBrains.gitignore
 #########################
+
+### Sensitive Data ###
+example-integration/src/main/resources/application.properties
