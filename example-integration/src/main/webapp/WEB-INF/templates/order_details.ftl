@@ -66,7 +66,7 @@
                     <option value="BANCONTACT">Bancontact</option>
                     <option value="MAESTRO">Maestro</option>
                     <option value="V_PAY">V Pay</option>
-                    <option value="SOFORT">Klarna Pay</option>
+                    <option value="SOFORT">Sofort</option>
                     <option value="CARDS">Cards</option>
                 </select>
             </td>
