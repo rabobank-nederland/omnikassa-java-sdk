@@ -12,6 +12,9 @@ Detailed developer documentation on how to use the Java SDK as well as contact i
 
 ## Release notes
 
+### Version 1.11.0
+* Extended SDK to support Sofort as a payment brand.
+
 ### Version 1.10.0
 * Extended SDK to retrieve a list of iDEAL issuers.
 * Extended SDK to allow the iDEAL issuer to be passed in the order announcement.
