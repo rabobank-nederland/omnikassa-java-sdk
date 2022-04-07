@@ -7,7 +7,7 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.TestBuilde
 public class MerchantOrderStatusResponseV2Builder implements TestBuilder<MerchantOrderStatusResponseV2> {
     private boolean moreOrderResultsAvailable = false;
     private String orderResults = initializeOrderResults();
-    private String signature = "eadd65e96b347c006e8e4e95cec30b9ab988226a7bb1cbdc9da9a521f245dd553cdb665f9cd5677fe782af3c0efee3a30025084b999a0bca795ce45eec23a2e7";
+    private String signature = "e383df9de576878e64c8f66ddf6bb5d09a6cc931b7b9fbc2b4da897c3988648b43eb9c32086baca35bf58f0894b68f4cc179cb0a089ade0f7f67fb14b983a911";
 
     private static String initializeOrderResults() {
         return "[ " +

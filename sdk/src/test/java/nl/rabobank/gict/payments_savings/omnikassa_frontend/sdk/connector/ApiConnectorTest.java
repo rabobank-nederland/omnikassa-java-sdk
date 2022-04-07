@@ -34,6 +34,7 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.M
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponseV2Builder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.PaymentBrandsResponse;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -54,7 +55,7 @@ public class ApiConnectorTest {
     private static final String ORDER_SERVER_API_V2_EVENTS_RESULTS_EVENT = "order/server/api/v2/events/results/event";
     private static final String ACTIVE = "Active";
     private static final String INACTIVE = "InActive";
-    private static final String SIGNATURE_V2 = "";
+    private static final String SIGNATURE_V2 = "e383df9de576878e64c8f66ddf6bb5d09a6cc931b7b9fbc2b4da897c3988648b43eb9c32086baca35bf58f0894b68f4cc179cb0a089ade0f7f67fb14b983a911";
 
     @Mock
     private UnirestJSONTemplate jsonTemplate;
@@ -201,16 +202,16 @@ public class ApiConnectorTest {
         assertThat(actual.getPaidAmount().getAmountInCents(), is(0L));
         assertThat(actual.getTotalAmount().getCurrency(), is(EUR));
         assertThat(actual.getTotalAmount().getAmountInCents(), is(599L));
-        assertThat(actual.getTransactionInfo().get(0).getId(), is(1));
+        assertThat(actual.getTransactionInfo().get(0).getId(), is("1"));
         assertThat(actual.getTransactionInfo().get(0).getPaymentBrand(), is(PaymentBrand.IDEAL));
         assertThat(actual.getTransactionInfo().get(0).getType(), is(TransactionType.PAYMENT));
         assertThat(actual.getTransactionInfo().get(0).getStatus(), is(TransactionStatus.SUCCESS));
-        assertThat(actual.getTransactionInfo().get(0).getAmount().getAmount(), is(599L));
+        assertThat(actual.getTransactionInfo().get(0).getAmount().getAmount(), is(new BigDecimal("5.99")));
         assertThat(actual.getTransactionInfo().get(0).getAmount().getCurrency(), is(EUR));
-        assertThat(actual.getTransactionInfo().get(0).getConfirmedAmount().getAmount(), is(599L));
+        assertThat(actual.getTransactionInfo().get(0).getConfirmedAmount().getAmount(), is(new BigDecimal("5.99")));
         assertThat(actual.getTransactionInfo().get(0).getConfirmedAmount().getCurrency(), is(EUR));
-        assertThat(actual.getTransactionInfo().get(0).getStartTime(), is(stringToCalendar("2016-07-28T12:51:15.574+02:00")));
-        assertThat(actual.getTransactionInfo().get(0).getLastUpdateTime(), is(stringToCalendar("2016-07-28T12:51:15.574+02:00")));
+        assertThat(actual.getTransactionInfo().get(0).getStartTime(), is("2016-07-28T12:51:15.574+02:00"));
+        assertThat(actual.getTransactionInfo().get(0).getLastUpdateTime(), is("2016-07-28T12:51:15.574+02:00"));
     }
 
     private void assertSecondMerchantOrderResultV2(MerchantOrderResultV2 actual) {
@@ -224,16 +225,16 @@ public class ApiConnectorTest {
         assertThat(actual.getPaidAmount().getAmountInCents(), is(599L));
         assertThat(actual.getTotalAmount().getCurrency(), is(EUR));
         assertThat(actual.getTotalAmount().getAmountInCents(), is(599L));
-        assertThat(actual.getTransactionInfo().get(0).getId(), is(1));
+        assertThat(actual.getTransactionInfo().get(0).getId(), is("1"));
         assertThat(actual.getTransactionInfo().get(0).getPaymentBrand(), is(PaymentBrand.IDEAL));
         assertThat(actual.getTransactionInfo().get(0).getType(), is(TransactionType.PAYMENT));
         assertThat(actual.getTransactionInfo().get(0).getStatus(), is(TransactionStatus.SUCCESS));
-        assertThat(actual.getTransactionInfo().get(0).getAmount().getAmount(), is(599L));
+        assertThat(actual.getTransactionInfo().get(0).getAmount().getAmount(), is(new BigDecimal("5.99")));
         assertThat(actual.getTransactionInfo().get(0).getAmount().getCurrency(), is(EUR));
-        assertThat(actual.getTransactionInfo().get(0).getConfirmedAmount().getAmount(), is(599L));
+        assertThat(actual.getTransactionInfo().get(0).getConfirmedAmount().getAmount(), is(new BigDecimal("5.99")));
         assertThat(actual.getTransactionInfo().get(0).getConfirmedAmount().getCurrency(), is(EUR));
-        assertThat(actual.getTransactionInfo().get(0).getStartTime(), is(stringToCalendar("2016-07-28T12:51:15.574+02:00")));
-        assertThat(actual.getTransactionInfo().get(0).getLastUpdateTime(), is(stringToCalendar("2016-07-28T12:51:15.574+02:00")));
+        assertThat(actual.getTransactionInfo().get(0).getStartTime(), is("2016-07-28T12:51:15.574+02:00"));
+        assertThat(actual.getTransactionInfo().get(0).getLastUpdateTime(), is("2016-07-28T12:51:15.574+02:00"));
     }
 
     @Test(expected = IllegalSignatureException.class)
