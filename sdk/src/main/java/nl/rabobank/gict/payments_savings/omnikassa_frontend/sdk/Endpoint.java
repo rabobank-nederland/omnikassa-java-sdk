@@ -14,6 +14,7 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.Me
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.ApiNotification;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponse;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponseV2;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.PaymentBrandsResponse;
 
 import static org.apache.commons.codec.binary.Base64.decodeBase64;
@@ -118,6 +119,21 @@ public final class Endpoint {
 
         return connector.getAnnouncementData(apiNotification);
     }
+
+    /**
+     * This function will retrieve the announcement details, these can be used to check the status of your order.
+     *
+     * @param apiNotification The notification that was received via the webhook, the object can be constructed via Jackson or with the direct constructor
+     * @return The response contains order details like: 'status', 'paid amount' and 'currency', which can be used to update the order with the latest status.
+     * @throws RabobankSdkException when problems occurred during the request, e.g. server not reachable, invalid signature, invalid authentication etc.
+     */
+    public MerchantOrderStatusResponseV2 retrieveAnnouncementV2(ApiNotification apiNotification)
+            throws RabobankSdkException {
+        apiNotification.validateSignature(signingKey);
+
+        return connector.getAnnouncementDataV2(apiNotification);
+    }
+
 
     public PaymentBrandsResponse retrievePaymentBrands() throws RabobankSdkException {
         validateAccessToken();

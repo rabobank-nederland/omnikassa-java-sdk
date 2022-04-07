@@ -11,6 +11,7 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.Me
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.ApiNotification;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponse;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponseV2;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.PaymentBrandsResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.SignedResponse;
 
@@ -73,6 +74,30 @@ public class ApiConnector {
             @Override
             MerchantOrderStatusResponse convert(JSONObject result) {
                 return new MerchantOrderStatusResponse(result);
+            }
+        }.execute();
+    }
+
+
+    /**
+     * retrieves the Announcement data from the Rabobank
+     * @param apiNotification received notification for order
+     * @return MerchantOrderStatusResponse containing the information regarding the order
+     * @throws RabobankSdkException when problems occurred during the request, e.g. server not reachable, invalid signature, invalid authentication etc.
+     */
+    public MerchantOrderStatusResponseV2 getAnnouncementDataV2(final ApiNotification apiNotification)
+            throws RabobankSdkException {
+        return new SignedRequestTemplate<MerchantOrderStatusResponseV2>() {
+
+            @Override
+            JSONObject fetch() throws UnirestException {
+                return jsonTemplate.get("order/server/api/v2/events/results/" + apiNotification.getEventName(),
+                                        apiNotification.getAuthentication());
+            }
+
+            @Override
+            MerchantOrderStatusResponseV2 convert(JSONObject result) {
+                return new MerchantOrderStatusResponseV2(result);
             }
         }.execute();
     }

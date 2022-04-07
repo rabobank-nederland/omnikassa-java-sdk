@@ -17,6 +17,8 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.M
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderResponseBuilder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponseBuilder;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponseV2;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponseV2Builder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.PaymentBrandsResponse;
 import org.apache.commons.codec.binary.Base64;
 import org.junit.Before;
@@ -148,6 +150,18 @@ public class EndpointTest {
         endpoint.retrieveAnnouncement(apiNotification);
     }
 
+    @Test(expected = Test.None.class)
+    public void retrieveAnnouncementV2_HappyFlow() throws RabobankSdkException {
+        MerchantOrderStatusResponseV2 merchantOrderStatusResponseV2Json = prepareMerchantOrderStatusResponseV2WithValidSignature();
+
+        ApiNotification apiNotification = prepareApiNotification();
+        apiNotification.setSignature(Signable.calculateSignature(apiNotification.getSignatureData(), SIGNING_KEY));
+
+        when(apiConnector.getAnnouncementDataV2(apiNotification)).thenReturn(merchantOrderStatusResponseV2Json);
+
+        endpoint.retrieveAnnouncementV2(apiNotification);
+    }
+
     @Test(expected = RabobankSdkException.class)
     public void retrieveAnnouncement_InValidSignature() throws RabobankSdkException {
         ApiNotification apiNotification = prepareApiNotification();
@@ -243,6 +257,10 @@ public class EndpointTest {
 
     private MerchantOrderStatusResponse prepareMerchantOrderStatusResponseWithValidSignature() {
         return new MerchantOrderStatusResponseBuilder().build();
+    }
+
+    private MerchantOrderStatusResponseV2 prepareMerchantOrderStatusResponseV2WithValidSignature() {
+        return new MerchantOrderStatusResponseV2Builder().build();
     }
 
     private MerchantOrderResponse prepareMerchantOrderResponse() {
