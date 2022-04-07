@@ -1,7 +1,6 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.connector;
 
 import com.mashape.unirest.http.exceptions.UnirestException;
-import org.apache.commons.codec.binary.Base64;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -17,7 +16,6 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.Rabob
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.AccessToken;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.AccessTokenBuilder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.MerchantOrderTestFactory;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.Signable;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.PaymentBrand;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.TransactionStatus;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.TransactionType;
@@ -27,11 +25,8 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.A
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderResponseBuilder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderResult;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderResultV2;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponseBuilder;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponseV2;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponseV2Builder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.PaymentBrandsResponse;
 
 import java.math.BigDecimal;
@@ -51,11 +46,9 @@ import static org.mockito.Mockito.when;
 public class ApiConnectorTest {
     private static final byte[] SIGNING_KEY = "secret".getBytes(UTF_8);
     private static final String ORDER_SERVER_API_ORDER = "order/server/api/v2/order";
-    private static final String ORDER_SERVER_API_EVENTS_RESULTS_EVENT = "order/server/api/events/results/event";
-    private static final String ORDER_SERVER_API_V2_EVENTS_RESULTS_EVENT = "order/server/api/v2/events/results/event";
+    private static final String ORDER_SERVER_API_EVENTS_RESULTS_EVENT = "order/server/api/v2/events/results/event";
     private static final String ACTIVE = "Active";
     private static final String INACTIVE = "InActive";
-    private static final String SIGNATURE_V2 = "e383df9de576878e64c8f66ddf6bb5d09a6cc931b7b9fbc2b4da897c3988648b43eb9c32086baca35bf58f0894b68f4cc179cb0a089ade0f7f67fb14b983a911";
 
     @Mock
     private UnirestJSONTemplate jsonTemplate;
@@ -132,21 +125,6 @@ public class ApiConnectorTest {
     }
 
     @Test
-    public void testGetAnnouncementDataV2_HappyFlow() throws Exception {
-        ApiNotification apiNotification = new ApiNotificationBuilder().withSignature(SIGNATURE_V2).build();
-
-        when(jsonTemplate.get(ORDER_SERVER_API_V2_EVENTS_RESULTS_EVENT, apiNotification.getAuthentication())).thenReturn(prepareMerchantOrderStatusResponseV2());
-
-        MerchantOrderStatusResponseV2 merchantOrderStatusResponse = classUnderTest.getAnnouncementDataV2(apiNotification);
-
-        assertThat(merchantOrderStatusResponse.moreOrderResultsAvailable(), is(false));
-        assertThat(merchantOrderStatusResponse.getOrderResults().size(), is(2));
-
-        assertFirstMerchantOrderResultV2(merchantOrderStatusResponse.getOrderResults().get(0));
-        assertSecondMerchantOrderResultV2(merchantOrderStatusResponse.getOrderResults().get(1));
-    }
-
-    @Test
     public void testRetrievePaymentBrandOk() throws Exception {
         when(jsonTemplate.get("order/server/api/payment-brands", "accessToken")).thenReturn(createPaymentBrandResponse());
 
@@ -176,32 +154,6 @@ public class ApiConnectorTest {
         assertThat(actual.getPaidAmount().getAmountInCents(), is(0L));
         assertThat(actual.getTotalAmount().getCurrency(), is(EUR));
         assertThat(actual.getTotalAmount().getAmountInCents(), is(599L));
-    }
-
-    private void assertSecondMerchantOrderResult(MerchantOrderResult actual) {
-        assertThat(actual.getPointOfInteractionId(), is(1));
-        assertThat(actual.getMerchantOrderId(), is("MYSHOP0002"));
-        assertThat(actual.getOmnikassaOrderId(), is("e516e630-9713-4cfa-ae88-c5fbc4b06744"));
-        assertThat(actual.getErrorCode(), is(""));
-        assertThat(actual.getOrderStatus(), is("COMPLETED"));
-        assertThat(actual.getOrderStatusDateTime(), is(stringToCalendar("2016-07-28T13:58:50.205+02:00")));
-        assertThat(actual.getPaidAmount().getCurrency(), is(EUR));
-        assertThat(actual.getPaidAmount().getAmountInCents(), is(599L));
-        assertThat(actual.getTotalAmount().getCurrency(), is(EUR));
-        assertThat(actual.getTotalAmount().getAmountInCents(), is(599L));
-    }
-
-    private void assertFirstMerchantOrderResultV2(MerchantOrderResultV2 actual) {
-        assertThat(actual.getPointOfInteractionId(), is(1));
-        assertThat(actual.getMerchantOrderId(), is("MYSHOP0001"));
-        assertThat(actual.getOmnikassaOrderId(), is("aec58605-edcf-4886-b12d-594a8a8eea60"));
-        assertThat(actual.getErrorCode(), is(""));
-        assertThat(actual.getOrderStatus(), is("CANCELLED"));
-        assertThat(actual.getOrderStatusDateTime(), is(stringToCalendar("2016-07-28T12:51:15.574+02:00")));
-        assertThat(actual.getPaidAmount().getCurrency(), is(EUR));
-        assertThat(actual.getPaidAmount().getAmountInCents(), is(0L));
-        assertThat(actual.getTotalAmount().getCurrency(), is(EUR));
-        assertThat(actual.getTotalAmount().getAmountInCents(), is(599L));
         assertThat(actual.getTransactionInfo().get(0).getId(), is("1"));
         assertThat(actual.getTransactionInfo().get(0).getPaymentBrand(), is(PaymentBrand.IDEAL));
         assertThat(actual.getTransactionInfo().get(0).getType(), is(TransactionType.PAYMENT));
@@ -214,7 +166,7 @@ public class ApiConnectorTest {
         assertThat(actual.getTransactionInfo().get(0).getLastUpdateTime(), is("2016-07-28T12:51:15.574+02:00"));
     }
 
-    private void assertSecondMerchantOrderResultV2(MerchantOrderResultV2 actual) {
+    private void assertSecondMerchantOrderResult(MerchantOrderResult actual) {
         assertThat(actual.getPointOfInteractionId(), is(1));
         assertThat(actual.getMerchantOrderId(), is("MYSHOP0002"));
         assertThat(actual.getOmnikassaOrderId(), is("e516e630-9713-4cfa-ae88-c5fbc4b06744"));
@@ -246,15 +198,6 @@ public class ApiConnectorTest {
         classUnderTest.getAnnouncementData(apiNotification);
     }
 
-    @Test(expected = IllegalSignatureException.class)
-    public void testGetAnnouncementDataV2_InvalidSignature() throws Exception {
-        ApiNotification apiNotification = new ApiNotificationBuilder().build();
-
-        when(jsonTemplate.get(ORDER_SERVER_API_V2_EVENTS_RESULTS_EVENT, apiNotification.getAuthentication())).thenReturn(prepareMerchantOrderStatusResponseV2InvalidSignature());
-
-        classUnderTest.getAnnouncementDataV2(apiNotification);
-    }
-
     @Test(expected = RabobankSdkException.class)
     public void testGetAnnouncementData_UniRestException() throws Exception {
         ApiNotification apiNotification = new ApiNotificationBuilder().build();
@@ -262,15 +205,6 @@ public class ApiConnectorTest {
         when(jsonTemplate.get(ORDER_SERVER_API_EVENTS_RESULTS_EVENT, apiNotification.getAuthentication())).thenThrow(new UnirestException("UniREST test"));
 
         classUnderTest.getAnnouncementData(apiNotification);
-    }
-
-    @Test(expected = RabobankSdkException.class)
-    public void testGetAnnouncementDataV2_UniRestException() throws Exception {
-        ApiNotification apiNotification = new ApiNotificationBuilder().build();
-
-        when(jsonTemplate.get(ORDER_SERVER_API_V2_EVENTS_RESULTS_EVENT, apiNotification.getAuthentication())).thenThrow(new UnirestException("UniREST test"));
-
-        classUnderTest.getAnnouncementDataV2(apiNotification);
     }
 
     @Test(expected = IllegalApiResponseException.class)
@@ -282,15 +216,6 @@ public class ApiConnectorTest {
         classUnderTest.getAnnouncementData(apiNotification);
     }
 
-    @Test(expected = IllegalApiResponseException.class)
-    public void testGetAnnouncementDataV2_ApiReturnsError() throws Exception {
-        ApiNotification apiNotification = new ApiNotificationBuilder().build();
-
-        when(jsonTemplate.get(ORDER_SERVER_API_V2_EVENTS_RESULTS_EVENT, apiNotification.getAuthentication())).thenReturn(prepareErrorResponse());
-
-        classUnderTest.getAnnouncementDataV2(apiNotification);
-    }
-
     @Test(expected = InvalidAccessTokenException.class)
     public void testGetAnnouncementData_ApiReturnsAuthenticationError() throws Exception {
         ApiNotification apiNotification = new ApiNotificationBuilder().build();
@@ -298,15 +223,6 @@ public class ApiConnectorTest {
         when(jsonTemplate.get(ORDER_SERVER_API_EVENTS_RESULTS_EVENT, apiNotification.getAuthentication())).thenReturn(prepareAuthenticationErrorResponse());
 
         classUnderTest.getAnnouncementData(apiNotification);
-    }
-
-    @Test(expected = InvalidAccessTokenException.class)
-    public void testGetAnnouncementDataV2_ApiReturnsAuthenticationError() throws Exception {
-        ApiNotification apiNotification = new ApiNotificationBuilder().build();
-
-        when(jsonTemplate.get(ORDER_SERVER_API_V2_EVENTS_RESULTS_EVENT, apiNotification.getAuthentication())).thenReturn(prepareAuthenticationErrorResponse());
-
-        classUnderTest.getAnnouncementDataV2(apiNotification);
     }
 
     @Test
@@ -362,16 +278,8 @@ public class ApiConnectorTest {
         return new MerchantOrderStatusResponseBuilder().withSignature("").buildJsonObject();
     }
 
-    private JSONObject prepareMerchantOrderStatusResponseV2InvalidSignature() {
-        return new MerchantOrderStatusResponseV2Builder().withSignature("").buildJsonObject();
-    }
-
     private JSONObject prepareMerchantOrderStatusResponse() {
         return new MerchantOrderStatusResponseBuilder().buildJsonObject();
-    }
-
-    private JSONObject prepareMerchantOrderStatusResponseV2() {
-        return new MerchantOrderStatusResponseV2Builder().buildJsonObject();
     }
 
     private JSONObject prepareMerchantOrderResponse() {

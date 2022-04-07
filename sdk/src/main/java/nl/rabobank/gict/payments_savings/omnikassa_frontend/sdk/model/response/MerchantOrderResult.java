@@ -3,9 +3,12 @@ package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.Money;
 import org.json.JSONObject;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.utils.CalendarUtils.stringToCalendar;
 
@@ -21,6 +24,7 @@ public final class MerchantOrderResult {
     private final String orderStatusDateTime;
     private final Money paidAmount;
     private final Money totalAmount;
+    private final List<TransactionInfo> transactionInfo;
 
     MerchantOrderResult(JSONObject jsonObject) {
         this.pointOfInteractionId = jsonObject.getInt("poiId");
@@ -31,7 +35,11 @@ public final class MerchantOrderResult {
         this.errorCode = jsonObject.getString("errorCode");
         this.paidAmount = Money.fromJson(jsonObject.getJSONObject("paidAmount"));
         this.totalAmount = Money.fromJson(jsonObject.getJSONObject("totalAmount"));
+        this.transactionInfo = StreamSupport.stream(jsonObject.getJSONArray("transactions").spliterator(), false)
+                                            .map((transactionJsonObject) -> new TransactionInfo((JSONObject) transactionJsonObject))
+                                            .collect(Collectors.toList());
     }
+
 
     public int getPointOfInteractionId() {
         return pointOfInteractionId;
@@ -65,18 +73,24 @@ public final class MerchantOrderResult {
         return totalAmount;
     }
 
+    public List<TransactionInfo> getTransactionInfo() {
+        return transactionInfo;
+    }
+
     public List<String> getSignatureData() {
-        return Arrays.asList(
-                merchantOrderId,
-                omnikassaOrderId,
-                String.valueOf(pointOfInteractionId),
-                orderStatus,
-                orderStatusDateTime,
-                errorCode,
-                paidAmount.getCurrency().name(),
-                String.valueOf(paidAmount.getAmountInCents()),
-                totalAmount.getCurrency().name(),
-                String.valueOf(totalAmount.getAmountInCents()));
+        List<String> signatureData = new ArrayList<>();
+        signatureData.add(merchantOrderId);
+        signatureData.add(omnikassaOrderId);
+        signatureData.add(String.valueOf(pointOfInteractionId));
+        signatureData.add(orderStatus);
+        signatureData.add(orderStatusDateTime);
+        signatureData.add(errorCode);
+        signatureData.add(paidAmount.getCurrency().name());
+        signatureData.add(String.valueOf(paidAmount.getAmountInCents()));
+        signatureData.add(totalAmount.getCurrency().name());
+        signatureData.add(String.valueOf(totalAmount.getAmountInCents()));
+        signatureData.addAll(transactionInfo.stream().flatMap(t -> t.getSignatureData().stream()).collect(Collectors.toList()));
+        return Collections.unmodifiableList(signatureData);
     }
 
 }
