@@ -1,6 +1,5 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response;
 
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.Money;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.Currency;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.PaymentBrand;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.TransactionStatus;
@@ -21,6 +20,13 @@ public class MerchantOrderResultTest {
     public void getSignatureData_Should_ReturnCorrectSignatureData() {
         String expectedSignatureData = "SHOP1,ORDER1,1,COMPLETED,2000-01-01T00:00:00.000-0200,NONE,EUR,100,EUR,100,1,IDEAL,PAYMENT,SUCCESS,EUR,100,EUR,100,2016-07-28T12:51:15.574+02:00,2016-07-28T12:51:15.574+02:00";
         String actualSignatureData = StringUtils.join(getMerchantOrderResult().getSignatureData(), ",");
+        assertEquals(expectedSignatureData, actualSignatureData);
+    }
+
+    @Test
+    public void getSignatureDataWithoutTransactions_Should_ReturnCorrectSignatureData() {
+        String expectedSignatureData = "SHOP1,ORDER1,1,COMPLETED,2000-01-01T00:00:00.000-0200,NONE,EUR,100,EUR,100";
+        String actualSignatureData = StringUtils.join(getMerchantOrderResultWithoutTransactions().getSignatureData(), ",");
         assertEquals(expectedSignatureData, actualSignatureData);
     }
 
@@ -45,6 +51,19 @@ public class MerchantOrderResultTest {
         object.put("paidAmount", getJsonMoney(Currency.EUR, 100));
         object.put("totalAmount", getJsonMoney(Currency.EUR, 100));
         object.put("transactions", new JSONArray(Arrays.asList(transactionObject)));
+        return new MerchantOrderResult(object);
+    }
+
+    private MerchantOrderResult getMerchantOrderResultWithoutTransactions() {
+        JSONObject object = new JSONObject();
+        object.put("poiId", 1);
+        object.put("merchantOrderId", "SHOP1");
+        object.put("omnikassaOrderId", "ORDER1");
+        object.put("orderStatus", "COMPLETED");
+        object.put("errorCode", "NONE");
+        object.put("orderStatusDateTime", "2000-01-01T00:00:00.000-0200");
+        object.put("paidAmount", getJsonMoney(Currency.EUR, 100));
+        object.put("totalAmount", getJsonMoney(Currency.EUR, 100));
         return new MerchantOrderResult(object);
     }
 

@@ -35,9 +35,13 @@ public final class MerchantOrderResult {
         this.errorCode = jsonObject.getString("errorCode");
         this.paidAmount = Money.fromJson(jsonObject.getJSONObject("paidAmount"));
         this.totalAmount = Money.fromJson(jsonObject.getJSONObject("totalAmount"));
-        this.transactionInfo = StreamSupport.stream(jsonObject.getJSONArray("transactions").spliterator(), false)
-                                            .map((transactionJsonObject) -> new TransactionInfo((JSONObject) transactionJsonObject))
-                                            .collect(Collectors.toList());
+        List<TransactionInfo> transactions = new ArrayList<>();
+        if(jsonObject.has("transactions")) {
+            transactions = StreamSupport.stream(jsonObject.getJSONArray("transactions").spliterator(), false)
+                                                .map((transactionJsonObject) -> new TransactionInfo((JSONObject) transactionJsonObject))
+                                                .collect(Collectors.toList());
+        }
+        this.transactionInfo = Collections.unmodifiableList(transactions);
     }
 
 

@@ -26,6 +26,7 @@ public abstract class SignedResponse extends Signable {
      */
     public void validateSignature(byte[] signingKey) throws RabobankSdkException {
         String calculatedSignature = calculateSignature(getSignatureData(), signingKey);
+        String signature = getSignature();
         if (!calculatedSignature.equals(getSignature())) {
             throw new IllegalSignatureException();
         }

@@ -148,7 +148,7 @@ public class ApiConnectorTest {
         assertThat(actual.getMerchantOrderId(), is("MYSHOP0001"));
         assertThat(actual.getOmnikassaOrderId(), is("aec58605-edcf-4886-b12d-594a8a8eea60"));
         assertThat(actual.getErrorCode(), is(""));
-        assertThat(actual.getOrderStatus(), is("CANCELLED"));
+        assertThat(actual.getOrderStatus(), is("FAILURE"));
         assertThat(actual.getOrderStatusDateTime(), is(stringToCalendar("2016-07-28T12:51:15.574+02:00")));
         assertThat(actual.getPaidAmount().getCurrency(), is(EUR));
         assertThat(actual.getPaidAmount().getAmountInCents(), is(0L));

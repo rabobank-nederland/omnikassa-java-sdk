@@ -10,6 +10,9 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.Tran
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * this class contains details about a transaction, these details can be used to identify specific transaction within the order.
+ */
 public final class TransactionInfo {
 
     private final String id;
