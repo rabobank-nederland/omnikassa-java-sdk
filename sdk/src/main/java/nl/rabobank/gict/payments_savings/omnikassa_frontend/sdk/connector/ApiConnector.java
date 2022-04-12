@@ -66,7 +66,7 @@ public class ApiConnector {
 
             @Override
             JSONObject fetch() throws UnirestException {
-                return jsonTemplate.get("order/server/api/events/results/" + apiNotification.getEventName(),
+                return jsonTemplate.get("order/server/api/v2/events/results/" + apiNotification.getEventName(),
                                         apiNotification.getAuthentication());
             }
 
