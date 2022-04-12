@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.Spliterator;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -37,7 +38,7 @@ public final class MerchantOrderResult {
         this.totalAmount = Money.fromJson(jsonObject.getJSONObject("totalAmount"));
         List<TransactionInfo> transactions = new ArrayList<>();
         if(jsonObject.has("transactions")) {
-            transactions = StreamSupport.stream(jsonObject.getJSONArray("transactions").spliterator(), false)
+            transactions = StreamSupport.stream(() -> jsonObject.getJSONArray("transactions").spliterator(), Spliterator.ORDERED, false)
                                                 .map((transactionJsonObject) -> new TransactionInfo((JSONObject) transactionJsonObject))
                                                 .collect(Collectors.toList());
         }
