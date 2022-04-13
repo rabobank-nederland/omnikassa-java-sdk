@@ -1,16 +1,10 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response;
 
-import org.json.JSONObject;
+
+import kong.unirest.json.JSONObject;
 
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.Money;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.PaymentBrand;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.TransactionStatus;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.VatCategory;
 
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
 /**

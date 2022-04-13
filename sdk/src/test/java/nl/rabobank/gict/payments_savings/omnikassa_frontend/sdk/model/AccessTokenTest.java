@@ -1,8 +1,8 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model;
 
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.utils.CalendarUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
+import kong.unirest.json.JSONException;
+import kong.unirest.json.JSONObject;
 import org.junit.Test;
 
 import java.util.Calendar;

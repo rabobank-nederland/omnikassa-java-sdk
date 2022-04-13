@@ -1,15 +1,16 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.order_details;
 
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.Money;
-import org.json.JSONObject;
+import kong.unirest.json.JSONObject;
 import org.junit.Test;
-import org.skyscreamer.jsonassert.JSONAssert;
+
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.Money;
 
 import java.math.BigDecimal;
 
 import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.Currency.EUR;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 
 public class MoneyTest {
 
@@ -45,7 +46,7 @@ public class MoneyTest {
     public void asJson_Should_ReturnCorrectJsonObject() {
         Money money = Money.fromEuros(EUR, new BigDecimal("1.00"));
 
-        JSONAssert.assertEquals(getValidMoneyJson(), money.asJson(), true);
+        assertEquals(getValidMoneyJson(), money.asJson());
     }
 
     private JSONObject getValidMoneyJson() {

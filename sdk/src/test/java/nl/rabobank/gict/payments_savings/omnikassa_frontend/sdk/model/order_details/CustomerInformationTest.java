@@ -1,7 +1,7 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.order_details;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
-import org.json.JSONObject;
+import kong.unirest.json.JSONObject;
 import org.junit.Test;
 
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.JsonFileConverter;
@@ -9,11 +9,10 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.JsonFileCo
 import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.Gender.M;
 import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.order_details.CustomerInformationFactory.customerInformation;
 import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.order_details.CustomerInformationFactory.customerInformationFull;
-import static org.apache.commons.lang3.StringUtils.join;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 public class CustomerInformationTest {
     private final CustomerInformation customerInformation = customerInformation().build();
@@ -44,8 +43,14 @@ public class CustomerInformationTest {
     public void asJson_Should_ReturnCorrectJsonObject() {
         JSONObject actualJson = customerInformation.asJson();
         JSONObject expectedJson = new JSONObject();
+        expectedJson.put("emailAddress",(String)null);
+        expectedJson.put("dateOfBirth",(String)null);
+        expectedJson.put("gender",(String)null);
+        expectedJson.put("initials",(String)null);
+        expectedJson.put("telephoneNumber",(String)null);
+        expectedJson.put("fullName",(String)null);
 
-        assertEquals(actualJson, expectedJson, true);
+        assertEquals(actualJson, expectedJson);
     }
 
     @Test
@@ -53,7 +58,7 @@ public class CustomerInformationTest {
         JSONObject actualJson = customerInformationFull.asJson();
         JSONObject expectedJson = converter.convert("customer_information_full.json");
 
-        assertEquals(actualJson, expectedJson, true);
+        assertEquals(actualJson, expectedJson);
     }
 
     @Test

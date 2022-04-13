@@ -1,8 +1,8 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request;
 
 import org.joda.time.DateTime;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import kong.unirest.json.JSONArray;
+import kong.unirest.json.JSONObject;
 
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.JsonConvertible;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.MerchantOrder;

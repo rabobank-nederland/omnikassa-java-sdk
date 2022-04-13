@@ -4,5 +4,8 @@
   "street": "Kalverstraat 1",
   "countryCode": "NL",
   "firstName": "Jan",
-  "city": "Amsterdam"
+  "city": "Amsterdam",
+  "middleName": null,
+  "houseNumber": null,
+  "houseNumberAddition": null
 }

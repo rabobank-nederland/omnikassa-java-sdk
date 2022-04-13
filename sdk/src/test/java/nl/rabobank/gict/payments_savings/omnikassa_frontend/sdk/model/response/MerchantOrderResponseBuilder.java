@@ -1,7 +1,7 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response;
 
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.TestBuilder;
-import org.json.JSONObject;
+import kong.unirest.json.JSONObject;
 
 public final class MerchantOrderResponseBuilder implements TestBuilder<MerchantOrderResponse> {
     private String redirectUrl = "http://returnAdress";

@@ -1,6 +1,6 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions;
 
-import org.json.JSONObject;
+import kong.unirest.json.JSONObject;
 import org.junit.Test;
 
 import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.IllegalApiResponseException.ERROR_CODE_FIELD_NAME;
