@@ -7,6 +7,7 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.Rabob
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.AccessTokenBuilder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.MerchantOrderTestFactory;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.Signable;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.InitiateRefundRequest;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.MerchantOrderRequest;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.ApiNotification;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.ApiNotificationBuilder;
@@ -18,6 +19,10 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.M
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponseBuilder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.PaymentBrandsResponse;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.RefundDetailsResponse;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.TransactionRefundableDetailsResponse;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.utils.RefundTestFactory;
+
 import org.apache.commons.codec.binary.Base64;
 import org.junit.Before;
 import org.junit.Test;
@@ -155,6 +160,41 @@ public class EndpointTest {
         endpoint.retrieveAnnouncement(apiNotification);
     }
 
+    @Test(expected = Test.None.class)
+    public void initiateRefundTransaction_HappyFlow() throws RabobankSdkException {
+        RefundDetailsResponse refundDetailsResponse = prepareRefundDetailsResponse();
+
+        when(apiConnector.postRefundRequest(any(), any(), any())).thenReturn(refundDetailsResponse);
+
+        RefundDetailsResponse response = endpoint.initiateRefundTransaction(prepareInitiateRefundRequest(), UUID.randomUUID());
+
+        assertEquals(refundDetailsResponse.getRefundId(), response.getRefundId());
+        assertEquals(refundDetailsResponse.getRefundTransactionId(), response.getRefundTransactionId());
+    }
+
+    @Test(expected = Test.None.class)
+    public void retrieveRefundTransaction_HappyFlow() throws RabobankSdkException {
+        RefundDetailsResponse refundDetailsResponse = prepareRefundDetailsResponse();
+
+        when(apiConnector.getRefundRequest(any(), any(), any())).thenReturn(refundDetailsResponse);
+
+        RefundDetailsResponse response = endpoint.fetchRefundTransaction(UUID.randomUUID(),UUID.randomUUID());
+
+        assertEquals(refundDetailsResponse.getRefundId(), response.getRefundId());
+        assertEquals(refundDetailsResponse.getRefundTransactionId(), response.getRefundTransactionId());
+    }
+
+    @Test(expected = Test.None.class)
+    public void retrieveRefundableTransactionDetails_HappyFlow() throws RabobankSdkException {
+        TransactionRefundableDetailsResponse refundableDetailsResponse = prepareRefundableDetailsResponse();
+
+        when(apiConnector.getRefundableDetails(any(),any())).thenReturn(refundableDetailsResponse);
+
+        TransactionRefundableDetailsResponse response = endpoint.fetchRefundableTransactionDetails(UUID.randomUUID(),UUID.randomUUID());
+
+        assertEquals(refundableDetailsResponse.getTransactionId(), response.getTransactionId());
+    }
+
     @Test
     public void createInstanceOldStyle() {
         Endpoint oldStyle = Endpoint.createInstance("http://localhost", new byte[]{1, 2, 3}, tokenProvider);
@@ -257,4 +297,17 @@ public class EndpointTest {
                 .withSignature("b3aca76859ff5ede10543b5c116446ed79ae0d815b8d063ca40dd5dfed79f49ca57bc87fbaafb7bb2759512377ba9b177fe75c8f83614fe8b3cc46821177bdce")
                 .build();
     }
+
+    private RefundDetailsResponse prepareRefundDetailsResponse() {
+        return RefundTestFactory.defaultRefundDetailsResponse();
+    }
+
+    private TransactionRefundableDetailsResponse prepareRefundableDetailsResponse() {
+        return RefundTestFactory.defaultTransactionRefundableDetailsResponse();
+    }
+
+    private InitiateRefundRequest prepareInitiateRefundRequest() {
+        return RefundTestFactory.defaultInitiateRefundRequest();
+    }
+
 }

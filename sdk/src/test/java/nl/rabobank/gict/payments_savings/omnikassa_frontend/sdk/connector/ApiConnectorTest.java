@@ -19,6 +19,7 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.MerchantOr
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.PaymentBrand;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.TransactionStatus;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.TransactionType;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.InitiateRefundRequest;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.MerchantOrderRequest;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.ApiNotification;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.ApiNotificationBuilder;
@@ -28,6 +29,9 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.M
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponseBuilder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.PaymentBrandsResponse;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.RefundDetailsResponse;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.TransactionRefundableDetailsResponse;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.utils.RefundTestFactory;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -38,6 +42,7 @@ import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enu
 import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.utils.CalendarUtils.calendarToString;
 import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.utils.CalendarUtils.stringToCalendar;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
@@ -47,6 +52,7 @@ public class ApiConnectorTest {
     private static final byte[] SIGNING_KEY = "secret".getBytes(UTF_8);
     private static final String ORDER_SERVER_API_ORDER = "order/server/api/v2/order";
     private static final String ORDER_SERVER_API_EVENTS_RESULTS_EVENT = "order/server/api/v2/events/results/event";
+    private static final String API_REFUND_ENDPOINT = "order/server/api/v2/refund/transactions/";
     private static final String ACTIVE = "Active";
     private static final String INACTIVE = "InActive";
 
@@ -107,6 +113,40 @@ public class ApiConnectorTest {
 
     private static MerchantOrderRequest createMerchantOrderRequest() throws RabobankSdkException {
         return new MerchantOrderRequest(MerchantOrderTestFactory.any());
+    }
+
+    @Test
+    public void testPostRefundRequest_HappyFlow() throws Exception {
+        InitiateRefundRequest initiateRefundRequest = RefundTestFactory.defaultInitiateRefundRequest();
+        UUID transaction = UUID.randomUUID();
+        when(jsonTemplate.post(API_REFUND_ENDPOINT+transaction+"/refunds", initiateRefundRequest, "token")).thenReturn(RefundTestFactory.defaultRefundDetailsResponseJsonObject());
+
+        RefundDetailsResponse refundDetailsResponse = classUnderTest.postRefundRequest(initiateRefundRequest, transaction, "token");
+
+        assertEquals(UUID.fromString("25da863a-60a5-475d-ae47-c0e4bd1bec31"), refundDetailsResponse.getRefundId());
+        assertEquals(UUID.fromString("25da863a-60a5-475d-ae47-c0e4bd1bec32"), refundDetailsResponse.getRefundTransactionId());
+    }
+
+    @Test
+    public void testGetRefundRequest_HappyFlow() throws Exception {
+        UUID transaction = UUID.randomUUID();
+        UUID refund = UUID.randomUUID();
+        when(jsonTemplate.get(API_REFUND_ENDPOINT+transaction+"/refunds/"+refund, "token")).thenReturn(RefundTestFactory.defaultRefundDetailsResponseJsonObject());
+
+        RefundDetailsResponse refundDetailsResponse = classUnderTest.getRefundRequest(transaction, refund, "token");
+
+        assertEquals(UUID.fromString("25da863a-60a5-475d-ae47-c0e4bd1bec31"), refundDetailsResponse.getRefundId());
+        assertEquals(UUID.fromString("25da863a-60a5-475d-ae47-c0e4bd1bec32"), refundDetailsResponse.getRefundTransactionId());
+    }
+
+    @Test
+    public void testGetRefundableDetails_HappyFlow() throws Exception {
+        UUID transaction = UUID.randomUUID();
+        when(jsonTemplate.get(API_REFUND_ENDPOINT+transaction+"/refundable-details", "token")).thenReturn(RefundTestFactory.defaultTransactionRefundableDetailsResponseJsonObject());
+
+        TransactionRefundableDetailsResponse transactionRefundableDetailsResponse = classUnderTest.getRefundableDetails(transaction, "token");
+
+        assertEquals(UUID.fromString("25da863a-60a5-475d-ae47-c0e4bd1bec31"), transactionRefundableDetailsResponse.getTransactionId());
     }
 
     @Test
