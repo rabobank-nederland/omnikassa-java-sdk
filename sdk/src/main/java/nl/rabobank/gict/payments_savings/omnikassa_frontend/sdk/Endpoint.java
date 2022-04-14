@@ -134,7 +134,12 @@ public final class Endpoint {
      */
     public RefundDetailsResponse initiateRefundTransaction(InitiateRefundRequest refundRequest, UUID transactionId)
             throws RabobankSdkException {
-        return connector.postRefundRequest(refundRequest, transactionId, tokenProvider.getAccessToken());
+        try {
+            return connector.postRefundRequest(refundRequest, transactionId, tokenProvider.getAccessToken());
+        } catch (InvalidAccessTokenException e) {
+            logAndGetNewToken(e);
+            return connector.postRefundRequest(refundRequest, transactionId, tokenProvider.getAccessToken());
+        }
     }
 
     /**
@@ -147,7 +152,12 @@ public final class Endpoint {
      */
     public RefundDetailsResponse fetchRefundTransaction(UUID transactionId, UUID refundId)
             throws RabobankSdkException {
-        return connector.getRefundRequest(transactionId, refundId, tokenProvider.getAccessToken());
+        try {
+            return connector.getRefundRequest(transactionId, refundId, tokenProvider.getAccessToken());
+        } catch (InvalidAccessTokenException e) {
+            logAndGetNewToken(e);
+            return connector.getRefundRequest(transactionId, refundId, tokenProvider.getAccessToken());
+        }
     }
 
     /**
@@ -160,7 +170,12 @@ public final class Endpoint {
      */
     public TransactionRefundableDetailsResponse fetchRefundableTransactionDetails(UUID transactionId, UUID refundId)
             throws RabobankSdkException {
-        return connector.getRefundableDetails(transactionId, tokenProvider.getAccessToken());
+        try {
+            return connector.getRefundableDetails(transactionId, tokenProvider.getAccessToken());
+        } catch (InvalidAccessTokenException e) {
+            logAndGetNewToken(e);
+            return connector.getRefundableDetails(transactionId, tokenProvider.getAccessToken());
+        }
     }
 
 
