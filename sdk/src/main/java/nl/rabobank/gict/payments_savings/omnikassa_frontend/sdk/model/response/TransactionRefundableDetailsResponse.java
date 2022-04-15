@@ -40,12 +40,4 @@ public class TransactionRefundableDetailsResponse {
         return expiryDatetime;
     }
 
-    public List<String> getSignatureData() {
-        List<String> signatureData = new ArrayList<>();
-        signatureData.add(String.valueOf(transactionId));
-        signatureData.add(refundableMoney.getCurrency().name());
-        signatureData.add(String.valueOf(refundableMoney.getAmountInCents()));
-        signatureData.add(expiryDatetime);
-        return Collections.unmodifiableList(signatureData);
-    }
 }

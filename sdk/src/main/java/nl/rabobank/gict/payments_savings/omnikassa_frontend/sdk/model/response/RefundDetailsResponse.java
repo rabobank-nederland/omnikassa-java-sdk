@@ -103,19 +103,4 @@ public class RefundDetailsResponse {
         return transactionId;
     }
 
-    public List<String> getSignatureData(){
-        List<String> signatureData = new ArrayList<>();
-        signatureData.add(String.valueOf(refundId));
-        signatureData.add(String.valueOf(refundTransactionId));
-        signatureData.add(createdAt.toString());
-        signatureData.add(updatedAt.toString());
-        signatureData.add(refundMoney.getCurrency().name());
-        signatureData.add(String.valueOf(refundMoney.getAmountInCents()));
-        signatureData.add(vatCategory.getValue());
-        signatureData.add(paymentBrand.toString());
-        signatureData.add(status.toString());
-        signatureData.add(description);
-        signatureData.add(String.valueOf(transactionId));
-        return Collections.unmodifiableList(signatureData);
-    }
 }
