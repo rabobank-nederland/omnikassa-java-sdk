@@ -164,9 +164,9 @@ public class EndpointTest {
     public void initiateRefundTransaction_HappyFlow() throws RabobankSdkException {
         RefundDetailsResponse refundDetailsResponse = prepareRefundDetailsResponse();
 
-        when(apiConnector.postRefundRequest(any(), any(), any())).thenReturn(refundDetailsResponse);
+        when(apiConnector.postRefundRequest(any(), any(), any(), any())).thenReturn(refundDetailsResponse);
 
-        RefundDetailsResponse response = endpoint.initiateRefundTransaction(prepareInitiateRefundRequest(), UUID.randomUUID());
+        RefundDetailsResponse response = endpoint.initiateRefundTransaction(prepareInitiateRefundRequest(), UUID.randomUUID(), UUID.randomUUID());
 
         assertEquals(refundDetailsResponse.getRefundId(), response.getRefundId());
         assertEquals(refundDetailsResponse.getRefundTransactionId(), response.getRefundTransactionId());
@@ -190,7 +190,7 @@ public class EndpointTest {
 
         when(apiConnector.getRefundableDetails(any(),any())).thenReturn(refundableDetailsResponse);
 
-        TransactionRefundableDetailsResponse response = endpoint.fetchRefundableTransactionDetails(UUID.randomUUID(),UUID.randomUUID());
+        TransactionRefundableDetailsResponse response = endpoint.fetchRefundableTransactionDetails(UUID.randomUUID());
 
         assertEquals(refundableDetailsResponse.getTransactionId(), response.getTransactionId());
     }

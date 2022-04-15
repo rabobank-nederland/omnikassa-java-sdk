@@ -129,16 +129,17 @@ public final class Endpoint {
      *
      * @param refundRequest The request for refund, the object can be constructed via Jackson or with the direct constructor
      * @param transactionId The transactionId of transaction for which the refund request is sent
+     * @param requestId The requestId, unique id of refund request
      * @return The response contains refund details, which can be used to update the refund with the latest status.
      * @throws RabobankSdkException when problems occurred during the request, e.g. server not reachable, invalid signature, invalid authentication etc.
      */
-    public RefundDetailsResponse initiateRefundTransaction(InitiateRefundRequest refundRequest, UUID transactionId)
+    public RefundDetailsResponse initiateRefundTransaction(InitiateRefundRequest refundRequest, UUID transactionId, UUID requestId)
             throws RabobankSdkException {
         try {
-            return connector.postRefundRequest(refundRequest, transactionId, tokenProvider.getAccessToken());
+            return connector.postRefundRequest(refundRequest, transactionId, requestId, tokenProvider.getAccessToken());
         } catch (InvalidAccessTokenException e) {
             logAndGetNewToken(e);
-            return connector.postRefundRequest(refundRequest, transactionId, tokenProvider.getAccessToken());
+            return connector.postRefundRequest(refundRequest, transactionId, requestId, tokenProvider.getAccessToken());
         }
     }
 
@@ -163,12 +164,11 @@ public final class Endpoint {
     /**
      * This function will get details for specific refund within transaction.
      *
-     * @param refundId The id of initiated refund request
      * @param transactionId The transactionId of transaction for which the refund request is sent
      * @return The response contains refund details, which can be used to update the refund with the latest status.
      * @throws RabobankSdkException when problems occurred during the request, e.g. server not reachable, invalid signature, invalid authentication etc.
      */
-    public TransactionRefundableDetailsResponse fetchRefundableTransactionDetails(UUID transactionId, UUID refundId)
+    public TransactionRefundableDetailsResponse fetchRefundableTransactionDetails(UUID transactionId)
             throws RabobankSdkException {
         try {
             return connector.getRefundableDetails(transactionId, tokenProvider.getAccessToken());

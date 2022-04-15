@@ -119,9 +119,10 @@ public class ApiConnectorTest {
     public void testPostRefundRequest_HappyFlow() throws Exception {
         InitiateRefundRequest initiateRefundRequest = RefundTestFactory.defaultInitiateRefundRequest();
         UUID transaction = UUID.randomUUID();
-        when(jsonTemplate.post(API_REFUND_ENDPOINT+transaction+"/refunds", initiateRefundRequest, "token")).thenReturn(RefundTestFactory.defaultRefundDetailsResponseJsonObject());
+        UUID requestId = UUID.randomUUID();
+        when(jsonTemplate.postWithHeader(API_REFUND_ENDPOINT+transaction+"/refunds", initiateRefundRequest, "request-id", requestId.toString(), "token")).thenReturn(RefundTestFactory.defaultRefundDetailsResponseJsonObject());
 
-        RefundDetailsResponse refundDetailsResponse = classUnderTest.postRefundRequest(initiateRefundRequest, transaction, "token");
+        RefundDetailsResponse refundDetailsResponse = classUnderTest.postRefundRequest(initiateRefundRequest, transaction, requestId, "token");
 
         assertEquals(UUID.fromString("25da863a-60a5-475d-ae47-c0e4bd1bec31"), refundDetailsResponse.getRefundId());
         assertEquals(UUID.fromString("25da863a-60a5-475d-ae47-c0e4bd1bec32"), refundDetailsResponse.getRefundTransactionId());

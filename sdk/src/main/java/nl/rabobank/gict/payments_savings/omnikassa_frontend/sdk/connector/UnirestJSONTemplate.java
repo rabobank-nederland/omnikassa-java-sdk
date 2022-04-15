@@ -30,4 +30,14 @@ class UnirestJSONTemplate {
 
         return requestBodyEntity.asJson().getBody().getObject();
     }
+
+    public JSONObject postWithHeader(String path, JsonConvertible body, String headerName, String headerValue,  String token) throws UnirestException {
+        RequestBodyEntity requestBodyEntity = Unirest.post(baseURL + "/" + path)
+                                                     .header("Content-type", "application/json")
+                                                     .header("Authorization", "Bearer " + token)
+                                                     .header(headerName, headerValue)
+                                                     .body(body.asJson());
+
+        return requestBodyEntity.asJson().getBody().getObject();
+    }
 }

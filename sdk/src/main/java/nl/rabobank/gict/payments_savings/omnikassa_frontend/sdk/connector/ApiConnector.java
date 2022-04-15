@@ -87,17 +87,18 @@ public class ApiConnector {
      * sends the InitiateRefundRequest to the Rabobank.
      * @param refundRequest containing detail of the refund
      * @param transactionId id of transaction
+     * @param requestId id of request
      * @param token access token
      * @return RefundDetailsResponse for requested refund
      * @throws RabobankSdkException when problems occurred during the request, e.g. server not reachable, invalid signature, invalid authentication etc.
      */
-    public RefundDetailsResponse postRefundRequest(final InitiateRefundRequest refundRequest, final UUID transactionId, final String token)
+    public RefundDetailsResponse postRefundRequest(final InitiateRefundRequest refundRequest, final UUID transactionId, final UUID requestId, final String token)
             throws RabobankSdkException {
         return new RequestTemplate<RefundDetailsResponse>() {
 
             @Override
             JSONObject fetch() throws UnirestException {
-                return jsonTemplate.post("order/server/api/v2/refund/transactions/"+ transactionId +"/refunds", refundRequest, token);
+                return jsonTemplate.postWithHeader("order/server/api/v2/refund/transactions/"+ transactionId +"/refunds", refundRequest,"request-id", requestId.toString(), token);
             }
 
             @Override
