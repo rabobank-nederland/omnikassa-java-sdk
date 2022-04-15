@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.Money;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.Currency;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.VatCategory;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.InitiateRefundRequest;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.RefundDetailsResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.TransactionRefundableDetailsResponse;
@@ -21,7 +22,7 @@ public class RefundTestFactory {
     }
 
     public static InitiateRefundRequest defaultInitiateRefundRequest() {
-        return new InitiateRefundRequest(Money.fromEuros(Currency.EUR, new BigDecimal(100)),"description", "1");
+        return new InitiateRefundRequest(Money.fromEuros(Currency.EUR, new BigDecimal(100)), "description", VatCategory.HIGH);
     }
 
     public static JSONObject defaultRefundDetailsResponseJsonObject() {
@@ -30,7 +31,7 @@ public class RefundTestFactory {
         jsonObject.put("refundTransactionId", "25da863a-60a5-475d-ae47-c0e4bd1bec32");
         jsonObject.put("createdAt", "2000-01-01T00:00:00.000-0200");
         jsonObject.put("updatedAt", "2000-01-01T00:00:00.000-0200");
-        jsonObject.put("refundMoney",  Money.fromEuros(Currency.EUR, new BigDecimal(100)).asJson());
+        jsonObject.put("refundMoney", Money.fromEuros(Currency.EUR, new BigDecimal(100)).asJson());
         jsonObject.put("vatCategory", "1");
         jsonObject.put("paymentBrand", "IDEAL");
         jsonObject.put("status", "COMPLETED");

@@ -3,7 +3,11 @@ package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response;
 import org.json.JSONObject;
 
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.Money;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.PaymentBrand;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.TransactionStatus;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.VatCategory;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,9 +23,9 @@ public class RefundDetailsResponse {
     private final String createdAt;
     private final String updatedAt;
     private final Money refundMoney;
-    private final String vatCategory;
-    private final String paymentBrand;
-    private final String status;
+    private final VatCategory vatCategory;
+    private final PaymentBrand paymentBrand;
+    private final TransactionStatus status;
     private final String description;
     private final UUID transactionId;
 
@@ -30,9 +34,9 @@ public class RefundDetailsResponse {
                                  String createdAt,
                                  String updatedAt,
                                  Money refundMoney,
-                                 String vatCategory,
-                                 String paymentBrand,
-                                 String status,
+                                 VatCategory vatCategory,
+                                 PaymentBrand paymentBrand,
+                                 TransactionStatus status,
                                  String description, UUID transactionId) {
         this.refundId = refundId;
         this.refundTransactionId = refundTransactionId;
@@ -52,9 +56,9 @@ public class RefundDetailsResponse {
         this.createdAt = jsonObject.getString("createdAt");
         this.updatedAt = jsonObject.getString("updatedAt");
         this.refundMoney = Money.fromJson(jsonObject.getJSONObject("refundMoney"));
-        this.vatCategory = jsonObject.getString("vatCategory");
-        this.paymentBrand = jsonObject.getString("paymentBrand");
-        this.status = jsonObject.getString("status");
+        this.vatCategory = VatCategory.valueOfCategory(jsonObject.getString("vatCategory"));
+        this.paymentBrand = PaymentBrand.valueOf(jsonObject.getString("paymentBrand"));
+        this.status = TransactionStatus.valueOf(jsonObject.getString("status"));
         this.description = jsonObject.getString("description");
         this.transactionId = UUID.fromString(jsonObject.getString("transactionId"));
     }
@@ -79,15 +83,15 @@ public class RefundDetailsResponse {
         return refundMoney;
     }
 
-    public String getVatCategory() {
+    public VatCategory getVatCategory() {
         return vatCategory;
     }
 
-    public String getPaymentBrand() {
+    public PaymentBrand getPaymentBrand() {
         return paymentBrand;
     }
 
-    public String getStatus() {
+    public TransactionStatus getStatus() {
         return status;
     }
 
@@ -103,13 +107,13 @@ public class RefundDetailsResponse {
         List<String> signatureData = new ArrayList<>();
         signatureData.add(String.valueOf(refundId));
         signatureData.add(String.valueOf(refundTransactionId));
-        signatureData.add(createdAt);
-        signatureData.add(updatedAt);
+        signatureData.add(createdAt.toString());
+        signatureData.add(updatedAt.toString());
         signatureData.add(refundMoney.getCurrency().name());
         signatureData.add(String.valueOf(refundMoney.getAmountInCents()));
-        signatureData.add(vatCategory);
-        signatureData.add(paymentBrand);
-        signatureData.add(status);
+        signatureData.add(vatCategory.getValue());
+        signatureData.add(paymentBrand.toString());
+        signatureData.add(status.toString());
         signatureData.add(description);
         signatureData.add(String.valueOf(transactionId));
         return Collections.unmodifiableList(signatureData);

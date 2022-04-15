@@ -7,6 +7,8 @@ import com.mashape.unirest.request.body.RequestBodyEntity;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.JsonConvertible;
 import org.json.JSONObject;
 
+import java.util.Map;
+
 class UnirestJSONTemplate {
     private final String baseURL;
 
@@ -31,11 +33,11 @@ class UnirestJSONTemplate {
         return requestBodyEntity.asJson().getBody().getObject();
     }
 
-    public JSONObject postWithHeader(String path, JsonConvertible body, String headerName, String headerValue,  String token) throws UnirestException {
+    public JSONObject postWithHeader(String path, JsonConvertible body, Map<String,String> headers, String token) throws UnirestException {
+        headers.put("Content-type", "application/json");
+        headers.put("Authorization", "Bearer " + token);
         RequestBodyEntity requestBodyEntity = Unirest.post(baseURL + "/" + path)
-                                                     .header("Content-type", "application/json")
-                                                     .header("Authorization", "Bearer " + token)
-                                                     .header(headerName, headerValue)
+                                                     .headers(headers)
                                                      .body(body.asJson());
 
         return requestBodyEntity.asJson().getBody().getObject();

@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-public class TransactionRefundableDetailsResponse  {
+public class TransactionRefundableDetailsResponse {
 
     private final UUID transactionId;
     private final Money refundableMoney;

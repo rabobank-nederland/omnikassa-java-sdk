@@ -34,6 +34,7 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.T
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.utils.RefundTestFactory;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.UUID;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -120,7 +121,7 @@ public class ApiConnectorTest {
         InitiateRefundRequest initiateRefundRequest = RefundTestFactory.defaultInitiateRefundRequest();
         UUID transaction = UUID.randomUUID();
         UUID requestId = UUID.randomUUID();
-        when(jsonTemplate.postWithHeader(API_REFUND_ENDPOINT+transaction+"/refunds", initiateRefundRequest, "request-id", requestId.toString(), "token")).thenReturn(RefundTestFactory.defaultRefundDetailsResponseJsonObject());
+        when(jsonTemplate.postWithHeader(API_REFUND_ENDPOINT+transaction+"/refunds", initiateRefundRequest, Collections.singletonMap("request-id", requestId.toString()), "token")).thenReturn(RefundTestFactory.defaultRefundDetailsResponseJsonObject());
 
         RefundDetailsResponse refundDetailsResponse = classUnderTest.postRefundRequest(initiateRefundRequest, transaction, requestId, "token");
 

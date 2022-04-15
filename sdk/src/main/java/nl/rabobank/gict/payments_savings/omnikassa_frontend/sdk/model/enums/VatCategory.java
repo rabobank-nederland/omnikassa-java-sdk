@@ -18,4 +18,13 @@ public enum VatCategory {
     public String getValue() {
         return value;
     }
+
+    public static VatCategory valueOfCategory(String value) {
+        for (VatCategory e : values()) {
+            if (e.value.equals(value)) {
+                return e;
+            }
+        }
+        return null;
+    }
 }
