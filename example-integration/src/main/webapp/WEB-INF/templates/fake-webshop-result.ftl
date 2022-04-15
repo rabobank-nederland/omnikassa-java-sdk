@@ -8,7 +8,7 @@
 <br/>
 
 <form METHOD="get" ACTION="/webshop/home">
-    <p><input type="submit" value="home" id="home_button"></p>
+    <p><input class="btn btn-primary" type="submit" value="home" id="home_button"></p>
 </form>
 
 </body>

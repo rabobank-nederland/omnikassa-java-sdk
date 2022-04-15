@@ -39,14 +39,14 @@
             </td>
             <td>
                 <label for="product_tax_enabled">Tax enabled:</label>
-                <input type="checkbox" name="taxEnabled" value="true">
+                <input type="checkbox" name="taxEnabled" id="product_tax_enabled" value="true">
             </td>
             <td>
                 <label for="product_quantity">Quantity:</label>
                 <input name="quantity" type="number" min="1" value="1" id="product_quantity">
             </td>
             <td>
-                <input type="submit" name="submit" value="add items" id="add_to_cart">
+                <input class="btn btn-primary" type="submit" name="submit" value="add items" id="add_to_cart">
             </td>
         </tr>
     </table>
