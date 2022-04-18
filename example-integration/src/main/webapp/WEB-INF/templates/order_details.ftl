@@ -12,11 +12,11 @@
                     <@orderMacros.inputField "${id}_birth_date" "Birth date:" "birthDate" "DD-MM-YYYY"></@orderMacros.inputField>
                     <@orderMacros.inputField "${id}_phone_number" "First name:" "phoneNumber"></@orderMacros.inputField>
                     <@orderMacros.inputField "${id}_email" "E-mail address:" "email"></@orderMacros.inputField>
-                    <@orderMacros.inputSelect "${id}_gender" "Gender:" "gender">
+                    <@orderMacros.inputSelectHorizontal "${id}_gender" "Gender:" "gender">
                         <option value="" selected="selected"></option>
                         <option value="F">Female</option>
                         <option value="M">Male</option>
-                    </@orderMacros.inputSelect>
+                    </@orderMacros.inputSelectHorizontal>
                 </@orderMacros.card>
             </div>
         </div>
@@ -41,7 +41,7 @@
         <div class="row">
             <div class="col-6">
                 <@orderMacros.card "Order details">
-                    <@orderMacros.inputSelect "payment_brand" "Payment brand:" "paymentBrand">
+                    <@orderMacros.inputSelectHorizontal "payment_brand" "Payment brand:" "paymentBrand">
                         <option value="ANY" selected="selected">Any</option>
                         <option value="IDEAL">iDEAL</option>
                         <option value="PAYPAL">PayPal</option>
@@ -53,13 +53,13 @@
                         <option value="V_PAY">V Pay</option>
                         <option value="SOFORT">Sofort</option>
                         <option value="CARDS">Cards</option>
-                    </@orderMacros.inputSelect>
+                    </@orderMacros.inputSelectHorizontal>
 
-                    <@orderMacros.inputSelect "payment_brand_force" "Payment brand force:" "paymentBrandForce">
+                    <@orderMacros.inputSelectHorizontal "payment_brand_force" "Payment brand force:" "paymentBrandForce">
                         <option value="" selected="selected"></option>
                         <option value="FORCE_ONCE">Force Once</option>
                         <option value="FORCE_ALWAYS">Force Always</option>
-                    </@orderMacros.inputSelect>
+                    </@orderMacros.inputSelectHorizontal>
 
                     <@orderMacros.inputSelectWithButton "idealIssuers" "Issuer ID:" "issuerId" "refreshIssuerId" "Refresh"
                     "/webshop/refreshIdealIssuers">

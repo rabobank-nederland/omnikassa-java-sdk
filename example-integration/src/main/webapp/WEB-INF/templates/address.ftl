@@ -11,7 +11,7 @@
 <@macros.inputField "${id}_postal_code" "Postal code:" "${id}PostalCode"></@macros.inputField>
 <@macros.inputField "${id}_city" "City:" "${id}City"></@macros.inputField>
 
-<@macros.inputSelect "${id}_country_code" "Country code:" "${id}CountryCode">
+<@macros.inputSelectHorizontal "${id}_country_code" "Country code:" "${id}CountryCode">
     <option value="AF">AF</option>
     <option value="AX">AX</option>
     <option value="AL">AL</option>
@@ -261,4 +261,4 @@
     <option value="SS">SS</option>
     <option value="SE">SE</option>
     <option value="CH">CH</option>
-</@macros.inputSelect>
+</@macros.inputSelectHorizontal>

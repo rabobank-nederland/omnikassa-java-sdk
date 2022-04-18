@@ -17,13 +17,44 @@
     </div>
 </#macro>
 
-<#macro inputSelect labelFor labelText name placeholder="">
+<#macro inputSelectHorizontal labelFor labelText name placeholder="">
     <div class="mb-3 row">
         <label for="${labelFor}" class="col-sm-4 col-form-label">${labelText}</label>
         <div class="col-sm-8">
             <select class="form-select" name="${name}" id="${labelFor}">
                 <#nested>
             </select>
+        </div>
+    </div>
+</#macro>
+
+<#macro inputSelectVertical labelFor labelText name>
+    <div class="col">
+        <div class="form-group">
+            <label for="${labelFor}">${labelText}</label>
+            <select class="form-select" name="${name}" id="${labelFor}">
+                <#nested>
+            </select>
+        </div>
+    </div>
+</#macro>
+
+<#macro inputQuantityVertical labelFor labelText name>
+    <div class="col">
+        <div class="form-group">
+            <label for="${labelFor}">${labelText}</label>
+            <input class="form-control" name="${name}" type="number" min="1" value="1" id="${labelFor}">
+        </div>
+    </div>
+</#macro>
+
+<#macro inputCheckboxVertical labelFor labelText name>
+    <div class="col">
+        <div class="form-group">
+            <label for="${labelFor}">${labelText}</label>
+            <div>
+                <input class="form-check-input" type="checkbox" name="${name}" id="${labelFor}" value="true">
+            </div>
         </div>
     </div>
 </#macro>
