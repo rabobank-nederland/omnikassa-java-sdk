@@ -17,8 +17,8 @@
 <#import "macros.ftl" as macros />
 <#include 'order_items.ftl' />
 <#include 'order_details.ftl' />
-
-<div class="container">
+<br/>
+<div class="container-fluid">
     <div class="d-grid gap-3 col-3">
         <form method="get" action="/webshop/logs">
             <@macros.submitButton "Show Logging" "show_logs" />
