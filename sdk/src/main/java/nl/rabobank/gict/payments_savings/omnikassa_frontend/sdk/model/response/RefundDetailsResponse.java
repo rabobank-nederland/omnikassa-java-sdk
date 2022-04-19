@@ -23,9 +23,9 @@ public class RefundDetailsResponse {
     private final String createdAt;
     private final String updatedAt;
     private final Money refundMoney;
-    private final VatCategory vatCategory;
-    private final PaymentBrand paymentBrand;
-    private final TransactionStatus status;
+    private final String vatCategory;
+    private final String paymentBrand;
+    private final String status;
     private final String description;
     private final UUID transactionId;
 
@@ -34,9 +34,9 @@ public class RefundDetailsResponse {
                                  String createdAt,
                                  String updatedAt,
                                  Money refundMoney,
-                                 VatCategory vatCategory,
-                                 PaymentBrand paymentBrand,
-                                 TransactionStatus status,
+                                 String vatCategory,
+                                 String paymentBrand,
+                                 String status,
                                  String description, UUID transactionId) {
         this.refundId = refundId;
         this.refundTransactionId = refundTransactionId;
@@ -56,9 +56,9 @@ public class RefundDetailsResponse {
         this.createdAt = jsonObject.getString("createdAt");
         this.updatedAt = jsonObject.getString("updatedAt");
         this.refundMoney = Money.fromJson(jsonObject.getJSONObject("refundMoney"));
-        this.vatCategory = VatCategory.valueOfCategory(jsonObject.getString("vatCategory"));
-        this.paymentBrand = PaymentBrand.valueOf(jsonObject.getString("paymentBrand"));
-        this.status = TransactionStatus.valueOf(jsonObject.getString("status"));
+        this.vatCategory = jsonObject.getString("vatCategory");
+        this.paymentBrand = jsonObject.getString("paymentBrand");
+        this.status = jsonObject.getString("status");
         this.description = jsonObject.getString("description");
         this.transactionId = UUID.fromString(jsonObject.getString("transactionId"));
     }
@@ -83,15 +83,15 @@ public class RefundDetailsResponse {
         return refundMoney;
     }
 
-    public VatCategory getVatCategory() {
+    public String getVatCategory() {
         return vatCategory;
     }
 
-    public PaymentBrand getPaymentBrand() {
+    public String getPaymentBrand() {
         return paymentBrand;
     }
 
-    public TransactionStatus getStatus() {
+    public String getStatus() {
         return status;
     }
 
