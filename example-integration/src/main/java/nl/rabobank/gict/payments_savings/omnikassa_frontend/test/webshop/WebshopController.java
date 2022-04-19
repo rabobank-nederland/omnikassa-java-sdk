@@ -1,5 +1,20 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.test.webshop;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.util.Base64Utils;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
+
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.Endpoint;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.connector.TokenProvider;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.RabobankSdkException;
@@ -15,6 +30,7 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.order_deta
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.order_details.CustomerInformation;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.order_details.OrderItem;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.order_details.OrderItem.Builder;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.InitiateRefundRequest;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.ApiNotification;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.IdealIssuersResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderResponse;
@@ -22,20 +38,11 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.M
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.PaymentBrandsResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.PaymentCompletedResponse;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.RefundDetailsResponse;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.TransactionRefundableDetailsResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.test.webshop.model.CustomTokenProvider;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.test.webshop.model.WebShopOrder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.test.webshop.model.enums.PaymentStatusMessage;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.util.Base64Utils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.FileReader;
@@ -45,6 +52,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import static java.lang.Boolean.parseBoolean;
@@ -81,8 +89,9 @@ class WebshopController {
     }
 
     @GetMapping(value = "/home")
-    String fakeWebShop() {
-        return FAKE_WEBSHOP;
+    ModelAndView fakeWebShop(ModelMap modelMap) {
+        modelMap.addAttribute("shoppingCart", webShopOrderMap.get(iterator));
+        return new ModelAndView(FAKE_WEBSHOP, modelMap);
     }
 
     @PostMapping(value = "/orders")
@@ -108,10 +117,15 @@ class WebshopController {
     }
 
     @PostMapping(value = "/items")
-    String addItem(HttpServletRequest request) {
-        OrderItem orderItem = createOrderItem(request);
-        webShopOrderMap.get(iterator).addItem(orderItem);
-        return FAKE_WEBSHOP;
+    ModelAndView addItem(HttpServletRequest request, ModelMap modelMap) {
+        if (request.getParameter("clearShoppingCart") != null) {
+            webShopOrderMap.get(iterator).clear();
+        } else {
+            OrderItem orderItem = createOrderItem(request);
+            webShopOrderMap.get(iterator).addItem(orderItem);
+        }
+        modelMap.addAttribute("shoppingCart", webShopOrderMap.get(iterator));
+        return new ModelAndView(FAKE_WEBSHOP, modelMap);
     }
 
     @GetMapping(value = "/logs")
@@ -165,6 +179,35 @@ class WebshopController {
         return FAKE_WEBSHOP;
     }
 
+    @GetMapping("/initiateRefund")
+    String initiateRefund(HttpServletRequest request, ModelMap model) throws RabobankSdkException {
+        if (!StringUtils.isEmpty(request.getParameter("transactionId"))) {
+            model.addAttribute("transactionRefundableDetails", fetchTransactionRefundableDetails(request.getParameter("transactionId")));
+        }
+        return "initiate-refund";
+    }
+
+    @PostMapping("/submitRefund")
+    RedirectView submitRefund(HttpServletRequest request, RedirectAttributes model) throws RabobankSdkException {
+        RefundDetailsResponse refundDetailsResponse = initiateRefundTransaction(request);
+        model.addAttribute("refundId", refundDetailsResponse.getRefundId());
+        model.addAttribute("transactionId", refundDetailsResponse.getTransactionId());
+        return new RedirectView("fetchRefundDetails");
+    }
+
+    @GetMapping("/fetchRefundDetails")
+    String fetchRefundTransaction(HttpServletRequest request, ModelMap model)
+            throws RabobankSdkException, IllegalArgumentException {
+        if (!StringUtils.isEmpty(request.getParameter("transactionId")) && !StringUtils.isEmpty(request.getParameter("refundId"))) {
+            UUID transactionId = UUID.fromString(request.getParameter("transactionId"));
+            UUID refundId = UUID.fromString(request.getParameter("refundId"));
+            RefundDetailsResponse refundDetailsResponse = endpoint.fetchRefundTransaction(transactionId, refundId);
+            model.addAttribute("refundDetailsResponse", refundDetailsResponse);
+            model.addAttribute("transactionRefundableDetails", fetchTransactionRefundableDetails(request.getParameter("transactionId")));
+        }
+        return "refund-details";
+    }
+
     private void updateModelWithIdealIssuers(ModelMap model) throws RabobankSdkException {
         IdealIssuersResponse idealIssuersResponse = endpoint.retrieveIdealIssuers();
         model.addAttribute("idealIssuers", idealIssuersResponse.getIssuers());
@@ -205,7 +248,7 @@ class WebshopController {
         boolean skipHppResultPage = parseBoolean(request.getParameter("skipHppResultPage"));
         String initiatingParty = request.getParameter("initiatingParty");
         return webShopOrderMap.get(iterator).prepareMerchantOrder(customerInformation, shippingDetails, billingDetails,
-                paymentBrand, paymentBrandForce, preselectedIssuerId, initiatingParty, skipHppResultPage);
+                                                                  paymentBrand, paymentBrandForce, preselectedIssuerId, initiatingParty, skipHppResultPage);
     }
 
     private CustomerInformation createCustomerInformation(HttpServletRequest request) {
@@ -305,5 +348,20 @@ class WebshopController {
         String status = request.getParameter("status");
         String signature = request.getParameter("signature");
         return newPaymentCompletedResponse(orderId, status, signature, signingKey);
+    }
+
+    private RefundDetailsResponse initiateRefundTransaction(HttpServletRequest request)
+            throws RabobankSdkException, IllegalArgumentException {
+        Money money = Money.fromEuros(EUR, BigDecimal.valueOf(Double.parseDouble(request.getParameter("amount"))));
+        InitiateRefundRequest refundRequest = new InitiateRefundRequest(money, request.getParameter("description"), VatCategory.valueOf(request.getParameter("vat")));
+
+        RefundDetailsResponse response = endpoint.initiateRefundTransaction(refundRequest, UUID.fromString(request.getParameter("transactionId")), UUID.randomUUID());
+
+        return response;
+    }
+
+    private TransactionRefundableDetailsResponse fetchTransactionRefundableDetails(String uuid)
+            throws RabobankSdkException {
+        return endpoint.fetchRefundableTransactionDetails(UUID.fromString(uuid));
     }
 }

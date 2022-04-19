@@ -1,12 +1,7 @@
-<!DOCTYPE html>
-<meta http-equiv="refresh" content="5">
-<html lang="en">
-<body>
+<#import "macros.ftl" as macros />
 
-<br/>
-
-<p id="idealIssuers">
-    <table class="idealIssuers">
+<@macros.header />
+<table class="table">
     <tr>
         <td>id</td>
         <td>name</td>
@@ -18,16 +13,10 @@
         <tr>
             <td>${idealIssuer.id}</td>
             <td>${idealIssuer.name}</td>
-            <td><img src=${idealIssuer.logos[0].url} alt=${idealIssuer.name} width="50" height="50" /></td>
+            <td><img src=${idealIssuer.logos[0].url} alt=${idealIssuer.name} width="50" height="50"/></td>
             <td>${idealIssuer.logos[0].mimeType}</td>
             <td>${idealIssuer.countryNames}</td>
         </tr>
     </#list>
 </table>
-<br/>
-<form METHOD="get" ACTION="/webshop/home">
-    <p><input type="submit" value="home" id="home_button"></p>
-</form>
-
-</body>
-</html>
+<@macros.footer />

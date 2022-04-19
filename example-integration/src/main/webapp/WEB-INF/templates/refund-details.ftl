@@ -1,49 +1,54 @@
+<#import "macros.ftl" as macros />
+
+<@macros.header />
 <form action="fetchRefundDetails" method="get">
-    <table>
+    <table class="table">
         <tr>
-            <td>transaction id:</td>
-            <td><input name="transactionId"/></td>
-            <td>refund id:</td>
-            <td><input name="refundId"/></td>
-            <td><input type="submit" value="Query"/></td>
+            <td>Transaction id:</td>
+            <td><input name="transactionId" class="form-control"/></td>
+            <td>Refund id:</td>
+            <td><input name="refundId" class="form-control"/></td>
+            <td><input type="submit" value="Query" class="btn btn-secondary"/></td>
         </tr>
     </table>
 </form>
 <#if refundDetailsResponse ??>
-    <table>
+    <p class="h6">Refund details:</p>
+    <table class="table">
         <tr>
-            <td>refund id</td>
+            <td>Refund id:</td>
             <td>${refundDetailsResponse.refundId}</td>
         </tr>
         <tr>
-            <td>transaction id</td>
+            <td>Transaction id:</td>
             <td>${refundDetailsResponse.transactionId}</td>
         </tr>
         <tr>
-            <td>Amount</td>
+            <td>Amount:</td>
             <td>${refundDetailsResponse.refundMoney.amount/100.0}</td>
         </tr>
         <tr>
-            <td>Vat</td>
+            <td>Vat:</td>
             <td>${refundDetailsResponse.vatCategory}</td>
         </tr>
         <tr>
-            <td>Description</td>
+            <td>Description:</td>
             <td>${refundDetailsResponse.description}</td>
         </tr>
         <tr>
-            <td>Status</td>
+            <td>Status:</td>
             <td>${refundDetailsResponse.status}</td>
         </tr>
         <tr>
-            <td>Payment Brand</td>
+            <td>Payment Brand:</td>
             <td>${refundDetailsResponse.paymentBrand}</td>
         </tr>
         <#if transactionRefundableDetails??>
             <tr>
-                <td>Refundable Amount</td>
+                <td>Refundable Amount:</td>
                 <td>${transactionRefundableDetails.refundableMoney.amount/100.0}</td>
             </tr>
         </#if>
     </table>
 </#if>
+<@macros.footer />

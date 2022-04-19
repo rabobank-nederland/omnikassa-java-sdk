@@ -1,15 +1,20 @@
+<#import "macros.ftl" as macros />
+
+<@macros.header />
 <form action="" method="get">
-    <table>
+    <table class="table">
         <tr>
-            <td>Transaction Id</td>
-            <td><input name="transactionId"/></td>
-            <td><input type="submit" value="Find Transaction Refundable Amount"></td>
+            <td>Transaction Id:</td>
+            <td><input name="transactionId" class="form-control"/></td>
+            <td><input type="submit" value="Find Transaction Refundable Amount" class="btn btn-secondary"></td>
         </tr>
     </table>
 </form>
 
+
 <#if transactionRefundableDetails??>
-    <table>
+    <p class="h6">Initiate refund:</p>
+    <table class="table">
         <tr>
             <td>Refundable Amount</td>
             <td>${transactionRefundableDetails.refundableMoney.amount/100.0}</td>
@@ -17,20 +22,25 @@
     </table>
     <form action="submitRefund" method="post">
         <input type="hidden" name="transactionId" value="${transactionRefundableDetails.transactionId}"/>
-        <table>
+        <table class="table">
             <tr>
-                <td>Amount</td>
-                <td><input name="amount"/></td>
+                <td>Amount to refund:</td>
+                <td><input name="amount" class="form-control"/></td>
             </tr>
             <tr>
-                <td>Vat Category</td>
+                <td>Vat Category:</td>
                 <td><#include 'vat-category.ftl' /></td>
             </tr>
             <tr>
-                <td>Description</td>
-                <td><input name="description"/></td>
+                <td>Description:</td>
+                <td><input name="description" class="form-control"/></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="text-center"><input type="submit" value="Submit a Refund"
+                                                           class="btn btn-primary"/></td>
             </tr>
         </table>
-        <input type="submit" value="Submit a Refund"/>
+
     </form>
 </#if>
+<@macros.footer />

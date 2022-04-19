@@ -1,58 +1,76 @@
-${address_type} details
+<p class="h6">${address_type} details</p>
 <#assign id = "${address_type?lower_case}">
-<table>
+<table class="table">
     <tr>
         <td>
             <label for="${id}_first_name">First name:</label>
-            <input type="text" name="${id}FirstName" id="${id}_first_name">
+        </td>
+        <td>
+            <input type="text" name="${id}FirstName" id="${id}_first_name" class="form-control">
         </td>
     </tr>
     <tr>
         <td>
             <label for="${id}_middle_name">Middle name:</label>
-            <input type="text" name="${id}MiddleName" id="${id}_middle_name">
+        </td>
+        <td>
+            <input type="text" name="${id}MiddleName" id="${id}_middle_name" class="form-control">
         </td>
     </tr>
     <tr>
         <td>
             <label for="${id}_last_name">Last name:</label>
-            <input type="text" name="${id}LastName" id="${id}_last_name">
+        </td>
+        <td>
+            <input type="text" name="${id}LastName" id="${id}_last_name" class="form-control">
         </td>
     </tr>
     <tr>
         <td>
             <label for="${id}_street">Street:</label>
-            <input type="text" name="${id}Street" id="${id}_street">
+        </td>
+        <td>
+            <input type="text" name="${id}Street" id="${id}_street" class="form-control">
         </td>
     </tr>
     <tr>
         <td>
             <label for="${id}_house_number">House number:</label>
-            <input type="text" name="${id}HouseNumber" id="${id}_house_number">
+        </td>
+        <td>
+            <input type="text" name="${id}HouseNumber" id="${id}_house_number" class="form-control">
         </td>
     </tr>
     <tr>
         <td>
             <label for="${id}_house_number_addition">House number addition:</label>
-            <input type="text" name="${id}HouseNumberAddition" id="${id}_house_number_addition">
+        </td>
+        <td>
+            <input type="text" name="${id}HouseNumberAddition" id="${id}_house_number_addition" class="form-control">
         </td>
     </tr>
     <tr>
         <td>
             <label for="${id}_postal_code">Postal code:</label>
-            <input type="text" name="${id}PostalCode" id="${id}_postal_code">
+        </td>
+        <td>
+            <input type="text" name="${id}PostalCode" id="${id}_postal_code" class="form-control">
         </td>
     </tr>
     <tr>
         <td>
             <label for="${id}_city">City:</label>
-            <input type="text" name="${id}City" id="${id}_city">
+        </td>
+        <td>
+            <input type="text" name="${id}City" id="${id}_city" class="form-control">
         </td>
     </tr>
     <tr>
         <td>
             <label for="${id}_country_code">Country code:</label>
-            <select name="${id}CountryCode" id="${id}_country_code">
+        </td>
+        <td>
+            <select name="${id}CountryCode" id="${id}_country_code" class="form-select">
                 <option value="AF">AF</option>
                 <option value="AX">AX</option>
                 <option value="AL">AL</option>

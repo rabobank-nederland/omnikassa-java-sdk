@@ -40,6 +40,10 @@ public class WebShopOrder {
         orderItems.clear();
     }
 
+    public List<OrderItem> getOrderItems() {
+        return orderItems;
+    }
+
     public MerchantOrder prepareMerchantOrder(CustomerInformation customerInformation,
                                               Address shippingDetails,
                                               Address billingDetails,
