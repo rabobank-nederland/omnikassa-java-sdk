@@ -1,5 +1,6 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk;
 
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.InitiateRefundRequest;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.IdealIssuersResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,10 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.A
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.PaymentBrandsResponse;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.RefundDetailsResponse;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.TransactionRefundableDetailsResponse;
+
+import java.util.UUID;
 
 import static org.apache.commons.codec.binary.Base64.decodeBase64;
 
@@ -118,6 +123,61 @@ public final class Endpoint {
 
         return connector.getAnnouncementData(apiNotification);
     }
+
+    /**
+     * This function will initiate refund transaction.
+     *
+     * @param refundRequest The request for refund, the object can be constructed via Jackson or with the direct constructor
+     * @param transactionId The transactionId of transaction for which the refund request is sent
+     * @param requestId The requestId, unique id of refund request
+     * @return The response contains refund details, which can be used to update the refund with the latest status.
+     * @throws RabobankSdkException when problems occurred during the request, e.g. server not reachable, invalid signature, invalid authentication etc.
+     */
+    public RefundDetailsResponse initiateRefundTransaction(InitiateRefundRequest refundRequest, UUID transactionId, UUID requestId)
+            throws RabobankSdkException {
+        try {
+            return connector.postRefundRequest(refundRequest, transactionId, requestId, tokenProvider.getAccessToken());
+        } catch (InvalidAccessTokenException e) {
+            logAndGetNewToken(e);
+            return connector.postRefundRequest(refundRequest, transactionId, requestId, tokenProvider.getAccessToken());
+        }
+    }
+
+    /**
+     * This function will get refund details.
+     *
+     * @param refundId The id of initiated refund request
+     * @param transactionId The transactionId of transaction for which the refund request is sent
+     * @return The response contains refund details, which can be used to update the refund with the latest status.
+     * @throws RabobankSdkException when problems occurred during the request, e.g. server not reachable, invalid signature, invalid authentication etc.
+     */
+    public RefundDetailsResponse fetchRefundTransaction(UUID transactionId, UUID refundId)
+            throws RabobankSdkException {
+        try {
+            return connector.getRefundRequest(transactionId, refundId, tokenProvider.getAccessToken());
+        } catch (InvalidAccessTokenException e) {
+            logAndGetNewToken(e);
+            return connector.getRefundRequest(transactionId, refundId, tokenProvider.getAccessToken());
+        }
+    }
+
+    /**
+     * This function will get details for specific refund within transaction.
+     *
+     * @param transactionId The transactionId of transaction for which the refund request is sent
+     * @return The response contains refund details, which can be used to update the refund with the latest status.
+     * @throws RabobankSdkException when problems occurred during the request, e.g. server not reachable, invalid signature, invalid authentication etc.
+     */
+    public TransactionRefundableDetailsResponse fetchRefundableTransactionDetails(UUID transactionId)
+            throws RabobankSdkException {
+        try {
+            return connector.getRefundableDetails(transactionId, tokenProvider.getAccessToken());
+        } catch (InvalidAccessTokenException e) {
+            logAndGetNewToken(e);
+            return connector.getRefundableDetails(transactionId, tokenProvider.getAccessToken());
+        }
+    }
+
 
     public PaymentBrandsResponse retrievePaymentBrands() throws RabobankSdkException {
         validateAccessToken();

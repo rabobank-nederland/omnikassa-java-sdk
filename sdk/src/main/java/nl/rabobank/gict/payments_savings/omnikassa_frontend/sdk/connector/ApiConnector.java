@@ -1,6 +1,8 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.connector;
 
 import com.mashape.unirest.http.exceptions.UnirestException;
+
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.InitiateRefundRequest;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.IdealIssuersResponse;
 import org.json.JSONObject;
 
@@ -12,7 +14,13 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.A
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.PaymentBrandsResponse;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.RefundDetailsResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.SignedResponse;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.TransactionRefundableDetailsResponse;
+
+import java.util.Collections;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * This class manages the communication to the Rabobank api.
@@ -73,6 +81,78 @@ public class ApiConnector {
             @Override
             MerchantOrderStatusResponse convert(JSONObject result) {
                 return new MerchantOrderStatusResponse(result);
+            }
+        }.execute();
+    }
+
+    /**
+     * sends the InitiateRefundRequest to the Rabobank.
+     * @param refundRequest containing detail of the refund
+     * @param transactionId id of transaction
+     * @param requestId id of request
+     * @param token access token
+     * @return RefundDetailsResponse for requested refund
+     * @throws RabobankSdkException when problems occurred during the request, e.g. server not reachable, invalid signature, invalid authentication etc.
+     */
+    public RefundDetailsResponse postRefundRequest(final InitiateRefundRequest refundRequest, final UUID transactionId, final UUID requestId, final String token)
+            throws RabobankSdkException {
+        return new RequestTemplate<RefundDetailsResponse>() {
+
+            @Override
+            JSONObject fetch() throws UnirestException {
+                return jsonTemplate.postWithHeader("order/server/api/v2/refund/transactions/"+ transactionId +"/refunds", refundRequest, Collections.singletonMap("request-id", requestId.toString()), token);
+            }
+
+            @Override
+            RefundDetailsResponse convert(JSONObject result) {
+                return new RefundDetailsResponse(result);
+            }
+        }.execute();
+    }
+
+    /**
+     * retrieves the RefundDetailsResponse from the Rabobank.
+     * @param refundId id of the refund
+     * @param transactionId id of transaction
+     * @param token access token
+     * @return RefundDetailsResponse for requested refund
+     * @throws RabobankSdkException when problems occurred during the request, e.g. server not reachable, invalid signature, invalid authentication etc.
+     */
+    public RefundDetailsResponse getRefundRequest(final UUID transactionId, final UUID refundId, final String token)
+            throws RabobankSdkException {
+        return new RequestTemplate<RefundDetailsResponse>() {
+
+            @Override
+            JSONObject fetch() throws UnirestException {
+                return jsonTemplate.get("order/server/api/v2/refund/transactions/"+ transactionId +"/refunds/"+ refundId, token);
+            }
+
+            @Override
+            RefundDetailsResponse convert(JSONObject result) {
+                return new RefundDetailsResponse(result);
+            }
+        }.execute();
+    }
+
+    /**
+     * retrieves the TransactionRefundableDetailsResponse from the Rabobank.
+     * @param transactionId id of transaction
+     * @param token access token
+     * @return TransactionRefundableDetailsResponse for initiated refund
+     * @throws RabobankSdkException when problems occurred during the request, e.g. server not reachable, invalid signature, invalid authentication etc.
+     */
+    public TransactionRefundableDetailsResponse getRefundableDetails(final UUID transactionId, final String token)
+            throws RabobankSdkException {
+        return new RequestTemplate<TransactionRefundableDetailsResponse>() {
+
+            @Override
+            JSONObject fetch() throws UnirestException {
+                return jsonTemplate.get("order/server/api/v2/refund/transactions/"+ transactionId +"/refundable-details", token);
+            }
+
+            @Override
+            TransactionRefundableDetailsResponse convert(JSONObject result) {
+                return new TransactionRefundableDetailsResponse(result);
             }
         }.execute();
     }
