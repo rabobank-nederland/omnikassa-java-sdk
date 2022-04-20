@@ -18,7 +18,7 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.R
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.SignedResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.TransactionRefundableDetailsResponse;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -100,7 +100,9 @@ public class ApiConnector {
 
             @Override
             JSONObject fetch() throws UnirestException {
-                return jsonTemplate.postWithHeader("order/server/api/v2/refund/transactions/"+ transactionId +"/refunds", refundRequest, Collections.singletonMap("request-id", requestId.toString()), token);
+                Map<String,String> requestHeaders = new HashMap<>();
+                requestHeaders.put("request-id", requestId.toString());
+                return jsonTemplate.postWithHeader("order/server/api/v2/refund/transactions/"+ transactionId +"/refunds", refundRequest, requestHeaders, token);
             }
 
             @Override
