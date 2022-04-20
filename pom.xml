@@ -39,6 +39,7 @@
         <spring.version>5.3.18</spring.version>
         <freemarker.version>2.3.31</freemarker.version>
         <jackson-core.version>2.13.1</jackson-core.version>
+        <jackson-data-bind.version>2.13.2.1</jackson-data-bind.version>
         <logback-classic.version>1.2.10</logback-classic.version>
         <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
 
@@ -124,7 +125,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>${jackson-core.version}</version>
+                <version>${jackson-data-bind.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
