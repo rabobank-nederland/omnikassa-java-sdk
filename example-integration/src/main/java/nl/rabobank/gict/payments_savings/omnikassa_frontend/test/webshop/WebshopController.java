@@ -353,7 +353,8 @@ class WebshopController {
     private RefundDetailsResponse initiateRefundTransaction(HttpServletRequest request)
             throws RabobankSdkException, IllegalArgumentException {
         Money money = Money.fromEuros(EUR, BigDecimal.valueOf(Double.parseDouble(request.getParameter("amount"))));
-        InitiateRefundRequest refundRequest = new InitiateRefundRequest(money, request.getParameter("description"), VatCategory.valueOf(request.getParameter("vat")));
+        InitiateRefundRequest refundRequest = new InitiateRefundRequest(money, request.getParameter("description"),
+                                                                        StringUtils.isEmpty(request.getParameter("vat")) ? null : VatCategory.valueOf(request.getParameter("vat")));
 
         RefundDetailsResponse response = endpoint.initiateRefundTransaction(refundRequest, UUID.fromString(request.getParameter("transactionId")), UUID.randomUUID());
 

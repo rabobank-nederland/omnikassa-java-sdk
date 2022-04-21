@@ -3,4 +3,5 @@
     <option value="LOW">LOW</option>
     <option value="ZERO">ZERO</option>
     <option value="NONE">NONE</option>
+    <option value="">Unknown</option>
 </select>
