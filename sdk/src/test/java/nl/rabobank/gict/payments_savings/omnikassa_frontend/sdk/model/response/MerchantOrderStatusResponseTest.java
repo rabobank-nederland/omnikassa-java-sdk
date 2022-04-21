@@ -1,7 +1,7 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response;
 
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONObject;
+import kong.unirest.json.JSONObject;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

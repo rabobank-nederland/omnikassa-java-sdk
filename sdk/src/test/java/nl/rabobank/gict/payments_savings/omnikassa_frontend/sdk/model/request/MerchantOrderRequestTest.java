@@ -1,17 +1,17 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request;
 
+import kong.unirest.json.JSONObject;
 import org.joda.time.DateTimeUtils;
-import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.skyscreamer.jsonassert.JSONAssert;
 
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.JsonFileConverter;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.MerchantOrderTestFactory;
 
 import static org.joda.time.DateTime.parse;
 import static org.joda.time.DateTimeUtils.setCurrentMillisFixed;
+import static org.junit.Assert.assertEquals;
 
 public class MerchantOrderRequestTest {
 
@@ -32,7 +32,7 @@ public class MerchantOrderRequestTest {
         MerchantOrderRequest merchantOrderRequest = createSimpleMerchantOrderRequest();
         JSONObject expectedJSONObject = converter.convert("merchant_order_request_simple.json");
         JSONObject actualJSONObject = merchantOrderRequest.asJson();
-        JSONAssert.assertEquals(actualJSONObject, expectedJSONObject, true);
+        assertEquals(actualJSONObject, expectedJSONObject);
     }
 
     @Test
@@ -40,7 +40,7 @@ public class MerchantOrderRequestTest {
         MerchantOrderRequest merchantOrderRequest = createNewMerchantOrderRequest();
         JSONObject expectedJSONObject = converter.convert("merchant_order_request_full.json");
         JSONObject actualJSONObject = merchantOrderRequest.asJson();
-        JSONAssert.assertEquals(expectedJSONObject, actualJSONObject, true);
+        assertEquals(expectedJSONObject, actualJSONObject);
     }
 
     private static MerchantOrderRequest createSimpleMerchantOrderRequest() {

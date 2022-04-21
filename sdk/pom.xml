@@ -56,7 +56,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.mashape.unirest</groupId>
+            <groupId>com.konghq</groupId>
             <artifactId>unirest-java</artifactId>
         </dependency>
         <dependency>
@@ -84,10 +84,6 @@
         <dependency>
             <groupId>nl.jqno.equalsverifier</groupId>
             <artifactId>equalsverifier</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.skyscreamer</groupId>
-            <artifactId>jsonassert</artifactId>
         </dependency>
     </dependencies>
 

@@ -1,6 +1,5 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.order_details;
-
-import org.json.JSONObject;
+import kong.unirest.json.JSONObject;
 
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.JsonConvertible;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.CountryCode;

@@ -6,5 +6,7 @@
   "category": "PHYSICAL",
   "description": "Description",
   "name": "Test product",
-  "quantity": 1
+  "quantity": 1,
+  "vatCategory": null,
+  "id":null
 }

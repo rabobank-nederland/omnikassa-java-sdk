@@ -27,14 +27,13 @@
         <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
 
         <slf4j-api.version>1.7.33</slf4j-api.version>
-        <unirest-java.version>1.4.9</unirest-java.version>
+        <unirest-java.version>3.13.7</unirest-java.version>
         <apache.httpcomponents.version>4.5.13</apache.httpcomponents.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <joda-time.version>2.10.13</joda-time.version>
         <junit.version>4.13.2</junit.version>
         <mockito-core.version>4.3.0</mockito-core.version>
         <equalsverifier.version>3.8.2</equalsverifier.version>
-        <jsonassert.version>1.5.0</jsonassert.version>
 
         <spring.version>5.3.18</spring.version>
         <freemarker.version>2.3.31</freemarker.version>
@@ -62,7 +61,7 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.mashape.unirest</groupId>
+                <groupId>com.konghq</groupId>
                 <artifactId>unirest-java</artifactId>
                 <version>${unirest-java.version}</version>
             </dependency>
@@ -150,12 +149,6 @@
                 <groupId>nl.jqno.equalsverifier</groupId>
                 <artifactId>equalsverifier</artifactId>
                 <version>${equalsverifier.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.skyscreamer</groupId>
-                <artifactId>jsonassert</artifactId>
-                <version>${jsonassert.version}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>

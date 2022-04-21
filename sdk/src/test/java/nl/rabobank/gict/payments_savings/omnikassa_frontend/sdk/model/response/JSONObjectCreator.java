@@ -1,7 +1,7 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import kong.unirest.json.JSONArray;
+import kong.unirest.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;

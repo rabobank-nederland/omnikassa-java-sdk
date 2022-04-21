@@ -1,8 +1,8 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.connector;
 
-import com.mashape.unirest.http.exceptions.UnirestException;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import kong.unirest.UnirestException;
+import kong.unirest.json.JSONArray;
+import kong.unirest.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

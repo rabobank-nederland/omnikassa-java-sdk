@@ -1,6 +1,5 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response;
 
-import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 

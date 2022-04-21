@@ -1,11 +1,11 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.connector;
 
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
-import com.mashape.unirest.request.GetRequest;
-import com.mashape.unirest.request.body.RequestBodyEntity;
+import kong.unirest.GetRequest;
+import kong.unirest.RequestBodyEntity;
+import kong.unirest.Unirest;
+import kong.unirest.json.JSONObject;
+
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.JsonConvertible;
-import org.json.JSONObject;
 
 import java.util.Map;
 
@@ -16,24 +16,24 @@ class UnirestJSONTemplate {
         this.baseURL = baseURL;
     }
 
-    public JSONObject get(String path, String token) throws UnirestException {
+    public JSONObject get(String path, String token) {
         GetRequest jsonResponse = Unirest.get(baseURL + "/" + path)
-                .header("Content-type", "application/json")
-                .header("Authorization", "Bearer " + token);
+                                         .header("Content-type", "application/json")
+                                         .header("Authorization", "Bearer " + token);
 
         return jsonResponse.asJson().getBody().getObject();
     }
 
-    public JSONObject post(String path, JsonConvertible body, String token) throws UnirestException {
+    public JSONObject post(String path, JsonConvertible body, String token) {
         RequestBodyEntity requestBodyEntity = Unirest.post(baseURL + "/" + path)
-                .header("Content-type", "application/json")
-                .header("Authorization", "Bearer " + token)
-                .body(body.asJson());
+                                                     .header("Content-type", "application/json")
+                                                     .header("Authorization", "Bearer " + token)
+                                                     .body(body.asJson());
 
         return requestBodyEntity.asJson().getBody().getObject();
     }
 
-    public JSONObject postWithHeader(String path, JsonConvertible body, Map<String,String> headers, String token) throws UnirestException {
+    public JSONObject postWithHeader(String path, JsonConvertible body, Map<String, String> headers, String token) {
         headers.put("Content-type", "application/json");
         headers.put("Authorization", "Bearer " + token);
         RequestBodyEntity requestBodyEntity = Unirest.post(baseURL + "/" + path)

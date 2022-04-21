@@ -1,13 +1,9 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.order_details;
 
 import org.junit.Test;
-import org.skyscreamer.jsonassert.JSONAssert;
 
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.JsonFileConverter;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.Money;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.ItemCategory;
-
-import java.math.BigDecimal;
 
 import static java.math.BigDecimal.valueOf;
 import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.Money.fromEuros;
@@ -20,6 +16,7 @@ import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.ord
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 
 public class OrderItemTest {
     private OrderItem orderItem = orderItem();
@@ -39,12 +36,12 @@ public class OrderItemTest {
 
     @Test
     public void testAsJson() {
-        JSONAssert.assertEquals(converter.convert("order_item.json"), orderItem.asJson(), true);
+        assertEquals(converter.convert("order_item.json"), orderItem.asJson());
     }
 
     @Test
     public void testAsJsonFull() {
-        JSONAssert.assertEquals(converter.convert("order_item_full.json"), orderItemFull.asJson(), true);
+        assertEquals(converter.convert("order_item_full.json"), orderItemFull.asJson());
     }
 
     @Test

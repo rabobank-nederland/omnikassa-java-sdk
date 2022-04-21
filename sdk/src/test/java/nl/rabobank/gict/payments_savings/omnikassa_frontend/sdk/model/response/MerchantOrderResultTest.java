@@ -1,14 +1,14 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response;
 
+import kong.unirest.json.JSONArray;
+import kong.unirest.json.JSONObject;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.Test;
+
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.Currency;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.PaymentBrand;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.TransactionStatus;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.TransactionType;
-
-import org.apache.commons.lang3.StringUtils;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.junit.Test;
 
 import java.util.Arrays;
 

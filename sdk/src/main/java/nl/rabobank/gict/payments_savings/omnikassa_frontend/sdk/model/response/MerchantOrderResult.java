@@ -1,7 +1,7 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response;
 
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.Money;
-import org.json.JSONObject;
+import kong.unirest.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;

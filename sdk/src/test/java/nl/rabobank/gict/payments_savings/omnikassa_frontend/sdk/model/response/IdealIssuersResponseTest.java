@@ -2,7 +2,7 @@ package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response;
 
 
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.JsonFileConverter;
-import org.json.JSONObject;
+import kong.unirest.json.JSONObject;
 import org.junit.Test;
 
 import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.JSONObjectCreator.createJSONObjectForIdealIssuer;
