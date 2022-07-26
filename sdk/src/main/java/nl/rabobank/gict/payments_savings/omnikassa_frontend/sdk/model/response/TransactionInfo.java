@@ -31,7 +31,7 @@ public final class TransactionInfo {
         this.type = jsonObject.getEnum(TransactionType.class, "type");
         this.status = jsonObject.getEnum(TransactionStatus.class, "status");
         this.amount = Money.fromJson(jsonObject.getJSONObject("amount"));
-        if (jsonObject.has("confirmedAmount")) {
+        if (jsonObject.has("confirmedAmount") && !jsonObject.isNull("confirmedAmount")) {
             this.confirmedAmount = Money.fromJson(jsonObject.getJSONObject("confirmedAmount"));
         } else {
             this.confirmedAmount = null;
