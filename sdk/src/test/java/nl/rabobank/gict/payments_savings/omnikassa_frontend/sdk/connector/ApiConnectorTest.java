@@ -121,7 +121,7 @@ public class ApiConnectorTest {
         InitiateRefundRequest initiateRefundRequest = RefundTestFactory.defaultInitiateRefundRequest();
         UUID transaction = UUID.randomUUID();
         UUID requestId = UUID.randomUUID();
-        when(jsonTemplate.postWithHeader(API_REFUND_ENDPOINT+transaction+"/refunds", initiateRefundRequest, Collections.singletonMap("request-id", requestId.toString()), "token")).thenReturn(RefundTestFactory.defaultRefundDetailsResponseJsonObject());
+        when(jsonTemplate.postWithHeader(API_REFUND_ENDPOINT + transaction + "/refunds", initiateRefundRequest, Collections.singletonMap("request-id", requestId.toString()), "token")).thenReturn(RefundTestFactory.defaultRefundDetailsResponseJsonObject());
 
         RefundDetailsResponse refundDetailsResponse = classUnderTest.postRefundRequest(initiateRefundRequest, transaction, requestId, "token");
 
@@ -133,7 +133,7 @@ public class ApiConnectorTest {
     public void testGetRefundRequest_HappyFlow() throws Exception {
         UUID transaction = UUID.randomUUID();
         UUID refund = UUID.randomUUID();
-        when(jsonTemplate.get(API_REFUND_ENDPOINT+transaction+"/refunds/"+refund, "token")).thenReturn(RefundTestFactory.defaultRefundDetailsResponseJsonObject());
+        when(jsonTemplate.get(API_REFUND_ENDPOINT + transaction + "/refunds/" + refund, "token")).thenReturn(RefundTestFactory.defaultRefundDetailsResponseJsonObject());
 
         RefundDetailsResponse refundDetailsResponse = classUnderTest.getRefundRequest(transaction, refund, "token");
 
@@ -144,7 +144,7 @@ public class ApiConnectorTest {
     @Test
     public void testGetRefundableDetails_HappyFlow() throws Exception {
         UUID transaction = UUID.randomUUID();
-        when(jsonTemplate.get(API_REFUND_ENDPOINT+transaction+"/refundable-details", "token")).thenReturn(RefundTestFactory.defaultTransactionRefundableDetailsResponseJsonObject());
+        when(jsonTemplate.get(API_REFUND_ENDPOINT + transaction + "/refundable-details", "token")).thenReturn(RefundTestFactory.defaultTransactionRefundableDetailsResponseJsonObject());
 
         TransactionRefundableDetailsResponse transactionRefundableDetailsResponse = classUnderTest.getRefundableDetails(transaction, "token");
 
@@ -202,8 +202,9 @@ public class ApiConnectorTest {
         assertThat(actual.getTransactionInfo().get(0).getStatus(), is(TransactionStatus.SUCCESS));
         assertThat(actual.getTransactionInfo().get(0).getAmount().getAmount(), is(new BigDecimal("5.99")));
         assertThat(actual.getTransactionInfo().get(0).getAmount().getCurrency(), is(EUR));
-        assertThat(actual.getTransactionInfo().get(0).getConfirmedAmount().getAmount(), is(new BigDecimal("5.99")));
-        assertThat(actual.getTransactionInfo().get(0).getConfirmedAmount().getCurrency(), is(EUR));
+        assertThat(actual.getTransactionInfo().get(0).getConfirmedAmount().isPresent(), is(true));
+        assertThat(actual.getTransactionInfo().get(0).getConfirmedAmount().get().getAmount(), is(new BigDecimal("5.99")));
+        assertThat(actual.getTransactionInfo().get(0).getConfirmedAmount().get().getCurrency(), is(EUR));
         assertThat(actual.getTransactionInfo().get(0).getStartTime(), is("2016-07-28T12:51:15.574+02:00"));
         assertThat(actual.getTransactionInfo().get(0).getLastUpdateTime(), is("2016-07-28T12:51:15.574+02:00"));
     }
@@ -225,8 +226,9 @@ public class ApiConnectorTest {
         assertThat(actual.getTransactionInfo().get(0).getStatus(), is(TransactionStatus.SUCCESS));
         assertThat(actual.getTransactionInfo().get(0).getAmount().getAmount(), is(new BigDecimal("5.99")));
         assertThat(actual.getTransactionInfo().get(0).getAmount().getCurrency(), is(EUR));
-        assertThat(actual.getTransactionInfo().get(0).getConfirmedAmount().getAmount(), is(new BigDecimal("5.99")));
-        assertThat(actual.getTransactionInfo().get(0).getConfirmedAmount().getCurrency(), is(EUR));
+        assertThat(actual.getTransactionInfo().get(0).getConfirmedAmount().isPresent(), is(true));
+        assertThat(actual.getTransactionInfo().get(0).getConfirmedAmount().get().getAmount(), is(new BigDecimal("5.99")));
+        assertThat(actual.getTransactionInfo().get(0).getConfirmedAmount().get().getCurrency(), is(EUR));
         assertThat(actual.getTransactionInfo().get(0).getStartTime(), is("2016-07-28T12:51:15.574+02:00"));
         assertThat(actual.getTransactionInfo().get(0).getLastUpdateTime(), is("2016-07-28T12:51:15.574+02:00"));
     }
