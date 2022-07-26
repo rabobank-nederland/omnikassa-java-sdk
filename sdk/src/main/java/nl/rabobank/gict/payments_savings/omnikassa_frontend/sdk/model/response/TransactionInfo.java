@@ -9,6 +9,7 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.Tran
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * this class contains details about a transaction, these details can be used to identify specific transaction within the order.
@@ -59,8 +60,8 @@ public final class TransactionInfo {
         return amount;
     }
 
-    public Money getConfirmedAmount() {
-        return confirmedAmount;
+    public Optional<Money> getConfirmedAmount() {
+        return Optional.ofNullable(confirmedAmount);
     }
 
     public String getStartTime() {
