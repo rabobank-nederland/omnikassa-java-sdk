@@ -21,7 +21,7 @@ public class MerchantOrderResultTest {
         String expectedSignatureData = "SHOP1,ORDER1,1,COMPLETED,2000-01-01T00:00:00.000-0200,NONE,EUR,100,EUR,100," +
                                        "1,IDEAL,PAYMENT,SUCCESS,EUR,100,EUR,100,2016-07-28T12:51:15.574+02:00,2016-07-28T12:51:15.574+02:00," +
                                        "2,IDEAL,PAYMENT,SUCCESS,EUR,200,EUR,200,2016-07-28T12:51:15.574+02:00,2016-07-28T12:51:15.574+02:00," +
-                                       "3,IDEAL,PAYMENT,SUCCESS,EUR,300,EUR,300,2016-07-28T12:51:15.574+02:00,2016-07-28T12:51:15.574+02:00";
+                                       "3,IDEAL,PAYMENT,SUCCESS,EUR,300,,,2016-07-28T12:51:15.574+02:00,2016-07-28T12:51:15.574+02:00";
         String actualSignatureData = StringUtils.join(getMerchantOrderResult().getSignatureData(), ",");
         assertEquals(expectedSignatureData, actualSignatureData);
     }
@@ -45,9 +45,9 @@ public class MerchantOrderResultTest {
         object.put("paidAmount", getJsonMoney(Currency.EUR, 100));
         object.put("totalAmount", getJsonMoney(Currency.EUR, 100));
 
-        JSONObject firstTransaction = getTransactionObject("1", 100L);
-        JSONObject secondTransaction = getTransactionObject("2", 200L);
-        JSONObject thirdTransaction = getTransactionObject("3", 300L);
+        JSONObject firstTransaction = getTransactionObject("1", 100L, true);
+        JSONObject secondTransaction = getTransactionObject("2", 200L, true);
+        JSONObject thirdTransaction = getTransactionObject("3", 300L, false);
         object.put("transactions", new JSONArray(Arrays.asList(firstTransaction, secondTransaction, thirdTransaction)));
         return new MerchantOrderResult(object);
     }
@@ -72,14 +72,16 @@ public class MerchantOrderResultTest {
         return object;
     }
 
-    private JSONObject getTransactionObject(String id, Long amount) {
+    private JSONObject getTransactionObject(String id, Long amount, boolean withConfirmedAmount) {
         JSONObject transactionObject = new JSONObject();
         transactionObject.put("id", id);
         transactionObject.put("paymentBrand", PaymentBrand.IDEAL);
         transactionObject.put("type", TransactionType.PAYMENT);
         transactionObject.put("status", TransactionStatus.SUCCESS);
         transactionObject.put("amount", getJsonMoney(Currency.EUR, amount));
-        transactionObject.put("confirmedAmount", getJsonMoney(Currency.EUR, amount));
+        if (withConfirmedAmount) {
+            transactionObject.put("confirmedAmount", getJsonMoney(Currency.EUR, amount));
+        }
         transactionObject.put("startTime", "2016-07-28T12:51:15.574+02:00");
         transactionObject.put("lastUpdateTime", "2016-07-28T12:51:15.574+02:00");
         return transactionObject;
