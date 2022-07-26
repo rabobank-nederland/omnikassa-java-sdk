@@ -30,7 +30,11 @@ public final class TransactionInfo {
         this.type = jsonObject.getEnum(TransactionType.class, "type");
         this.status = jsonObject.getEnum(TransactionStatus.class, "status");
         this.amount = Money.fromJson(jsonObject.getJSONObject("amount"));
-        this.confirmedAmount = Money.fromJson(jsonObject.getJSONObject("confirmedAmount"));
+        if (jsonObject.has("confirmedAmount")) {
+            this.confirmedAmount = Money.fromJson(jsonObject.getJSONObject("confirmedAmount"));
+        } else {
+            this.confirmedAmount = null;
+        }
         this.startTime = jsonObject.getString("startTime");
         this.lastUpdateTime = jsonObject.getString("lastUpdateTime");
     }
@@ -67,15 +71,15 @@ public final class TransactionInfo {
         return lastUpdateTime;
     }
 
-    public List<String> getSignatureData(){
+    public List<String> getSignatureData() {
         return Arrays.asList(id,
                              paymentBrand.name(),
                              type.name(),
                              status.name(),
                              amount.getCurrency().name(),
                              String.valueOf(amount.getAmountInCents()),
-                             confirmedAmount.getCurrency().name(),
-                             String.valueOf(confirmedAmount.getAmountInCents()),
+                             confirmedAmount != null ? confirmedAmount.getCurrency().name() : null,
+                             confirmedAmount != null ? String.valueOf(confirmedAmount.getAmountInCents()) : null,
                              startTime,
                              lastUpdateTime);
     }
