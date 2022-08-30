@@ -6,6 +6,10 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.Illeg
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.RabobankSdkException;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.Signable;
 
+import java.security.MessageDigest;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 /**
  * this class is used to validate the signature of a response
  */
@@ -26,7 +30,8 @@ public abstract class SignedResponse extends Signable {
      */
     public void validateSignature(byte[] signingKey) throws RabobankSdkException {
         String calculatedSignature = calculateSignature(getSignatureData(), signingKey);
-        if (!calculatedSignature.equals(getSignature())) {
+
+        if (!MessageDigest.isEqual(calculatedSignature.getBytes(UTF_8), getSignature().getBytes(UTF_8))) {
             throw new IllegalSignatureException();
         }
     }
