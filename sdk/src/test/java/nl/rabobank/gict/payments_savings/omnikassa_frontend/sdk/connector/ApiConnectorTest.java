@@ -16,7 +16,6 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.Rabob
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.AccessToken;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.AccessTokenBuilder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.MerchantOrderTestFactory;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.PaymentBrand;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.TransactionStatus;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.TransactionType;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.InitiateRefundRequest;
@@ -197,7 +196,7 @@ public class ApiConnectorTest {
         assertThat(actual.getTotalAmount().getCurrency(), is(EUR));
         assertThat(actual.getTotalAmount().getAmountInCents(), is(599L));
         assertThat(actual.getTransactionInfo().get(0).getId(), is("1"));
-        assertThat(actual.getTransactionInfo().get(0).getPaymentBrand(), is(PaymentBrand.IDEAL));
+        assertThat(actual.getTransactionInfo().get(0).getPaymentBrand(), is("IDEAL"));
         assertThat(actual.getTransactionInfo().get(0).getType(), is(TransactionType.PAYMENT));
         assertThat(actual.getTransactionInfo().get(0).getStatus(), is(TransactionStatus.SUCCESS));
         assertThat(actual.getTransactionInfo().get(0).getAmount().getAmount(), is(new BigDecimal("5.99")));
@@ -221,7 +220,7 @@ public class ApiConnectorTest {
         assertThat(actual.getTotalAmount().getCurrency(), is(EUR));
         assertThat(actual.getTotalAmount().getAmountInCents(), is(599L));
         assertThat(actual.getTransactionInfo().get(0).getId(), is("1"));
-        assertThat(actual.getTransactionInfo().get(0).getPaymentBrand(), is(PaymentBrand.IDEAL));
+        assertThat(actual.getTransactionInfo().get(0).getPaymentBrand(), is("IDEAL"));
         assertThat(actual.getTransactionInfo().get(0).getType(), is(TransactionType.PAYMENT));
         assertThat(actual.getTransactionInfo().get(0).getStatus(), is(TransactionStatus.SUCCESS));
         assertThat(actual.getTransactionInfo().get(0).getAmount().getAmount(), is(new BigDecimal("5.99")));
