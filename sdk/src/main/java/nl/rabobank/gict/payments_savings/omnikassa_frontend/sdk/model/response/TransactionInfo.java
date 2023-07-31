@@ -3,7 +3,6 @@ package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response;
 import kong.unirest.json.JSONObject;
 
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.Money;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.PaymentBrand;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.TransactionStatus;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.TransactionType;
 
@@ -17,7 +16,7 @@ import java.util.Optional;
 public final class TransactionInfo {
 
     private final String id;
-    private final PaymentBrand paymentBrand;
+    private final String paymentBrand;
     private final TransactionType type;
     private final TransactionStatus status;
     private final Money amount;
@@ -27,7 +26,7 @@ public final class TransactionInfo {
 
     public TransactionInfo(JSONObject jsonObject) {
         this.id = jsonObject.getString("id");
-        this.paymentBrand = jsonObject.getEnum(PaymentBrand.class, "paymentBrand");
+        this.paymentBrand = jsonObject.getString("paymentBrand");
         this.type = jsonObject.getEnum(TransactionType.class, "type");
         this.status = jsonObject.getEnum(TransactionStatus.class, "status");
         this.amount = Money.fromJson(jsonObject.getJSONObject("amount"));
@@ -44,7 +43,7 @@ public final class TransactionInfo {
         return id;
     }
 
-    public PaymentBrand getPaymentBrand() {
+    public String getPaymentBrand() {
         return paymentBrand;
     }
 
@@ -74,7 +73,7 @@ public final class TransactionInfo {
 
     public List<String> getSignatureData() {
         return Arrays.asList(id,
-                             paymentBrand.name(),
+                             paymentBrand,
                              type.name(),
                              status.name(),
                              amount.getCurrency().name(),
