@@ -8,6 +8,11 @@ trigger:
       - refs/heads/master
       - refs/heads/feature/*
 
+pr:
+  branches:
+    exclude:
+      - "*"
+
 schedules:
   - cron: "0 18 * * Sun"
     displayName: Weekly build
