@@ -19,6 +19,7 @@ Detailed developer documentation on how to use the Java SDK as well as contact i
 the [SDK manual](https://github.com/rabobank-nederland/omnikassa-sdk-doc/blob/main/README.md).
 
 ## Release notes
+Below are the release notes
 
 ### Version 1.13.0
 
