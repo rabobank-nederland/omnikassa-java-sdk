@@ -7,10 +7,9 @@ trigger:
     include:
       - refs/heads/master
       - refs/heads/feature/*
-
 pr:
   branches:
-    exclude:
+    include:
       - "*"
 
 schedules:
