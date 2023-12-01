@@ -30,7 +30,7 @@ public class ApiConnector {
 
     public static final String X_API_USER_AGENT = "X-Api-User-Agent";
 
-    public static final String SMARTPAY_USER_AGENT = "Rabobank Omnikassa Java SDK/1.14";
+    public static final String SMARTPAY_USER_AGENT = "RabobankOmnikassaJavaSDK/1.14";
     private final byte[] signingKey;
     private final UnirestJSONTemplate jsonTemplate;
 
@@ -60,7 +60,6 @@ public class ApiConnector {
 
             @Override
             JSONObject fetch() {
-                System.out.println(getUserAgentHeaderString());
                 Map<String, String> requestHeaders = new HashMap<>();
                 requestHeaders.put(X_API_USER_AGENT, getUserAgentHeaderString());
                 return jsonTemplate.postWithHeader("order/server/api/v2/order", order, requestHeaders, token);
