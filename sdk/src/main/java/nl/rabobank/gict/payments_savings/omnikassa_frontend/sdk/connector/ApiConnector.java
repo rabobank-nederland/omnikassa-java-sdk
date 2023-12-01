@@ -262,7 +262,7 @@ public class ApiConnector {
     private String getUserAgentHeaderString() {
         String userAgentHeader = SMARTPAY_USER_AGENT;
         if (userAgent != null) {
-            userAgentHeader += ", " + userAgent;
+            userAgentHeader += " " + userAgent;
         }
         if (this.partnerReference != null) {
             userAgentHeader += " (pr: " + partnerReference + ")";
