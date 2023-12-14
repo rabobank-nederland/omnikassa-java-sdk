@@ -51,7 +51,8 @@ public class WebShopOrder {
                                               PaymentBrandForce paymentBrandForce,
                                               String preselectedIssuerId,
                                               String initiatingParty,
-                                              boolean skipHppResultPage) {
+                                              boolean skipHppResultPage,
+                                              String shopperBankstatementReference) {
         return new Builder()
                 .withMerchantOrderId(String.valueOf(orderId))
                 .withAmount(Money.fromEuros(EUR, getTotalPrice()))
@@ -67,6 +68,7 @@ public class WebShopOrder {
                 .withPaymentBrandMetaData(preparePaymentBrandMetaData(preselectedIssuerId))
                 .withInitiatingParty(initiatingParty)
                 .withSkipHppResultPage(skipHppResultPage)
+                .withShopperBankstatementReference(shopperBankstatementReference)
                 .build();
     }
 

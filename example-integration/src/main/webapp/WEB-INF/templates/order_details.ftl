@@ -145,6 +145,14 @@
                     <input type="text" name="initiatingParty" id="initiating_party" class="form-control">
                 </td>
             </tr>
+            <tr>
+                <td>
+                    <label for="shopper_bankstatement_reference">Shopper bankstatement reference</label>
+                </td>
+                <td>
+                    <input type="text" name="shopperBankstatementReference" id="shopper_bankstatement_reference" class="form-control">
+                </td>
+            </tr>
         </table>
     </div>
     <br/>

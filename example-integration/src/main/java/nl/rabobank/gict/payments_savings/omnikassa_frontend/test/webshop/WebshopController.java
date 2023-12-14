@@ -247,8 +247,10 @@ class WebshopController {
         String preselectedIssuerId = getPreselectedIssuerId(request);
         boolean skipHppResultPage = parseBoolean(request.getParameter("skipHppResultPage"));
         String initiatingParty = request.getParameter("initiatingParty");
+        String shopperBankstatementReference = request.getParameter("shopperBankstatementReference");
         return webShopOrderMap.get(iterator).prepareMerchantOrder(customerInformation, shippingDetails, billingDetails,
-                                                                  paymentBrand, paymentBrandForce, preselectedIssuerId, initiatingParty, skipHppResultPage);
+                                                                  paymentBrand, paymentBrandForce, preselectedIssuerId,
+                                                                  initiatingParty, skipHppResultPage, shopperBankstatementReference);
     }
 
     private CustomerInformation createCustomerInformation(HttpServletRequest request) {
