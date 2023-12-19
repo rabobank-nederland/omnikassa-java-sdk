@@ -59,9 +59,11 @@ public final class Endpoint {
     /**
      * Use this method to retrieve an instance of the Endpont
      *
-     * @param baseURL       this is the Url that points to the Rabobank API
-     * @param signingKey    this is the key given by the Rabobank to sign all communication
-     * @param tokenProvider this must be your own implementation of the tokenProvider, see developer-manual
+     * @param baseURL          this is the Url that points to the Rabobank API
+     * @param signingKey       this is the key given by the Rabobank to sign all communication
+     * @param tokenProvider    this must be your own implementation of the tokenProvider, see developer-manual
+     * @param userAgent        this is the User-Agent value you want to give your implementation
+     * @param partnerReference this can be filled with the partner reference, if applicable.
      * @return new instance of Endpoint
      * Note: for backward compatibility do not remove this method!
      * @deprecated This method is deprecated, use the {@link Endpoint#createInstance(Environment, String, TokenProvider)} instead.
@@ -98,6 +100,7 @@ public final class Endpoint {
      * @param environment             this is the Url that points to the Rabobank API
      * @param base64encodedSigningKey this is the key given by the Rabobank to sign all communication
      * @param tokenProvider           this must be your own implementation of the tokenProvider, see developer-manual
+     * @param userAgent               this is the User-Agent value you want to give your implementation
      * @return new instance of Endpoint
      */
     public static Endpoint createInstance(Environment environment,
@@ -113,6 +116,8 @@ public final class Endpoint {
      * @param environment             this is the Url that points to the Rabobank API
      * @param base64encodedSigningKey this is the key given by the Rabobank to sign all communication
      * @param tokenProvider           this must be your own implementation of the tokenProvider, see developer-manual
+     * @param userAgent               this is the User-Agent value you want to give your implementation
+     * @param partnerReference        this can be filled with the partner reference, if applicable.
      * @return new instance of Endpoint
      */
     public static Endpoint createInstance(Environment environment,
