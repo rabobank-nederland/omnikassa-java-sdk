@@ -99,7 +99,7 @@ public class ApiConnectorTest {
     public void testAnnounceMerchantOrder_HappyFlowWithPartnerReferenceAndCustomUserAgent() throws Exception {
         MerchantOrderRequest merchantOrderRequest = createMerchantOrderRequest();
 
-        when(jsonTemplate.postWithHeader(ORDER_SERVER_API_ORDER, merchantOrderRequest, Collections.singletonMap("X-Api-User-Agent", "RabobankOmnikassaJavaSDK/1.14, CustomAgent/1 (pr: 12345)"), "token")).thenReturn(prepareMerchantOrderResponse());
+        when(jsonTemplate.postWithHeader(ORDER_SERVER_API_ORDER, merchantOrderRequest, Collections.singletonMap("X-Api-User-Agent", "RabobankOmnikassaJavaSDK/1.14 CustomAgent/1 (pr: 12345)"), "token")).thenReturn(prepareMerchantOrderResponse());
 
         classUnderTest.setPartnerReference("12345");
         classUnderTest.setUserAgent("CustomAgent/1");

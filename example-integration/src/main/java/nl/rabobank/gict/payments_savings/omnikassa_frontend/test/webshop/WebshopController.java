@@ -78,13 +78,16 @@ class WebshopController {
     private final Logger logger = Logger.getLogger(WebshopController.class.toString());
     private String loggingPath;
 
-    WebshopController(@Value("${signing_key}") String key, @Value("${refresh_token}") String token,
-                      @Value("${base_url}") String baseUrl) {
+    WebshopController(@Value("${signing_key}") String key,
+                      @Value("${refresh_token}") String token,
+                      @Value("${base_url}") String baseUrl,
+                      @Value("${user_agent:TestWebshop/1.14}") String userAgent,
+                      @Value("${partner_reference}") String partnerReference) {
         this.signingKey = getSigningKey(key);
         this.baseUrl = baseUrl;
         TokenProvider tokenProvider = new CustomTokenProvider(token);
-        endpoint = Endpoint.createInstance(baseUrl, signingKey, tokenProvider);
-
+        endpoint = Endpoint.createInstance(baseUrl, signingKey, tokenProvider, userAgent, partnerReference);
+        
         webShopOrderMap.put(iterator, new WebShopOrder(iterator));
     }
 
