@@ -27,6 +27,7 @@ public final class MerchantOrder {
     private final PaymentBrandForce paymentBrandForce;
     private final Map<String, String> paymentBrandMetaData;
     private final boolean skipHppResultPage;
+    private final String shopperBankstatementReference;
 
     private final String initiatingParty;
 
@@ -45,6 +46,7 @@ public final class MerchantOrder {
         this.initiatingParty = builder.initiatingParty;
         this.paymentBrandMetaData = builder.paymentBrandMetaData;
         this.skipHppResultPage = builder.skipHppResultPage;
+        this.shopperBankstatementReference = builder.shopperBankstatementReference;
     }
     public String getInitiatingParty() {
         return initiatingParty;
@@ -101,6 +103,10 @@ public final class MerchantOrder {
         return skipHppResultPage;
     }
 
+    public String getShopperBankstatementReference() {
+        return shopperBankstatementReference;
+    }
+
     public static class Builder {
 
         private String merchantOrderId;
@@ -117,11 +123,14 @@ public final class MerchantOrder {
         private Map<String, String> paymentBrandMetaData = Collections.emptyMap();
         private String initiatingParty;
         private boolean skipHppResultPage = false;
+        private String shopperBankstatementReference;
 
         /**
          * @param merchantOrderId | Must not be `null`
-         *                        | Must contain only alphanumeric characters
-         *                        | Will be truncated to 35 characters longest.
+         *                        | - if shopperBankstatementReference is supplied:
+         *                        |   Allows all ascii characters up to a length of 255 characters, if the ID contains more than 255 characters, the extra characters are removed after the 255th character.
+         *                        | - else:
+         *                        |   Must adhere to the pattern: '[A-Za-z0-9]{1,24}', if the ID contains more than 24 characters, the extra characters are removed after the 24th character.
          * @return Builder
          */
         public Builder withMerchantOrderId(String merchantOrderId) {
@@ -251,6 +260,17 @@ public final class MerchantOrder {
          */
         public Builder withSkipHppResultPage(boolean skipHppResultPage) {
             this.skipHppResultPage = skipHppResultPage;
+            return this;
+        }
+
+        /**
+         * Shown on the customer's bankstatement reference.
+         * @param shopperBankstatementReference | Optional
+         *                                      | Must adhere to the pattern: '[A-Za-z0-9]{1,24}', if the ID contains more than 24 characters, the extra characters are removed after the 24th character.
+         * @return Builder
+         */
+        public Builder withShopperBankstatementReference(String shopperBankstatementReference) {
+            this.shopperBankstatementReference = shopperBankstatementReference;
             return this;
         }
 
