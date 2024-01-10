@@ -37,13 +37,13 @@ public class ApiConnector {
     private String userAgent;
     private String partnerReference;
 
-    ApiConnector(UnirestJSONTemplate jsonTemplate, byte[] signingKey) {
+    ApiConnector(UnirestJSONTemplate jsonTemplate, byte[] signingKey, String userAgent, String partnerReference) {
         this.jsonTemplate = jsonTemplate;
         this.signingKey = signingKey;
     }
 
-    public ApiConnector(String baseURL, byte[] signingKey) {
-        this(new UnirestJSONTemplate(baseURL), signingKey);
+    public ApiConnector(String baseURL, byte[] signingKey, String userAgent, String partnerReference) {
+        this(new UnirestJSONTemplate(baseURL), signingKey, userAgent, partnerReference);
     }
 
     /**

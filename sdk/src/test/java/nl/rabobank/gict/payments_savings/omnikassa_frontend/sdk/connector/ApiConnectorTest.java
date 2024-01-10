@@ -65,9 +65,7 @@ public class ApiConnectorTest {
 
     @Before
     public void setUp() {
-        classUnderTest = new ApiConnector(jsonTemplate, SIGNING_KEY);
-        classUnderTest.setUserAgent(null);
-        classUnderTest.setPartnerReference(null);
+        classUnderTest = new ApiConnector(jsonTemplate, SIGNING_KEY, null, null);
     }
 
     @Test

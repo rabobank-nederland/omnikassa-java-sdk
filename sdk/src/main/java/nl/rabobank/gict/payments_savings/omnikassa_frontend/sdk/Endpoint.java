@@ -52,7 +52,6 @@ public final class Endpoint {
      */
     @Deprecated
     public static Endpoint createInstance(String baseURL, byte[] signingKey, TokenProvider tokenProvider) {
-        ApiConnector connector = new ApiConnector(baseURL, signingKey);
         return createInstance(baseURL, signingKey, tokenProvider, null, null);
     }
 
@@ -74,9 +73,7 @@ public final class Endpoint {
                                           TokenProvider tokenProvider,
                                           String userAgent,
                                           String partnerReference) {
-        ApiConnector connector = new ApiConnector(baseURL, signingKey);
-        connector.setUserAgent(userAgent);
-        connector.setPartnerReference(partnerReference);
+        ApiConnector connector = new ApiConnector(baseURL, signingKey, userAgent, partnerReference);
         return new Endpoint(connector, tokenProvider, signingKey);
     }
 
