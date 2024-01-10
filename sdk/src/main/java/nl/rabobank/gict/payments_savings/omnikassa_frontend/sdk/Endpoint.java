@@ -91,7 +91,7 @@ public final class Endpoint {
     public static Endpoint createInstance(Environment environment,
                                           String base64encodedSigningKey,
                                           TokenProvider tokenProvider) {
-        return createInstance(environment, base64encodedSigningKey, tokenProvider, null, null);
+        return createInstance(environment, base64encodedSigningKey, tokenProvider, null);
     }
 
     /**
@@ -135,9 +135,7 @@ public final class Endpoint {
      * @param merchantOrder containing the details of the order
      * @return The result is the issuer selection Url to which the customer should be redirected.
      * @throws RabobankSdkException when problems occurred during the request, e.g. server not reachable, invalid signature, invalid authentication etc.
-     * @deprecated This method is deprecated, use the {@link Endpoint#announce(MerchantOrder)} instead.
      */
-    @Deprecated
     public String announceOrder(MerchantOrder merchantOrder) throws RabobankSdkException {
         return announce(merchantOrder).getRedirectUrl();
     }
