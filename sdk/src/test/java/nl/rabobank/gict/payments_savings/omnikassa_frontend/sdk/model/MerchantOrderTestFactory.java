@@ -31,6 +31,7 @@ public class MerchantOrderTestFactory {
                 .withInitiatingParty("LIGHTSPEED")
                 .withSkipHppResultPage(true)
                 .withPaymentBrandMetaData(getPaymentBrandMetaData())
+                .withShopperBankstatementReference("bankstatementReference")
                 .build();
     }
 

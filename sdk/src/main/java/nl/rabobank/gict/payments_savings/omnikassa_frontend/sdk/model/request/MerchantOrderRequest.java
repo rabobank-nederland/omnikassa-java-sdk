@@ -1,8 +1,8 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request;
 
-import org.joda.time.DateTime;
 import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONObject;
+import org.joda.time.DateTime;
 
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.JsonConvertible;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.MerchantOrder;
@@ -67,6 +67,10 @@ public class MerchantOrderRequest implements JsonConvertible {
             jsonObject.put("initiatingParty", merchantOrder.getInitiatingParty());
         }
         jsonObject.put("skipHppResultPage", merchantOrder.skipHppResultPage());
+        String shopperBankstatementReference = merchantOrder.getShopperBankstatementReference();
+        if (shopperBankstatementReference != null) {
+            jsonObject.put("shopperBankstatementReference", shopperBankstatementReference);
+        }
         return jsonObject;
     }
 
