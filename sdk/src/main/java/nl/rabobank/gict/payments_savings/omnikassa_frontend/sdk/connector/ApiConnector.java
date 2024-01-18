@@ -1,15 +1,13 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.connector;
 
 
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.InitiateRefundRequest;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.IdealIssuersResponse;
-
 import kong.unirest.UnirestException;
 import kong.unirest.json.JSONObject;
 
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.IllegalApiResponseException;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.RabobankSdkException;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.AccessToken;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.InitiateRefundRequest;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.MerchantOrderRequest;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.ApiNotification;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.IdealIssuersResponse;
@@ -29,20 +27,28 @@ import java.util.UUID;
  * It sets up and sends JSON request to the Rabobank api.
  */
 public class ApiConnector {
+
+    public static final String X_API_USER_AGENT = "X-Api-User-Agent";
+
+    public static final String SMARTPAY_USER_AGENT = "RabobankOmnikassaJavaSDK/1.14";
     private final byte[] signingKey;
     private final UnirestJSONTemplate jsonTemplate;
 
-    ApiConnector(UnirestJSONTemplate jsonTemplate, byte[] signingKey) {
+    private String userAgent;
+    private String partnerReference;
+
+    ApiConnector(UnirestJSONTemplate jsonTemplate, byte[] signingKey, String userAgent, String partnerReference) {
         this.jsonTemplate = jsonTemplate;
         this.signingKey = signingKey;
     }
 
-    public ApiConnector(String baseURL, byte[] signingKey) {
-        this(new UnirestJSONTemplate(baseURL), signingKey);
+    public ApiConnector(String baseURL, byte[] signingKey, String userAgent, String partnerReference) {
+        this(new UnirestJSONTemplate(baseURL), signingKey, userAgent, partnerReference);
     }
 
     /**
      * sends the MerchantOrderRequest to the Rabobank.
+     *
      * @param order containing detail of the order
      * @param token access token
      * @return MerchantOrderResponse for requested order
@@ -54,7 +60,9 @@ public class ApiConnector {
 
             @Override
             JSONObject fetch() {
-                return jsonTemplate.post("order/server/api/v2/order", order, token);
+                Map<String, String> requestHeaders = new HashMap<>();
+                requestHeaders.put(X_API_USER_AGENT, getUserAgentHeaderString());
+                return jsonTemplate.postWithHeader("order/server/api/v2/order", order, requestHeaders, token);
             }
 
             @Override
@@ -66,6 +74,7 @@ public class ApiConnector {
 
     /**
      * retrieves the Announcement data from the Rabobank
+     *
      * @param apiNotification received notification for order
      * @return MerchantOrderStatusResponse containing the information regarding the order
      * @throws RabobankSdkException when problems occurred during the request, e.g. server not reachable, invalid signature, invalid authentication etc.
@@ -89,22 +98,26 @@ public class ApiConnector {
 
     /**
      * sends the InitiateRefundRequest to the Rabobank.
+     *
      * @param refundRequest containing detail of the refund
      * @param transactionId id of transaction
-     * @param requestId id of request
-     * @param token access token
+     * @param requestId     id of request
+     * @param token         access token
      * @return RefundDetailsResponse for requested refund
      * @throws RabobankSdkException when problems occurred during the request, e.g. server not reachable, invalid signature, invalid authentication etc.
      */
-    public RefundDetailsResponse postRefundRequest(final InitiateRefundRequest refundRequest, final UUID transactionId, final UUID requestId, final String token)
+    public RefundDetailsResponse postRefundRequest(final InitiateRefundRequest refundRequest,
+                                                   final UUID transactionId,
+                                                   final UUID requestId,
+                                                   final String token)
             throws RabobankSdkException {
         return new RequestTemplate<RefundDetailsResponse>() {
 
             @Override
             JSONObject fetch() throws UnirestException {
-                Map<String,String> requestHeaders = new HashMap<>();
+                Map<String, String> requestHeaders = new HashMap<>();
                 requestHeaders.put("request-id", requestId.toString());
-                return jsonTemplate.postWithHeader("order/server/api/v2/refund/transactions/"+ transactionId +"/refunds", refundRequest, requestHeaders, token);
+                return jsonTemplate.postWithHeader("order/server/api/v2/refund/transactions/" + transactionId + "/refunds", refundRequest, requestHeaders, token);
             }
 
             @Override
@@ -116,9 +129,10 @@ public class ApiConnector {
 
     /**
      * retrieves the RefundDetailsResponse from the Rabobank.
-     * @param refundId id of the refund
+     *
+     * @param refundId      id of the refund
      * @param transactionId id of transaction
-     * @param token access token
+     * @param token         access token
      * @return RefundDetailsResponse for requested refund
      * @throws RabobankSdkException when problems occurred during the request, e.g. server not reachable, invalid signature, invalid authentication etc.
      */
@@ -128,7 +142,7 @@ public class ApiConnector {
 
             @Override
             JSONObject fetch() throws UnirestException {
-                return jsonTemplate.get("order/server/api/v2/refund/transactions/"+ transactionId +"/refunds/"+ refundId, token);
+                return jsonTemplate.get("order/server/api/v2/refund/transactions/" + transactionId + "/refunds/" + refundId, token);
             }
 
             @Override
@@ -140,8 +154,9 @@ public class ApiConnector {
 
     /**
      * retrieves the TransactionRefundableDetailsResponse from the Rabobank.
+     *
      * @param transactionId id of transaction
-     * @param token access token
+     * @param token         access token
      * @return TransactionRefundableDetailsResponse for initiated refund
      * @throws RabobankSdkException when problems occurred during the request, e.g. server not reachable, invalid signature, invalid authentication etc.
      */
@@ -151,7 +166,7 @@ public class ApiConnector {
 
             @Override
             JSONObject fetch() throws UnirestException {
-                return jsonTemplate.get("order/server/api/v2/refund/transactions/"+ transactionId +"/refundable-details", token);
+                return jsonTemplate.get("order/server/api/v2/refund/transactions/" + transactionId + "/refundable-details", token);
             }
 
             @Override
@@ -242,5 +257,32 @@ public class ApiConnector {
             converted.validateSignature(signingKey);
             return converted;
         }
+    }
+
+    private String getUserAgentHeaderString() {
+        String userAgentHeader = SMARTPAY_USER_AGENT;
+        if (userAgent != null) {
+            userAgentHeader += " " + userAgent;
+        }
+        if (this.partnerReference != null) {
+            userAgentHeader += " (pr: " + partnerReference + ")";
+        }
+        return userAgentHeader;
+    }
+
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
+    }
+
+    public void setPartnerReference(String partnerReference) {
+        this.partnerReference = partnerReference;
+    }
+
+    public String getUserAgent() {
+        return userAgent;
+    }
+
+    public String getPartnerReference() {
+        return partnerReference;
     }
 }

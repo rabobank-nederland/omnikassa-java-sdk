@@ -42,4 +42,5 @@ class UnirestJSONTemplate {
 
         return requestBodyEntity.asJson().getBody().getObject();
     }
+
 }

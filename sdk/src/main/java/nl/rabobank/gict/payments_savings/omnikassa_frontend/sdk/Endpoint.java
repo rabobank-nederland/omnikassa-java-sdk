@@ -1,7 +1,5 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk;
 
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.InitiateRefundRequest;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.IdealIssuersResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,8 +9,10 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.Inval
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.RabobankSdkException;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.AccessToken;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.MerchantOrder;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.InitiateRefundRequest;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.MerchantOrderRequest;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.ApiNotification;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.IdealIssuersResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.PaymentBrandsResponse;
@@ -46,13 +46,34 @@ public final class Endpoint {
      * @param baseURL       this is the Url that points to the Rabobank API
      * @param signingKey    this is the key given by the Rabobank to sign all communication
      * @param tokenProvider this must be your own implementation of the tokenProvider, see developer-manual
-     * @deprecated This method is deprecated, use the {@link Endpoint#createInstance(Environment, String, TokenProvider)} instead.
      * @return new instance of Endpoint
      * Note: for backward compatibility do not remove this method!
+     * @deprecated This method is deprecated, use the {@link Endpoint#createInstance(Environment, String, TokenProvider)} instead.
      */
     @Deprecated
     public static Endpoint createInstance(String baseURL, byte[] signingKey, TokenProvider tokenProvider) {
-        ApiConnector connector = new ApiConnector(baseURL, signingKey);
+        return createInstance(baseURL, signingKey, tokenProvider, null, null);
+    }
+
+    /**
+     * Use this method to retrieve an instance of the Endpont
+     *
+     * @param baseURL          this is the Url that points to the Rabobank API
+     * @param signingKey       this is the key given by the Rabobank to sign all communication
+     * @param tokenProvider    this must be your own implementation of the tokenProvider, see developer-manual
+     * @param userAgent        this is the User-Agent value you want to give your implementation
+     * @param partnerReference this can be filled with the partner reference, if applicable.
+     * @return new instance of Endpoint
+     * Note: for backward compatibility do not remove this method!
+     * @deprecated This method is deprecated, use the {@link Endpoint#createInstance(Environment, String, TokenProvider)} instead.
+     */
+    @Deprecated
+    public static Endpoint createInstance(String baseURL,
+                                          byte[] signingKey,
+                                          TokenProvider tokenProvider,
+                                          String userAgent,
+                                          String partnerReference) {
+        ApiConnector connector = new ApiConnector(baseURL, signingKey, userAgent, partnerReference);
         return new Endpoint(connector, tokenProvider, signingKey);
     }
 
@@ -67,8 +88,42 @@ public final class Endpoint {
     public static Endpoint createInstance(Environment environment,
                                           String base64encodedSigningKey,
                                           TokenProvider tokenProvider) {
+        return createInstance(environment, base64encodedSigningKey, tokenProvider, null);
+    }
+
+    /**
+     * Use this method to retrieve an instance of the Endpont
+     *
+     * @param environment             this is the Url that points to the Rabobank API
+     * @param base64encodedSigningKey this is the key given by the Rabobank to sign all communication
+     * @param tokenProvider           this must be your own implementation of the tokenProvider, see developer-manual
+     * @param userAgent               this is the User-Agent value you want to give your implementation
+     * @return new instance of Endpoint
+     */
+    public static Endpoint createInstance(Environment environment,
+                                          String base64encodedSigningKey,
+                                          TokenProvider tokenProvider,
+                                          String userAgent) {
+        return createInstance(environment, base64encodedSigningKey, tokenProvider, userAgent, null);
+    }
+
+    /**
+     * Use this method to retrieve an instance of the Endpont
+     *
+     * @param environment             this is the Url that points to the Rabobank API
+     * @param base64encodedSigningKey this is the key given by the Rabobank to sign all communication
+     * @param tokenProvider           this must be your own implementation of the tokenProvider, see developer-manual
+     * @param userAgent               this is the User-Agent value you want to give your implementation
+     * @param partnerReference        this can be filled with the partner reference, if applicable.
+     * @return new instance of Endpoint
+     */
+    public static Endpoint createInstance(Environment environment,
+                                          String base64encodedSigningKey,
+                                          TokenProvider tokenProvider,
+                                          String userAgent,
+                                          String partnerReference) {
         byte[] signingKey = decodeBase64(base64encodedSigningKey);
-        return createInstance(environment.getUrl(), signingKey, tokenProvider);
+        return createInstance(environment.getUrl(), signingKey, tokenProvider, userAgent, partnerReference);
     }
 
     /**
@@ -77,9 +132,7 @@ public final class Endpoint {
      * @param merchantOrder containing the details of the order
      * @return The result is the issuer selection Url to which the customer should be redirected.
      * @throws RabobankSdkException when problems occurred during the request, e.g. server not reachable, invalid signature, invalid authentication etc.
-     * @deprecated This method is deprecated, use the {@link Endpoint#announce(MerchantOrder)} instead.
      */
-    @Deprecated
     public String announceOrder(MerchantOrder merchantOrder) throws RabobankSdkException {
         return announce(merchantOrder).getRedirectUrl();
     }
@@ -129,11 +182,13 @@ public final class Endpoint {
      *
      * @param refundRequest The request for refund, the object can be constructed via Jackson or with the direct constructor
      * @param transactionId The transactionId of transaction for which the refund request is sent
-     * @param requestId The requestId, unique id of refund request
+     * @param requestId     The requestId, unique id of refund request
      * @return The response contains refund details, which can be used to update the refund with the latest status.
      * @throws RabobankSdkException when problems occurred during the request, e.g. server not reachable, invalid signature, invalid authentication etc.
      */
-    public RefundDetailsResponse initiateRefundTransaction(InitiateRefundRequest refundRequest, UUID transactionId, UUID requestId)
+    public RefundDetailsResponse initiateRefundTransaction(InitiateRefundRequest refundRequest,
+                                                           UUID transactionId,
+                                                           UUID requestId)
             throws RabobankSdkException {
         try {
             return connector.postRefundRequest(refundRequest, transactionId, requestId, tokenProvider.getAccessToken());
@@ -146,7 +201,7 @@ public final class Endpoint {
     /**
      * This function will get refund details.
      *
-     * @param refundId The id of initiated refund request
+     * @param refundId      The id of initiated refund request
      * @param transactionId The transactionId of transaction for which the refund request is sent
      * @return The response contains refund details, which can be used to update the refund with the latest status.
      * @throws RabobankSdkException when problems occurred during the request, e.g. server not reachable, invalid signature, invalid authentication etc.

@@ -74,3 +74,4 @@ fabric.properties
 
 ### Sensitive Data ###
 example-integration/src/main/resources/application.properties
+example-integration/src/main/resources/application-local.properties

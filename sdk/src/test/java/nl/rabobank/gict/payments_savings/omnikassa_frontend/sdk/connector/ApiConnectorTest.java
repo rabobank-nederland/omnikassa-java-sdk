@@ -34,6 +34,7 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.utils.Refu
 
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.Map;
 import java.util.UUID;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -49,6 +50,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ApiConnectorTest {
+    private static final Map<String, String> DEFAULT_USER_AGENT_HEADER = Collections.singletonMap("X-Api-User-Agent", "RabobankOmnikassaJavaSDK/1.14");
     private static final byte[] SIGNING_KEY = "secret".getBytes(UTF_8);
     private static final String ORDER_SERVER_API_ORDER = "order/server/api/v2/order";
     private static final String ORDER_SERVER_API_EVENTS_RESULTS_EVENT = "order/server/api/v2/events/results/event";
@@ -63,15 +65,42 @@ public class ApiConnectorTest {
 
     @Before
     public void setUp() {
-        classUnderTest = new ApiConnector(jsonTemplate, SIGNING_KEY);
+        classUnderTest = new ApiConnector(jsonTemplate, SIGNING_KEY, null, null);
     }
 
     @Test
-    public void testAnnounceMerchantOrder_HappyFlow() throws Exception {
+    public void testAnnounceMerchantOrder_HappyFlowWithDefaultUserAgent() throws Exception {
         MerchantOrderRequest merchantOrderRequest = createMerchantOrderRequest();
 
-        when(jsonTemplate.post(ORDER_SERVER_API_ORDER, merchantOrderRequest, "token")).thenReturn(prepareMerchantOrderResponse());
+        when(jsonTemplate.postWithHeader(ORDER_SERVER_API_ORDER, merchantOrderRequest, DEFAULT_USER_AGENT_HEADER, "token")).thenReturn(prepareMerchantOrderResponse());
 
+        MerchantOrderResponse merchantOrderResponse = classUnderTest.announceMerchantOrder(merchantOrderRequest, "token");
+
+        assertThat(merchantOrderResponse.getRedirectUrl(), is("http://returnAdress"));
+        assertThat(merchantOrderResponse.getOmnikassaOrderId(), is(UUID.fromString("25da863a-60a5-475d-ae47-c0e4bd1bec31")));
+    }
+
+    @Test
+    public void testAnnounceMerchantOrder_HappyFlowWithPartnerReference() throws Exception {
+        MerchantOrderRequest merchantOrderRequest = createMerchantOrderRequest();
+
+        when(jsonTemplate.postWithHeader(ORDER_SERVER_API_ORDER, merchantOrderRequest, Collections.singletonMap("X-Api-User-Agent", "RabobankOmnikassaJavaSDK/1.14 (pr: 12345)"), "token")).thenReturn(prepareMerchantOrderResponse());
+
+        classUnderTest.setPartnerReference("12345");
+        MerchantOrderResponse merchantOrderResponse = classUnderTest.announceMerchantOrder(merchantOrderRequest, "token");
+
+        assertThat(merchantOrderResponse.getRedirectUrl(), is("http://returnAdress"));
+        assertThat(merchantOrderResponse.getOmnikassaOrderId(), is(UUID.fromString("25da863a-60a5-475d-ae47-c0e4bd1bec31")));
+    }
+
+    @Test
+    public void testAnnounceMerchantOrder_HappyFlowWithPartnerReferenceAndCustomUserAgent() throws Exception {
+        MerchantOrderRequest merchantOrderRequest = createMerchantOrderRequest();
+
+        when(jsonTemplate.postWithHeader(ORDER_SERVER_API_ORDER, merchantOrderRequest, Collections.singletonMap("X-Api-User-Agent", "RabobankOmnikassaJavaSDK/1.14 CustomAgent/1 (pr: 12345)"), "token")).thenReturn(prepareMerchantOrderResponse());
+
+        classUnderTest.setPartnerReference("12345");
+        classUnderTest.setUserAgent("CustomAgent/1");
         MerchantOrderResponse merchantOrderResponse = classUnderTest.announceMerchantOrder(merchantOrderRequest, "token");
 
         assertThat(merchantOrderResponse.getRedirectUrl(), is("http://returnAdress"));
@@ -82,7 +111,7 @@ public class ApiConnectorTest {
     public void testAnnounceMerchantOrder_UniRestException() throws Exception {
         MerchantOrderRequest merchantOrderRequest = createMerchantOrderRequest();
 
-        when(jsonTemplate.post(ORDER_SERVER_API_ORDER, merchantOrderRequest, "token")).thenThrow(new UnirestException("UniREST test"));
+        when(jsonTemplate.postWithHeader(ORDER_SERVER_API_ORDER, merchantOrderRequest, DEFAULT_USER_AGENT_HEADER, "token")).thenThrow(new UnirestException("UniREST test"));
 
         classUnderTest.announceMerchantOrder(merchantOrderRequest, "token");
     }
@@ -92,7 +121,7 @@ public class ApiConnectorTest {
         try {
             MerchantOrderRequest merchantOrderRequest = createMerchantOrderRequest();
 
-            when(jsonTemplate.post(ORDER_SERVER_API_ORDER, merchantOrderRequest, "token")).thenReturn(prepareErrorResponse());
+            when(jsonTemplate.postWithHeader(ORDER_SERVER_API_ORDER, merchantOrderRequest, DEFAULT_USER_AGENT_HEADER, "token")).thenReturn(prepareErrorResponse());
 
             classUnderTest.announceMerchantOrder(merchantOrderRequest, "token");
             fail();
@@ -106,7 +135,7 @@ public class ApiConnectorTest {
     public void testAnnounceMerchantOrder_ApiReturnsUnexpectedError() throws Exception {
         MerchantOrderRequest merchantOrderRequest = createMerchantOrderRequest();
 
-        when(jsonTemplate.post(ORDER_SERVER_API_ORDER, merchantOrderRequest, "token")).thenReturn(prepareUnexpectedErrorResponse());
+        when(jsonTemplate.postWithHeader(ORDER_SERVER_API_ORDER, merchantOrderRequest, DEFAULT_USER_AGENT_HEADER, "token")).thenReturn(prepareUnexpectedErrorResponse());
 
         classUnderTest.announceMerchantOrder(merchantOrderRequest, "token");
     }

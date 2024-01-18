@@ -22,11 +22,13 @@ the [SDK manual](https://github.com/rabobank-nederland/omnikassa-sdk-doc/blob/ma
 
 ### Version 1.14.0
 
+* Added support for setting the partnerReference id and user agent in the X-Api-User-Agent header.
 * Added new optional shopperBankstatementReference field to order announcement
 
 ### Version 1.13.0
 
-* Return payment brand as a string in the transaction status response to enable seamless integration of new payment brands without updating the sdk
+* Return payment brand as a string in the transaction status response to enable seamless integration of new payment
+  brands without updating the sdk
 
 ### Version 1.12.0
 
