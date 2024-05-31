@@ -41,6 +41,17 @@ public class RefundTestFactory {
         return jsonObject;
     }
 
+    public static JSONObject refundDetailsResponseWithMinimumFieldsJsonObject() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("refundId", "25da863a-60a5-475d-ae47-c0e4bd1bec31");
+        jsonObject.put("createdAt", "2000-01-01T00:00:00.000-0200");
+        jsonObject.put("refundMoney", Money.fromEuros(Currency.EUR, new BigDecimal(100)).asJson());
+        jsonObject.put("paymentBrand", "IDEAL");
+        jsonObject.put("status", "COMPLETED");
+        jsonObject.put("transactionId", "25da863a-60a5-475d-ae47-c0e4bd1bec33");
+        return jsonObject;
+    }
+
     public static JSONObject defaultTransactionRefundableDetailsResponseJsonObject() {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("transactionId", "25da863a-60a5-475d-ae47-c0e4bd1bec31");
