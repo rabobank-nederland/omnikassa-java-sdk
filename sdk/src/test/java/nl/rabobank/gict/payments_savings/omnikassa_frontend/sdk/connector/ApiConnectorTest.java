@@ -44,6 +44,7 @@ import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.utils.Cal
 import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.utils.CalendarUtils.stringToCalendar;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
@@ -155,6 +156,21 @@ public class ApiConnectorTest {
 
         assertEquals(UUID.fromString("25da863a-60a5-475d-ae47-c0e4bd1bec31"), refundDetailsResponse.getRefundId());
         assertEquals(UUID.fromString("25da863a-60a5-475d-ae47-c0e4bd1bec32"), refundDetailsResponse.getRefundTransactionId());
+    }
+
+    @Test
+    public void testPostRefundRequest_MinimumFields() throws Exception {
+        InitiateRefundRequest initiateRefundRequest = RefundTestFactory.defaultInitiateRefundRequest();
+        UUID transaction = UUID.randomUUID();
+        UUID requestId = UUID.randomUUID();
+        when(jsonTemplate.postWithHeader(API_REFUND_ENDPOINT + transaction + "/refunds", initiateRefundRequest, Collections.singletonMap("request-id", requestId.toString()), "token")).thenReturn(RefundTestFactory.refundDetailsResponseWithMinimumFieldsJsonObject());
+
+        RefundDetailsResponse refundDetailsResponse = classUnderTest.postRefundRequest(initiateRefundRequest, transaction, requestId, "token");
+
+        assertNull(refundDetailsResponse.getUpdatedAt());
+        assertNull(refundDetailsResponse.getRefundTransactionId());
+        assertNull(refundDetailsResponse.getDescription());
+        assertNull(refundDetailsResponse.getVatCategory());
     }
 
     @Test

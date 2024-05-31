@@ -46,14 +46,14 @@ public class RefundDetailsResponse {
 
     public RefundDetailsResponse(JSONObject jsonObject) {
         this.refundId = UUID.fromString(jsonObject.getString("refundId"));
-        this.refundTransactionId = UUID.fromString(jsonObject.getString("refundTransactionId"));
+        this.refundTransactionId = jsonObject.isNull("refundTransactionId") ? null : UUID.fromString(jsonObject.getString("refundTransactionId"));
         this.createdAt = jsonObject.getString("createdAt");
-        this.updatedAt = jsonObject.getString("updatedAt");
+        this.updatedAt = jsonObject.isNull("updatedAt") ? null : jsonObject.getString("updatedAt");
         this.refundMoney = Money.fromJson(jsonObject.getJSONObject("refundMoney"));
-        this.vatCategory = jsonObject.getString("vatCategory");
+        this.vatCategory = jsonObject.isNull("vatCategory") ? null : jsonObject.getString("vatCategory");
         this.paymentBrand = jsonObject.getString("paymentBrand");
         this.status = jsonObject.getString("status");
-        this.description = jsonObject.getString("description");
+        this.description = jsonObject.isNull("description") ? null : jsonObject.getString("description");
         this.transactionId = UUID.fromString(jsonObject.getString("transactionId"));
     }
 
