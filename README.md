@@ -20,6 +20,10 @@ the [SDK manual](https://github.com/rabobank-nederland/omnikassa-sdk-doc/blob/ma
 
 ## Release notes
 
+### Version 1.14.1
+
+* Add support for nullable fields in RefundDetailsResponse
+
 ### Version 1.14.0
 
 * Added support for setting the partnerReference id and user agent in the X-Api-User-Agent header.
