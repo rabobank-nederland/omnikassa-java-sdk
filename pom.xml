@@ -5,7 +5,7 @@
     <groupId>nl.rabobank.oss.omnikassa</groupId>
     <artifactId>java-sdk-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.14.1</version>
+    <version>1.14.2-SNAPSHOT</version>
     <name>Rabobank OmniKassa - Java SDK - Parent</name>
 
     <properties>
@@ -49,7 +49,7 @@
     <scm>
         <connection>scm:git:git@github.com:rabobank-nederland/omnikassa-java-sdk.git</connection>
         <developerConnection>scm:git:git@github.com:rabobank-nederland/omnikassa-java-sdk.git</developerConnection>
-        <tag>java-sdk-parent-1.14.1</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <modules>
