@@ -22,7 +22,7 @@ the [SDK manual](https://github.com/rabobank-nederland/omnikassa-sdk-doc/blob/ma
 
 ### Version 1.14.1
 
-* Add support for nullable fields in RefundDetailsResponse
+* Added support for nullable fields in RefundDetailsResponse
 
 ### Version 1.14.0
 
