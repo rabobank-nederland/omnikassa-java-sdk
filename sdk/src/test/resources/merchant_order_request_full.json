@@ -1,0 +1,67 @@
+{
+  "timestamp": "2017-08-07T16:28:51.504+02:00",
+  "amount": {
+    "amount": "495",
+    "currency": "EUR"
+  },
+  "description": "An example description",
+  "language": "NL",
+  "orderItems": [
+    {
+      "id":"1",
+      "amount": {
+        "amount": "1000",
+        "currency": "EUR"
+      },
+      "category": "PHYSICAL",
+      "tax": {
+        "amount": "100",
+        "currency": "EUR"
+      },
+      "description": "Description",
+      "name": "Test product",
+      "quantity": 1,
+      "vatCategory":"2"
+    }
+  ],
+  "merchantOrderId": "ORDID123",
+  "merchantReturnURL": "http://localhost/",
+  "shippingDetail": {
+    "middleName": "de",
+    "lastName": "Ruiter",
+    "postalCode": "1012NX",
+    "street": "Kalverstraat",
+    "houseNumber": "1",
+    "houseNumberAddition": "a",
+    "countryCode": "NL",
+    "firstName": "Jan",
+    "city": "Amsterdam"
+  },
+  "billingDetail": {
+    "middleName": "de",
+    "lastName": "Ruiter",
+    "postalCode": "1012NX",
+    "street": "Kalverstraat",
+    "houseNumber": "1",
+    "houseNumberAddition": "a",
+    "countryCode": "NL",
+    "firstName": "Jan",
+    "city": "Amsterdam"
+  },
+  "customerInformation": {
+    "dateOfBirth": "18-12-2003",
+    "emailAddress": "jan.de.ruiter@example.com",
+    "gender": "M",
+    "initials": "J.",
+    "telephoneNumber": "0031204111111",
+    "fullName": "Jan de Ruiter"
+  },
+  "paymentBrand": "IDEAL",
+  "paymentBrandForce": "FORCE_ALWAYS",
+  "initiatingParty": "LIGHTSPEED",
+  "paymentBrandMetaData": {
+    "issuerId": "RABONL2U"
+  },
+  "skipHppResultPage": true,
+  "shopperBankstatementReference": "bankstatementReference"
+}

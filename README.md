@@ -1,20 +1,51 @@
-# Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+# Rabo Omnikassa Java SDK
 
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+This repository contains the official Java SDK for [Rabo OmniKassa](https://www.rabobank.nl/omnikassa).
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+Rabo Omnikassa offers merchants an all-in-one solution to receive payments on your physical and online locations. It
+includes a dashboard that puts you in full control of your Rabo OmniKassa and all products included in it: Rabo
+OnlineKassa, payment terminals, Rabo PinBox, Rabo SmartPin, Retourpinnen, Rabo PinTegoed, Rabo Betaalverzoek Plus and
+payment brands such as: Maestro, V PAY, iDEAL, MasterCard, Visa, PayPal, AfterPay and Sofort.
 
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
+The Java SDK allows Java developers to integrate their web shop with Rabo OmniKassa to handle online payments. Note that
+besides using an SDK Rabo OmniKassa also provides other ways to integrate that may require less effort. More information
+on this topic can be found on the [Developer Portal](https://developer.rabobank.nl/overview/rabo-omnikassa) of Rabobank.
 
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+To download the SDK go the [Releases section](https://github.com/rabobank-nederland/omnikassa-java-sdk/releases).
+Download the appropriate release. When opening the ZIP file you can find the SDK jar file as well as additional jar
+files that are required.
+
+Detailed developer documentation on how to use the Java SDK as well as contact information can be found in
+the [SDK manual](https://github.com/rabobank-nederland/omnikassa-sdk-doc/blob/main/README.md).
+
+## Release notes
+
+### Version 1.14.1
+
+* Add support for nullable fields in RefundDetailsResponse
+
+### Version 1.14.0
+
+* Added support for setting the partnerReference id and user agent in the X-Api-User-Agent header.
+* Added new optional shopperBankstatementReference field to order announcement
+
+### Version 1.13.0
+
+* Return payment brand as a string in the transaction status response to enable seamless integration of new payment
+  brands without updating the sdk
+
+### Version 1.12.0
+
+* Extended SDK to support refunds.
+
+### Version 1.11.0
+
+* Extended SDK to support Sofort as a payment brand.
+
+### Version 1.10.0
+
+* Extended SDK to retrieve a list of iDEAL issuers.
+* Extended SDK to allow the iDEAL issuer to be passed in the order announcement.
+* Extended SDK to allow the payment result page (also known as the 'thank-you' page) to be skipped in the payment
+  process.
+* Extended SDK to allow the name of the customer to be passed in the order announcement.
