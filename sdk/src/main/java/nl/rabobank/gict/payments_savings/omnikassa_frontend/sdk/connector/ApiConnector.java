@@ -176,6 +176,30 @@ public class ApiConnector {
         }.execute();
     }
 
+    /**
+     *
+     * @param orderId id of Order
+     * @param token access token
+     * @return String for order status
+     * @throws RabobankSdkException when problems occurred during the request, e.g. server not reachable, invalid signature, invalid authentication etc.
+     */
+    public String getOrderStatus(final String orderId, final String token)
+            throws RabobankSdkException {
+        return new RequestTemplate<String>() {
+
+            @Override
+            JSONObject fetch() {
+                return jsonTemplate.get("smartpay-traps/v2/orders/" + orderId, token);
+            }
+
+            @Override
+            String convert(JSONObject result) {
+                return result.toString();
+            }
+        }.execute();
+    }
+
+
     public AccessToken retrieveNewToken(final String refreshToken) throws RabobankSdkException {
         return new RequestTemplate<AccessToken>() {
 
