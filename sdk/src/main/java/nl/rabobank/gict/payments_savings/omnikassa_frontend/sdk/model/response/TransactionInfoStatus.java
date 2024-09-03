@@ -6,12 +6,10 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.Money;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.TransactionStatus;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.TransactionType;
 
-import java.util.Optional;
-
 /**
  * this class contains details about a transaction related to order status.
  */
-public class TransactionInfoOrderStatus {
+public class TransactionInfoStatus {
     private final String id;
     private final String paymentBrand;
     private final TransactionType type;
@@ -20,7 +18,7 @@ public class TransactionInfoOrderStatus {
     private final String createdAt;
     private final String lastUpdatedAt;
 
-    public TransactionInfoOrderStatus(JSONObject jsonObject) {
+    public TransactionInfoStatus(JSONObject jsonObject) {
         this.id = jsonObject.getString("id");
         this.paymentBrand = jsonObject.getString("paymentBrand");
         this.type = jsonObject.getEnum(TransactionType.class, "type");
