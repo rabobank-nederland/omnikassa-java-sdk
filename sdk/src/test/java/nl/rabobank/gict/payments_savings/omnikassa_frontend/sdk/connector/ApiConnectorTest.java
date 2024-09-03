@@ -16,6 +16,8 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.Rabob
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.AccessToken;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.AccessTokenBuilder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.MerchantOrderTestFactory;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.Currency;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.PaymentBrand;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.TransactionStatus;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.TransactionType;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.InitiateRefundRequest;
@@ -27,12 +29,14 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.M
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderResult;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponseBuilder;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.OrderStatusResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.PaymentBrandsResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.RefundDetailsResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.TransactionRefundableDetailsResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.utils.RefundTestFactory;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
@@ -314,6 +318,21 @@ public class ApiConnectorTest {
     }
 
     @Test
+    public void testGetOrderStatus() throws Exception {
+        String orderId = "3dfe639-967a-473d-8642-fa9347223d7a";
+
+        when(jsonTemplate.get("v2/orders/" + orderId, "token")).thenReturn(new JSONObject(getOrderStatusResponse()));
+
+        OrderStatusResponse actualResponse = classUnderTest.getOrderStatus(orderId, "token");
+
+        assertThat(actualResponse.getMerchantOrderId(), is("25da863a-60a5-475d-ae47-c0e4bd1bec31"));
+        assertThat(actualResponse.getId(), is("ORDER1"));
+        assertThat(actualResponse.getPointOfInteractionId(), is("1"));
+        assertThat(actualResponse.getOrderStatus(), is("COMPLETED"));
+        assertThat(actualResponse.getStatusLastUpdatedAt(), is("2000-01-01T00:00:00.000-0200"));
+    }
+
+    @Test
     public void testRetrieveNewToken_HappyFlow() throws Exception {
         when(jsonTemplate.get("gatekeeper/refresh", "refreshtoken")).thenReturn(prepareAccessTokenResponse());
 
@@ -390,5 +409,40 @@ public class ApiConnectorTest {
         jsonObject.put("paymentBrands", jsonArray);
 
         return jsonObject;
+    }
+
+    private JSONObject getOrderStatusResponse() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("merchantOrderId", "25da863a-60a5-475d-ae47-c0e4bd1bec31");
+        jsonObject.put("id", "ORDER1");
+        jsonObject.put("poiId", "1");
+        jsonObject.put("orderStatus", "COMPLETED");
+        jsonObject.put("statusLastUpdatedAt", "2000-01-01T00:00:00.000-0200");
+        jsonObject.put("totalAmount", getJsonMoney(Currency.EUR, 100));
+
+        JSONObject firstTransaction = getTransactionObject("1", 100L, true);
+        JSONObject secondTransaction = getTransactionObject("2", 200L, true);
+        JSONObject thirdTransaction = getTransactionObject("3", 300L, false);
+        jsonObject.put("transactions", new JSONArray(Arrays.asList(firstTransaction)));
+        return jsonObject;
+    }
+
+    private JSONObject getJsonMoney(Currency currency, long amountInCents) {
+        JSONObject object = new JSONObject();
+        object.put("valueInMinorUnits", String.valueOf(amountInCents));
+        object.put("currency", currency);
+        return object;
+    }
+
+    private JSONObject getTransactionObject(String id, Long amount, boolean withConfirmedAmount) {
+        JSONObject transactionObject = new JSONObject();
+        transactionObject.put("id", id);
+        transactionObject.put("paymentBrand", PaymentBrand.IDEAL);
+        transactionObject.put("type", TransactionType.PAYMENT);
+        transactionObject.put("status", TransactionStatus.SUCCESS);
+        transactionObject.put("amount", getJsonMoney(Currency.EUR, amount));
+        transactionObject.put("createdAt", "2024-07-28T12:51:15.574+02:00");
+        transactionObject.put("lastUpdatedAt", "2024-07-28T12:51:15.574+02:00");
+        return transactionObject;
     }
 }
