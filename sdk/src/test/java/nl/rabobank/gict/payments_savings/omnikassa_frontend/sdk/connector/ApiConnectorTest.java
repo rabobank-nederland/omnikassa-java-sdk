@@ -321,15 +321,15 @@ public class ApiConnectorTest {
     @Test
     public void testGetOrderStatus() throws Exception {
         String orderId = "3dfe639-967a-473d-8642-fa9347223d7a";
+        JSONObject orderStatus = new JSONObject().put("order", getOrderStatusResult());
 
-        when(jsonTemplate.get("v2/orders/" + orderId, "token")).thenReturn(new JSONObject(getOrderStatusResponse()));
+        when(jsonTemplate.get("v2/orders/" + orderId, "token")).thenReturn(orderStatus);
 
         OrderStatusResponse actualResponse = classUnderTest.getOrderStatus(orderId, "token");
         OrderStatusResult actualResult = actualResponse.getOrderStatusResult();
 
         assertThat(actualResult.getMerchantOrderId(), is("25da863a-60a5-475d-ae47-c0e4bd1bec31"));
         assertThat(actualResult.getId(), is("ORDER1"));
-        assertThat(actualResult.getPointOfInteractionId(), is("1"));
         assertThat(actualResult.getOrderStatus(), is("COMPLETED"));
     }
 
@@ -412,11 +412,10 @@ public class ApiConnectorTest {
         return jsonObject;
     }
 
-    private JSONObject getOrderStatusResponse() {
+    private JSONObject getOrderStatusResult() {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("merchantOrderId", "25da863a-60a5-475d-ae47-c0e4bd1bec31");
         jsonObject.put("id", "ORDER1");
-        jsonObject.put("poiId", "1");
         jsonObject.put("status", "COMPLETED");
         jsonObject.put("statusLastUpdatedAt", "2000-01-01T00:00:00.000-0200");
         jsonObject.put("totalAmount", getJsonMoney(Currency.EUR, 100));

@@ -7,7 +7,7 @@ public class OrderStatusResponse {
     private final OrderStatusResult orderStatusResult;
 
     public OrderStatusResponse(JSONObject jsonObject) {
-        this.orderStatusResult = new OrderStatusResult(jsonObject);
+        this.orderStatusResult = new OrderStatusResult(jsonObject.getJSONObject("order"));
     }
 
     public OrderStatusResult getOrderStatusResult() {
