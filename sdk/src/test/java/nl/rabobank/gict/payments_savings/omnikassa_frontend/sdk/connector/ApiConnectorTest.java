@@ -331,6 +331,13 @@ public class ApiConnectorTest {
         assertThat(actualResult.getMerchantOrderId(), is("25da863a-60a5-475d-ae47-c0e4bd1bec31"));
         assertThat(actualResult.getId(), is("ORDER1"));
         assertThat(actualResult.getOrderStatus(), is("COMPLETED"));
+        assertThat(actualResult.getTotalAmount().getCurrency(), is(EUR));
+        assertThat(actualResult.getTotalAmount().getAmount(), is(new BigDecimal("1.00")));
+        assertThat(actualResult.getTransactionInfoOrderStatus().get(0).getId(), is("1"));
+        assertThat(actualResult.getTransactionInfoOrderStatus().get(0).getPaymentBrand(), is("IDEAL"));
+        assertThat(actualResult.getTransactionInfoOrderStatus().get(0).getType(), is(TransactionType.AUTHORIZE));
+        assertThat(actualResult.getTransactionInfoOrderStatus().get(0).getStatus(), is(TransactionStatus.COMPLETED));
+        assertThat(actualResult.getTransactionInfoOrderStatus().get(0).getAmount().getAmount(), is(new BigDecimal("1.00")));
     }
 
     @Test
