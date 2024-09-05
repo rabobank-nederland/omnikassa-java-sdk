@@ -37,6 +37,7 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.T
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.utils.RefundTestFactory;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
@@ -341,6 +342,24 @@ public class ApiConnectorTest {
     }
 
     @Test
+    public void testGetOrderStatusWithoutTransactionField() throws Exception {
+        String orderId = "3dfe639-967a-473d-8642-fa9347223d7a";
+        JSONObject orderStatus = new JSONObject().put("order", getOrderStatusResultWithoutTransactions());
+
+        when(jsonTemplate.get("v2/orders/" + orderId, "token")).thenReturn(orderStatus);
+
+        OrderStatusResponse actualResponse = classUnderTest.getOrderStatus(orderId, "token");
+        OrderStatusResult actualResult = actualResponse.getOrderStatusResult();
+
+        assertThat(actualResult.getMerchantOrderId(), is("25da863a-60a5-475d-ae47-c0e4bd1bec31"));
+        assertThat(actualResult.getId(), is("ORDER1"));
+        assertThat(actualResult.getOrderStatus(), is("COMPLETED"));
+        assertThat(actualResult.getTotalAmount().getCurrency(), is(EUR));
+        assertThat(actualResult.getTotalAmount().getAmount(), is(new BigDecimal("1.00")));
+        assertThat(actualResult.getTransactionInfoOrderStatus(), is(new ArrayList<>()));
+    }
+
+    @Test
     public void testRetrieveNewToken_HappyFlow() throws Exception {
         when(jsonTemplate.get("gatekeeper/refresh", "refreshtoken")).thenReturn(prepareAccessTokenResponse());
 
@@ -451,5 +470,16 @@ public class ApiConnectorTest {
         transactionObject.put("createdAt", "2024-07-28T12:51:15.574+02:00");
         transactionObject.put("lastUpdatedAt", "2024-07-28T12:51:15.574+02:00");
         return transactionObject;
+    }
+
+    private JSONObject getOrderStatusResultWithoutTransactions() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("merchantOrderId", "25da863a-60a5-475d-ae47-c0e4bd1bec31");
+        jsonObject.put("id", "ORDER1");
+        jsonObject.put("status", "COMPLETED");
+        jsonObject.put("statusLastUpdatedAt", "2000-01-01T00:00:00.000-0200");
+        jsonObject.put("totalAmount", getJsonMoney(Currency.EUR, 100));
+
+        return jsonObject;
     }
 }
