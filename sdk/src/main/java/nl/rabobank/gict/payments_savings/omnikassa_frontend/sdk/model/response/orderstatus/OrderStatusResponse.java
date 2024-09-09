@@ -1,4 +1,4 @@
-package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response;
+package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.orderstatus;
 
 import kong.unirest.json.JSONObject;
 

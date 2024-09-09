@@ -1,4 +1,4 @@
-package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response;
+package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.orderstatus;
 
 import kong.unirest.json.JSONObject;
 
@@ -6,26 +6,33 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.Money;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.TransactionStatus;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.TransactionType;
 
+import java.time.format.DateTimeFormatter;
+import java.time.OffsetDateTime;
+
 /**
  * this class contains details about a transaction related to order status.
  */
-public class TransactionInfoStatus {
+public class TransactionStatusInfo {
     private final String id;
     private final String paymentBrand;
     private final TransactionType type;
     private final TransactionStatus status;
     private final Money amount;
-    private final String createdAt;
-    private final String lastUpdatedAt;
+    private final OffsetDateTime createdAt;
+    private final OffsetDateTime lastUpdatedAt;
 
-    public TransactionInfoStatus(JSONObject jsonObject) {
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+
+    public TransactionStatusInfo(JSONObject jsonObject) {
         this.id = jsonObject.getString("id");
         this.paymentBrand = jsonObject.getString("paymentBrand");
         this.type = jsonObject.getEnum(TransactionType.class, "type");
         this.status = jsonObject.getEnum(TransactionStatus.class, "status");
         this.amount = Money.fromJsonWithValueInMinorUnits(jsonObject.getJSONObject("amount"));
-        this.createdAt = jsonObject.getString("createdAt");
-        this.lastUpdatedAt = jsonObject.getString("lastUpdatedAt");
+        String createdAtString = jsonObject.getString("createdAt");
+        this.createdAt = OffsetDateTime.parse(createdAtString, formatter);
+        String lastUpdatedAtString = jsonObject.getString("lastUpdatedAt");
+        this.lastUpdatedAt = OffsetDateTime.parse(lastUpdatedAtString, formatter);
     }
 
     public String getId() {
@@ -48,11 +55,11 @@ public class TransactionInfoStatus {
         return amount;
     }
 
-    public String getCreatedAt() {
+    public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public String getLastUpdatedAt() {
+    public OffsetDateTime getLastUpdatedAt() {
         return lastUpdatedAt;
     }
 

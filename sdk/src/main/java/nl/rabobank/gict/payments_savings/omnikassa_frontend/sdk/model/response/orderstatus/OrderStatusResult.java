@@ -1,4 +1,4 @@
-package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response;
+package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.orderstatus;
 
 import kong.unirest.json.JSONObject;
 
@@ -16,17 +16,17 @@ public class OrderStatusResult {
     private final String id;
     private final String status;
     private final Money totalAmount;
-    private final List<TransactionInfoStatus> TransactionInfoOrderStatus;
+    private final List<TransactionStatusInfo> TransactionInfoOrderStatus;
 
     public OrderStatusResult(JSONObject jsonObject) {
         this.merchantOrderId = jsonObject.getString("merchantOrderId");
         this.id = jsonObject.getString("id");
         this.status = jsonObject.getString("status");
         this.totalAmount = Money.fromJsonWithValueInMinorUnits(jsonObject.getJSONObject("totalAmount"));
-        List<TransactionInfoStatus> transactions = new ArrayList<>();
+        List<TransactionStatusInfo> transactions = new ArrayList<>();
         if(jsonObject.has("transactions")) {
             transactions = StreamSupport.stream(() -> jsonObject.getJSONArray("transactions").spliterator(), Spliterator.ORDERED, false)
-                                        .map((transactionJsonObject) -> new TransactionInfoStatus((JSONObject) transactionJsonObject))
+                                        .map((transactionJsonObject) -> new TransactionStatusInfo((JSONObject) transactionJsonObject))
                                         .collect(Collectors.toList());
         }
         this.TransactionInfoOrderStatus = Collections.unmodifiableList(transactions);
@@ -48,7 +48,7 @@ public class OrderStatusResult {
         return totalAmount;
     }
 
-    public List<TransactionInfoStatus> getTransactionInfoOrderStatus() {
+    public List<TransactionStatusInfo> getTransactionInfoOrderStatus() {
         return TransactionInfoOrderStatus;
     }
 }

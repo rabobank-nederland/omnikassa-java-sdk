@@ -29,8 +29,8 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.M
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderResult;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponseBuilder;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.OrderStatusResponse;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.OrderStatusResult;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.orderstatus.OrderStatusResponse;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.orderstatus.OrderStatusResult;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.PaymentBrandsResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.RefundDetailsResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.TransactionRefundableDetailsResponse;
@@ -447,7 +447,7 @@ public class ApiConnectorTest {
         jsonObject.put("totalAmount", getJsonMoney(Currency.EUR, 100));
 
         JSONObject firstTransaction = getTransactionObject("1", 100L, TransactionType.AUTHORIZE, TransactionStatus.COMPLETED);
-        JSONObject secondTransaction = getTransactionObject("2", 200L, TransactionType.CAPTURE, TransactionStatus.SUCCESS);
+        JSONObject secondTransaction = getTransactionObject("2", 200L, TransactionType.PAYMENT, TransactionStatus.SUCCESS);
         JSONObject thirdTransaction = getTransactionObject("3", 300L, TransactionType.REFUND, TransactionStatus.FAILURE);
         jsonObject.put("transactions", new JSONArray(Arrays.asList(firstTransaction, secondTransaction, thirdTransaction)));
         return jsonObject;
