@@ -51,8 +51,8 @@ public final class Endpoint {
      * @deprecated This method is deprecated, use the {@link Endpoint#createInstance(Environment, String, TokenProvider)} instead.
      */
     @Deprecated
-    public static Endpoint createInstance(String baseURL, byte[] signingKey, TokenProvider tokenProvider) {
-        return createInstance(baseURL, signingKey, tokenProvider, null, null);
+    public static Endpoint createInstance(String baseURL, String suffix, byte[] signingKey, TokenProvider tokenProvider) {
+        return createInstance(baseURL, suffix, signingKey, tokenProvider, null, null);
     }
 
     /**
@@ -69,11 +69,12 @@ public final class Endpoint {
      */
     @Deprecated
     public static Endpoint createInstance(String baseURL,
+                                          String suffix,
                                           byte[] signingKey,
                                           TokenProvider tokenProvider,
                                           String userAgent,
                                           String partnerReference) {
-        ApiConnector connector = new ApiConnector(baseURL, signingKey, userAgent, partnerReference);
+        ApiConnector connector = new ApiConnector(baseURL, suffix, signingKey, userAgent, partnerReference);
         return new Endpoint(connector, tokenProvider, signingKey);
     }
 
@@ -123,7 +124,7 @@ public final class Endpoint {
                                           String userAgent,
                                           String partnerReference) {
         byte[] signingKey = decodeBase64(base64encodedSigningKey);
-        return createInstance(environment.getUrl(), signingKey, tokenProvider, userAgent, partnerReference);
+        return createInstance(environment.getUrl(), environment.getSuffix(), signingKey, tokenProvider, userAgent, partnerReference);
     }
 
     /**

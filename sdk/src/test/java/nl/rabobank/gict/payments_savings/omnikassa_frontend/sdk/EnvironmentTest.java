@@ -11,7 +11,13 @@ public class EnvironmentTest {
 
     @Test
     public void getUrl() {
-        assertThat(PRODUCTION.getUrl(), is("https://betalen.rabobank.nl/omnikassa-api"));
-        assertThat(SANDBOX.getUrl(), is("https://betalen.rabobank.nl/omnikassa-api-sandbox"));
+        assertThat(PRODUCTION.getUrl(), is("https://api.pay.rabobank.nl"));
+        assertThat(SANDBOX.getUrl(), is("https://api.pay.rabobank.nl"));
+    }
+
+    @Test
+    public void getSuffix() {
+        assertThat(PRODUCTION.getSuffix(), is("/omnikassa-api"));
+        assertThat(SANDBOX.getSuffix(), is("/omnikassa-api-sandbox"));
     }
 }

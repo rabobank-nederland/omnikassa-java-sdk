@@ -36,14 +36,16 @@ public class ApiConnector {
 
     private String userAgent;
     private String partnerReference;
+    private final String suffix;
 
-    ApiConnector(UnirestJSONTemplate jsonTemplate, byte[] signingKey, String userAgent, String partnerReference) {
+    ApiConnector(UnirestJSONTemplate jsonTemplate, String suffix, byte[] signingKey, String userAgent, String partnerReference) {
         this.jsonTemplate = jsonTemplate;
         this.signingKey = signingKey;
+        this.suffix = suffix;
     }
 
-    public ApiConnector(String baseURL, byte[] signingKey, String userAgent, String partnerReference) {
-        this(new UnirestJSONTemplate(baseURL), signingKey, userAgent, partnerReference);
+    public ApiConnector(String baseURL, String suffix, byte[] signingKey, String userAgent, String partnerReference) {
+        this(new UnirestJSONTemplate(baseURL), suffix, signingKey, userAgent, partnerReference);
     }
 
     /**
@@ -62,7 +64,7 @@ public class ApiConnector {
             JSONObject fetch() {
                 Map<String, String> requestHeaders = new HashMap<>();
                 requestHeaders.put(X_API_USER_AGENT, getUserAgentHeaderString());
-                return jsonTemplate.postWithHeader("order/server/api/v2/order", order, requestHeaders, token);
+                return jsonTemplate.postWithHeader(suffix + "order/server/api/v2/order", order, requestHeaders, token);
             }
 
             @Override
@@ -85,7 +87,7 @@ public class ApiConnector {
 
             @Override
             JSONObject fetch() {
-                return jsonTemplate.get("order/server/api/v2/events/results/" + apiNotification.getEventName(),
+                return jsonTemplate.get(suffix + "order/server/api/v2/events/results/" + apiNotification.getEventName(),
                                         apiNotification.getAuthentication());
             }
 
@@ -117,7 +119,7 @@ public class ApiConnector {
             JSONObject fetch() throws UnirestException {
                 Map<String, String> requestHeaders = new HashMap<>();
                 requestHeaders.put("request-id", requestId.toString());
-                return jsonTemplate.postWithHeader("order/server/api/v2/refund/transactions/" + transactionId + "/refunds", refundRequest, requestHeaders, token);
+                return jsonTemplate.postWithHeader(suffix + "order/server/api/v2/refund/transactions/" + transactionId + "/refunds", refundRequest, requestHeaders, token);
             }
 
             @Override
@@ -142,7 +144,7 @@ public class ApiConnector {
 
             @Override
             JSONObject fetch() throws UnirestException {
-                return jsonTemplate.get("order/server/api/v2/refund/transactions/" + transactionId + "/refunds/" + refundId, token);
+                return jsonTemplate.get(suffix + "order/server/api/v2/refund/transactions/" + transactionId + "/refunds/" + refundId, token);
             }
 
             @Override
@@ -166,7 +168,7 @@ public class ApiConnector {
 
             @Override
             JSONObject fetch() throws UnirestException {
-                return jsonTemplate.get("order/server/api/v2/refund/transactions/" + transactionId + "/refundable-details", token);
+                return jsonTemplate.get(suffix + "order/server/api/v2/refund/transactions/" + transactionId + "/refundable-details", token);
             }
 
             @Override
@@ -181,7 +183,7 @@ public class ApiConnector {
 
             @Override
             JSONObject fetch() {
-                return jsonTemplate.get("gatekeeper/refresh", refreshToken);
+                return jsonTemplate.get(suffix + "gatekeeper/refresh", refreshToken);
             }
 
             @Override
@@ -196,7 +198,7 @@ public class ApiConnector {
 
             @Override
             JSONObject fetch() {
-                return jsonTemplate.get("order/server/api/payment-brands", accessToken);
+                return jsonTemplate.get(suffix + "order/server/api/payment-brands", accessToken);
             }
 
             @Override
@@ -210,7 +212,7 @@ public class ApiConnector {
         return new RequestTemplate<IdealIssuersResponse>() {
             @Override
             JSONObject fetch() {
-                return jsonTemplate.get("ideal/server/api/v2/issuers", accessToken);
+                return jsonTemplate.get(suffix + "ideal/server/api/v2/issuers", accessToken);
             }
 
             @Override
