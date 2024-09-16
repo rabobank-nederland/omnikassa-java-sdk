@@ -16,6 +16,8 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.Rabob
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.AccessToken;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.AccessTokenBuilder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.MerchantOrderTestFactory;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.Currency;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.PaymentBrand;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.TransactionStatus;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.TransactionType;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.InitiateRefundRequest;
@@ -27,12 +29,16 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.M
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderResult;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponseBuilder;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.orderstatus.OrderStatusResponse;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.orderstatus.OrderStatusResult;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.PaymentBrandsResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.RefundDetailsResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.TransactionRefundableDetailsResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.utils.RefundTestFactory;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
@@ -314,6 +320,46 @@ public class ApiConnectorTest {
     }
 
     @Test
+    public void testGetOrderStatus() throws Exception {
+        String orderId = "3dfe639-967a-473d-8642-fa9347223d7a";
+        JSONObject orderStatus = new JSONObject().put("order", getOrderStatusResult());
+
+        when(jsonTemplate.get("v2/orders/" + orderId, "token")).thenReturn(orderStatus);
+
+        OrderStatusResponse actualResponse = classUnderTest.getOrderStatus(orderId, "token");
+        OrderStatusResult actualResult = actualResponse.getOrderStatusResult();
+
+        assertThat(actualResult.getMerchantOrderId(), is("25da863a-60a5-475d-ae47-c0e4bd1bec31"));
+        assertThat(actualResult.getId(), is("ORDER1"));
+        assertThat(actualResult.getOrderStatus(), is("COMPLETED"));
+        assertThat(actualResult.getTotalAmount().getCurrency(), is(EUR));
+        assertThat(actualResult.getTotalAmount().getAmount(), is(new BigDecimal("1.00")));
+        assertThat(actualResult.getTransactionInfoOrderStatus().get(0).getId(), is("1"));
+        assertThat(actualResult.getTransactionInfoOrderStatus().get(0).getPaymentBrand(), is("IDEAL"));
+        assertThat(actualResult.getTransactionInfoOrderStatus().get(0).getType(), is(TransactionType.AUTHORIZE));
+        assertThat(actualResult.getTransactionInfoOrderStatus().get(0).getStatus(), is(TransactionStatus.COMPLETED));
+        assertThat(actualResult.getTransactionInfoOrderStatus().get(0).getAmount().getAmount(), is(new BigDecimal("1.00")));
+    }
+
+    @Test
+    public void testGetOrderStatusWithoutTransactionField() throws Exception {
+        String orderId = "3dfe639-967a-473d-8642-fa9347223d7a";
+        JSONObject orderStatus = new JSONObject().put("order", getOrderStatusResultWithoutTransactions());
+
+        when(jsonTemplate.get("v2/orders/" + orderId, "token")).thenReturn(orderStatus);
+
+        OrderStatusResponse actualResponse = classUnderTest.getOrderStatus(orderId, "token");
+        OrderStatusResult actualResult = actualResponse.getOrderStatusResult();
+
+        assertThat(actualResult.getMerchantOrderId(), is("25da863a-60a5-475d-ae47-c0e4bd1bec31"));
+        assertThat(actualResult.getId(), is("ORDER1"));
+        assertThat(actualResult.getOrderStatus(), is("COMPLETED"));
+        assertThat(actualResult.getTotalAmount().getCurrency(), is(EUR));
+        assertThat(actualResult.getTotalAmount().getAmount(), is(new BigDecimal("1.00")));
+        assertThat(actualResult.getTransactionInfoOrderStatus(), is(new ArrayList<>()));
+    }
+
+    @Test
     public void testRetrieveNewToken_HappyFlow() throws Exception {
         when(jsonTemplate.get("gatekeeper/refresh", "refreshtoken")).thenReturn(prepareAccessTokenResponse());
 
@@ -388,6 +434,51 @@ public class ApiConnectorTest {
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("paymentBrands", jsonArray);
+
+        return jsonObject;
+    }
+
+    private JSONObject getOrderStatusResult() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("merchantOrderId", "25da863a-60a5-475d-ae47-c0e4bd1bec31");
+        jsonObject.put("id", "ORDER1");
+        jsonObject.put("status", "COMPLETED");
+        jsonObject.put("statusLastUpdatedAt", "2000-01-01T00:00:00.000-0200");
+        jsonObject.put("totalAmount", getJsonMoney(Currency.EUR, 100));
+
+        JSONObject firstTransaction = getTransactionObject("1", 100L, TransactionType.AUTHORIZE, TransactionStatus.COMPLETED);
+        JSONObject secondTransaction = getTransactionObject("2", 200L, TransactionType.PAYMENT, TransactionStatus.SUCCESS);
+        JSONObject thirdTransaction = getTransactionObject("3", 300L, TransactionType.REFUND, TransactionStatus.FAILURE);
+        jsonObject.put("transactions", new JSONArray(Arrays.asList(firstTransaction, secondTransaction, thirdTransaction)));
+        return jsonObject;
+    }
+
+    private JSONObject getJsonMoney(Currency currency, long amountInCents) {
+        JSONObject object = new JSONObject();
+        object.put("valueInMinorUnits", String.valueOf(amountInCents));
+        object.put("currency", currency);
+        return object;
+    }
+
+    private JSONObject getTransactionObject(String id, Long amount, TransactionType transactionType, TransactionStatus transactionStatus) {
+        JSONObject transactionObject = new JSONObject();
+        transactionObject.put("id", id);
+        transactionObject.put("paymentBrand", PaymentBrand.IDEAL);
+        transactionObject.put("type", transactionType);
+        transactionObject.put("status", transactionStatus);
+        transactionObject.put("amount", getJsonMoney(Currency.EUR, amount));
+        transactionObject.put("createdAt", "2024-07-28T12:51:15.574+02:00");
+        transactionObject.put("lastUpdatedAt", "2024-07-28T12:51:15.574+02:00");
+        return transactionObject;
+    }
+
+    private JSONObject getOrderStatusResultWithoutTransactions() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("merchantOrderId", "25da863a-60a5-475d-ae47-c0e4bd1bec31");
+        jsonObject.put("id", "ORDER1");
+        jsonObject.put("status", "COMPLETED");
+        jsonObject.put("statusLastUpdatedAt", "2000-01-01T00:00:00.000-0200");
+        jsonObject.put("totalAmount", getJsonMoney(Currency.EUR, 100));
 
         return jsonObject;
     }

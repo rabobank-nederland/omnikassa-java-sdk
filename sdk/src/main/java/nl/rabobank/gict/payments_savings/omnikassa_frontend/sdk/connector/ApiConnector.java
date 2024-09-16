@@ -17,6 +17,7 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.P
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.RefundDetailsResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.SignedResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.TransactionRefundableDetailsResponse;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.orderstatus.OrderStatusResponse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -177,6 +178,30 @@ public class ApiConnector {
             }
         }.execute();
     }
+
+    /**
+     *
+     * @param orderId id of Order
+     * @param token access token
+     * @return String for order status
+     * @throws RabobankSdkException when problems occurred during the request, e.g. server not reachable, invalid signature, invalid authentication etc.
+     */
+    public OrderStatusResponse getOrderStatus(final String orderId, final String token)
+            throws RabobankSdkException {
+        return new RequestTemplate<OrderStatusResponse>() {
+
+            @Override
+            JSONObject fetch() {
+                return jsonTemplate.get("v2/orders/" + orderId, token);
+            }
+
+            @Override
+            OrderStatusResponse convert(JSONObject result) {
+                return new OrderStatusResponse(result);
+            }
+        }.execute();
+    }
+
 
     public AccessToken retrieveNewToken(final String refreshToken) throws RabobankSdkException {
         return new RequestTemplate<AccessToken>() {
