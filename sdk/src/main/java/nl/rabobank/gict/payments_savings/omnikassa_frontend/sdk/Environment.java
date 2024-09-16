@@ -5,7 +5,7 @@ package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk;
  */
 public enum Environment {
     PRODUCTION("https://api.pay.rabobank.nl", "/omnikassa-api"),
-    SANDBOX("https://api.pay.rabobank.nl", "/omnikassa-api-sandbox");
+    SANDBOX("https://betalen.rabobank.nl", "/omnikassa-api-sandbox");
     private final String url;
 
     private final String suffix;
