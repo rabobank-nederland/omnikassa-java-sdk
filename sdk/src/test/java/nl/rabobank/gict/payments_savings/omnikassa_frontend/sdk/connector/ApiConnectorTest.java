@@ -324,7 +324,7 @@ public class ApiConnectorTest {
         String orderId = "3dfe639-967a-473d-8642-fa9347223d7a";
         JSONObject orderStatus = new JSONObject().put("order", getOrderStatusResult());
 
-        when(jsonTemplate.get("v2/orders/" + orderId, "token")).thenReturn(orderStatus);
+        when(jsonTemplate.getForProductionEnv("payment-api/v2/orders/" + orderId, "token")).thenReturn(orderStatus);
 
         OrderStatusResponse actualResponse = classUnderTest.getOrderStatus(orderId, "token");
         OrderStatusResult actualResult = actualResponse.getOrderStatusResult();
@@ -346,7 +346,7 @@ public class ApiConnectorTest {
         String orderId = "3dfe639-967a-473d-8642-fa9347223d7a";
         JSONObject orderStatus = new JSONObject().put("order", getOrderStatusResultWithoutTransactions());
 
-        when(jsonTemplate.get("v2/orders/" + orderId, "token")).thenReturn(orderStatus);
+        when(jsonTemplate.getForProductionEnv("payment-api/v2/orders/" + orderId, "token")).thenReturn(orderStatus);
 
         OrderStatusResponse actualResponse = classUnderTest.getOrderStatus(orderId, "token");
         OrderStatusResult actualResult = actualResponse.getOrderStatusResult();
@@ -394,7 +394,8 @@ public class ApiConnectorTest {
         return jsonObject;
     }
 
-    private JSONObject prepareAuthenticationErrorResponse() {
+    private JSONObject
+    prepareAuthenticationErrorResponse() {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("errorCode", String.valueOf(INVALID_AUTHORIZATION_ERROR_CODE));
         jsonObject.put("message", "Full authentication is required to access this resource");

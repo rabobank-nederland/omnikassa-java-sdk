@@ -6,6 +6,7 @@ import kong.unirest.json.JSONObject;
 
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.IllegalApiResponseException;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.RabobankSdkException;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.UnsupportedSandboxOperationException;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.AccessToken;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.InitiateRefundRequest;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.MerchantOrderRequest;
@@ -186,13 +187,12 @@ public class ApiConnector {
      * @return String for order status
      * @throws RabobankSdkException when problems occurred during the request, e.g. server not reachable, invalid signature, invalid authentication etc.
      */
-    public OrderStatusResponse getOrderStatus(final String orderId, final String token)
-            throws RabobankSdkException {
+    public OrderStatusResponse getOrderStatus(final String orderId, final String token) throws RabobankSdkException {
         return new RequestTemplate<OrderStatusResponse>() {
 
             @Override
-            JSONObject fetch() {
-                return jsonTemplate.get("v2/orders/" + orderId, token);
+            JSONObject fetch() throws UnsupportedSandboxOperationException {
+                return jsonTemplate.getForProductionEnv("payment-api/v2/orders/" + orderId, token);
             }
 
             @Override
@@ -271,7 +271,7 @@ public class ApiConnector {
             }
         }
 
-        abstract JSONObject fetch();
+        abstract JSONObject fetch() throws RabobankSdkException;
 
         abstract T convert(JSONObject result);
     }

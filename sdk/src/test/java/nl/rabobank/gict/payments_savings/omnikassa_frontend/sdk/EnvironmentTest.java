@@ -12,7 +12,7 @@ public class EnvironmentTest {
     @Test
     public void getUrl() {
         assertThat(PRODUCTION.getUrl(), is("https://api.pay.rabobank.nl"));
-        assertThat(SANDBOX.getUrl(), is("https://api.pay.rabobank.nl"));
+        assertThat(SANDBOX.getUrl(), is("https://betalen.rabobank.nl"));
     }
 
     @Test
