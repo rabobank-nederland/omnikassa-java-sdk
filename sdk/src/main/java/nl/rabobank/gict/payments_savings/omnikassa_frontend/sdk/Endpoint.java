@@ -18,6 +18,7 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.M
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.PaymentBrandsResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.RefundDetailsResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.TransactionRefundableDetailsResponse;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.orderstatus.*;
 
 import java.util.UUID;
 
@@ -232,6 +233,21 @@ public final class Endpoint {
             logAndGetNewToken(e);
             return connector.getRefundableDetails(transactionId, tokenProvider.getAccessToken());
         }
+    }
+
+    /**
+     *
+     *  This function will get details for specific order.
+     *
+     * @param orderId id of Order
+     * @return String for order status
+     * @throws RabobankSdkException when problems occurred during the request, e.g. server not reachable, invalid signature, invalid authentication etc.
+     */
+
+    public OrderStatusResponse getOrderStatus(String orderId)
+            throws RabobankSdkException {
+
+            return connector.getOrderStatus(orderId, tokenProvider.getAccessToken());
     }
 
 
