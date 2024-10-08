@@ -5,9 +5,13 @@ import kong.unirest.RequestBodyEntity;
 import kong.unirest.Unirest;
 import kong.unirest.json.JSONObject;
 
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.UnsupportedSandboxOperationException;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.JsonConvertible;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+
 
 class UnirestJSONTemplate {
     private final String baseURL;
@@ -41,6 +45,21 @@ class UnirestJSONTemplate {
                                                      .body(body.asJson());
 
         return requestBodyEntity.asJson().getBody().getObject();
+    }
+
+    public JSONObject getForProductionEnv(String path, String token) throws UnsupportedSandboxOperationException {
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-type", "application/json");
+        headers.put("Authorization", "Bearer " + token);
+
+        if(Objects.equals(baseURL, "https://betalen.rabobank.nl")){
+            throw new UnsupportedSandboxOperationException();
+        }
+
+        GetRequest getRequest = Unirest.get(baseURL + "/" + path)
+                                                     .headers(headers);
+
+        return getRequest.asJson().getBody().getObject();
     }
 
 }
