@@ -22,7 +22,7 @@ public class OrderStatusResult {
         this.merchantOrderId = jsonObject.getString("merchantOrderId");
         this.id = jsonObject.getString("id");
         this.status = jsonObject.getString("status");
-        this.totalAmount = Money.fromJsonWithValueInMinorUnits(jsonObject.getJSONObject("totalAmount"));
+        this.totalAmount = Money.fromJson(jsonObject.getJSONObject("totalAmount"));
         List<TransactionStatusInfo> transactions = new ArrayList<>();
         if(jsonObject.has("transactions")) {
             transactions = StreamSupport.stream(() -> jsonObject.getJSONArray("transactions").spliterator(), Spliterator.ORDERED, false)

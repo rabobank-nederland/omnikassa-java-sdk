@@ -456,7 +456,7 @@ public class ApiConnectorTest {
 
     private JSONObject getJsonMoney(Currency currency, long amountInCents) {
         JSONObject object = new JSONObject();
-        object.put("valueInMinorUnits", String.valueOf(amountInCents));
+        object.put("amount", String.valueOf(amountInCents));
         object.put("currency", currency);
         return object;
     }

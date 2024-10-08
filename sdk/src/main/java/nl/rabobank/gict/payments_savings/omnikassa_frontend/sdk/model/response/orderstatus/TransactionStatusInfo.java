@@ -21,14 +21,14 @@ public class TransactionStatusInfo {
     private final OffsetDateTime createdAt;
     private final OffsetDateTime lastUpdatedAt;
 
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
     public TransactionStatusInfo(JSONObject jsonObject) {
         this.id = jsonObject.getString("id");
         this.paymentBrand = jsonObject.getString("paymentBrand");
         this.type = jsonObject.getEnum(TransactionType.class, "type");
         this.status = jsonObject.getEnum(TransactionStatus.class, "status");
-        this.amount = Money.fromJsonWithValueInMinorUnits(jsonObject.getJSONObject("amount"));
+        this.amount = Money.fromJson(jsonObject.getJSONObject("amount"));
         String createdAtString = jsonObject.getString("createdAt");
         this.createdAt = OffsetDateTime.parse(createdAtString, formatter);
         String lastUpdatedAtString = jsonObject.getString("lastUpdatedAt");

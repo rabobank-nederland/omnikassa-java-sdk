@@ -51,12 +51,6 @@ public final class Money implements JsonConvertible {
         return new Money(currency, amount);
     }
 
-    public static Money fromJsonWithValueInMinorUnits(JSONObject jsonObject) {
-        Currency currency = jsonObject.getEnum(Currency.class, "currency");
-        BigDecimal amount = parseAmount(jsonObject.getString("valueInMinorUnits"));
-        return new Money(currency, amount);
-    }
-
     private static void checkAmount(BigDecimal amount) {
         if (getNumberOfDecimalPlaces(amount) > SCALE) {
             throw new IllegalArgumentException("amount must have at most 2 decimal places, and must be a valid number");
