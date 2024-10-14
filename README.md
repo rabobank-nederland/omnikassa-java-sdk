@@ -5,7 +5,7 @@ This repository contains the official Java SDK for [Rabo OmniKassa](https://www.
 Rabo Omnikassa offers merchants an all-in-one solution to receive payments on your physical and online locations. It
 includes a dashboard that puts you in full control of your Rabo OmniKassa and all products included in it: Rabo
 OnlineKassa, payment terminals, Rabo PinBox, Rabo SmartPin, Retourpinnen, Rabo PinTegoed, Rabo Betaalverzoek Plus and
-payment brands such as: Maestro, V PAY, iDEAL, MasterCard, Visa, PayPal, Sofort and Billink.
+payment brands such as: Maestro, V PAY, iDEAL, MasterCard, Visa, PayPal, Billink and Sofort.
 
 The Java SDK allows Java developers to integrate their web shop with Rabo OmniKassa to handle online payments. Note that
 besides using an SDK Rabo OmniKassa also provides other ways to integrate that may require less effort. More information
