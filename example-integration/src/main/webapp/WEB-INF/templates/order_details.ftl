@@ -97,7 +97,7 @@
                         <option value="ANY" selected="selected">Any</option>
                         <option value="IDEAL">iDEAL</option>
                         <option value="PAYPAL">PayPal</option>
-                        <option value="AFTERPAY">AfterPay</option>
+                        <option value="BILLINK">Billink</option>
                         <option value="MASTERCARD">Mastercard</option>
                         <option value="VISA">Visa</option>
                         <option value="BANCONTACT">Bancontact</option>
