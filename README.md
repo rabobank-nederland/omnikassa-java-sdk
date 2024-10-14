@@ -20,6 +20,12 @@ the [SDK manual](https://github.com/rabobank-nederland/omnikassa-sdk-doc/blob/ma
 
 ## Release notes
 
+### Version 1.15.0
+
+* Removed support and mentions of Payment Brand AFTERPAY.
+* Added payment brand BILLINK.
+* Expanded the list of possible genders with a new option (O – Other)
+
 ### Version 1.14.1
 
 * Added support for nullable fields in RefundDetailsResponse

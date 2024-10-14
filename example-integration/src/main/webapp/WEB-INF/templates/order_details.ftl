@@ -69,6 +69,7 @@
                         <option value="" selected="selected"></option>
                         <option value="F">Female</option>
                         <option value="M">Male</option>
+                        <option value="O">Other</option>
                     </select>
                 </td>
             </tr>
