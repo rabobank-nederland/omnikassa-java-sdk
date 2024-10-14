@@ -14,6 +14,7 @@ public enum PaymentBrand {
     MAESTRO,
     V_PAY,
     SOFORT,
+    BILLINK,
 
     /**
      * The CARDS type comprises MASTERCARD, VISA, BANCONTACT, MAESTRO and V_PAY.

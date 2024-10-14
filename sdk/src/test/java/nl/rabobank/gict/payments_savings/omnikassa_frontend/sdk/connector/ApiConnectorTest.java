@@ -215,11 +215,13 @@ public class ApiConnectorTest {
         when(jsonTemplate.get("order/server/api/payment-brands", "accessToken")).thenReturn(createPaymentBrandResponse());
 
         PaymentBrandsResponse paymentBrandsResponse = classUnderTest.retrievePaymentBrands("accessToken");
-        assertThat(paymentBrandsResponse.getPaymentBrands().size(), is(2));
+        assertThat(paymentBrandsResponse.getPaymentBrands().size(), is(3));
         assertThat(paymentBrandsResponse.getPaymentBrands().get(0).getName(), is("IDEAL"));
         assertThat(paymentBrandsResponse.getPaymentBrands().get(1).getName(), is("MASTERCARD"));
+        assertThat(paymentBrandsResponse.getPaymentBrands().get(2).getName(), is("BILLINK"));
         assertThat(paymentBrandsResponse.getPaymentBrands().get(0).isActive(), is(true));
         assertThat(paymentBrandsResponse.getPaymentBrands().get(1).isActive(), is(false));
+        assertThat(paymentBrandsResponse.getPaymentBrands().get(2).isActive(), is(false));
     }
 
     @Test(expected = RabobankSdkException.class)
@@ -383,8 +385,14 @@ public class ApiConnectorTest {
         JSONObject paymentBrand2 = new JSONObject();
         paymentBrand2.put("name", "MASTERCARD");
         paymentBrand2.put("status", INACTIVE);
+
+        JSONObject paymentBrand3 = new JSONObject();
+        paymentBrand3.put("name", "BILLINK");
+        paymentBrand3.put("status", INACTIVE);
+
         jsonArray.put(paymentBrand1);
         jsonArray.put(paymentBrand2);
+        jsonArray.put(paymentBrand3);
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("paymentBrands", jsonArray);
