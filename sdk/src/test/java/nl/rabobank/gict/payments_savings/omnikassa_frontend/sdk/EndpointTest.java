@@ -9,18 +9,8 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.MerchantOr
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.Signable;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.InitiateRefundRequest;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.MerchantOrderRequest;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.ApiNotification;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.ApiNotificationBuilder;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.IdealIssuer;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.IdealIssuerLogo;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.IdealIssuersResponse;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderResponse;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderResponseBuilder;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponse;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponseBuilder;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.PaymentBrandsResponse;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.RefundDetailsResponse;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.TransactionRefundableDetailsResponse;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.*;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.orderstatus.*;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.utils.RefundTestFactory;
 
 import org.apache.commons.codec.binary.Base64;
@@ -196,8 +186,21 @@ public class EndpointTest {
     }
 
     @Test
+    public void getOrderStatus_HappyFlow() throws RabobankSdkException {
+        String orderId = UUID.randomUUID().toString();
+        OrderStatusResponse orderStatusResponse = prepareOrderStatusResponse(orderId);
+
+        when(apiConnector.getOrderStatus(any(), any())).thenReturn(orderStatusResponse);
+
+        OrderStatusResponse response = endpoint.getOrderStatus(orderId);
+
+        assertEquals(orderStatusResponse.getOrder().getId(), response.getOrder().getId());
+    }
+
+
+    @Test
     public void createInstanceOldStyle() {
-        Endpoint oldStyle = Endpoint.createInstance("http://localhost", new byte[]{1, 2, 3}, tokenProvider);
+        Endpoint oldStyle = Endpoint.createInstance("http://localhost", "", new byte[]{1, 2, 3}, tokenProvider);
         assertThat(oldStyle, notNullValue());
     }
 
@@ -304,6 +307,10 @@ public class EndpointTest {
 
     private TransactionRefundableDetailsResponse prepareRefundableDetailsResponse() {
         return RefundTestFactory.defaultTransactionRefundableDetailsResponse();
+    }
+
+    private OrderStatusResponse prepareOrderStatusResponse(String orderId) {
+        return new OrderStatusResponseBuilder().withId(orderId).build();
     }
 
     private InitiateRefundRequest prepareInitiateRefundRequest() {
