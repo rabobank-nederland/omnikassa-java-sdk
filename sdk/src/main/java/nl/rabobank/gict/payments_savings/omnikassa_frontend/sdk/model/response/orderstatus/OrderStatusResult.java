@@ -16,7 +16,7 @@ public class OrderStatusResult {
     private final String id;
     private final String status;
     private final Money totalAmount;
-    private final List<TransactionStatusInfo> TransactionInfoOrderStatus;
+    private final List<TransactionStatusInfo> transactions;
 
     public OrderStatusResult(JSONObject jsonObject) {
         this.merchantOrderId = jsonObject.getString("merchantOrderId");
@@ -29,7 +29,7 @@ public class OrderStatusResult {
                                         .map((transactionJsonObject) -> new TransactionStatusInfo((JSONObject) transactionJsonObject))
                                         .collect(Collectors.toList());
         }
-        this.TransactionInfoOrderStatus = Collections.unmodifiableList(transactions);
+        this.transactions = Collections.unmodifiableList(transactions);
     }
 
     public String getMerchantOrderId() {
@@ -40,7 +40,7 @@ public class OrderStatusResult {
         return id;
     }
 
-    public String getOrderStatus() {
+    public String getStatus() {
         return status;
     }
 
@@ -48,7 +48,7 @@ public class OrderStatusResult {
         return totalAmount;
     }
 
-    public List<TransactionStatusInfo> getTransactionInfoOrderStatus() {
-        return TransactionInfoOrderStatus;
+    public List<TransactionStatusInfo> getTransactions() {
+        return transactions;
     }
 }

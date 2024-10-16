@@ -194,7 +194,7 @@ public class EndpointTest {
 
         OrderStatusResponse response = endpoint.getOrderStatus(orderId);
 
-        assertEquals(orderStatusResponse.getOrderStatusResult().getId(), response.getOrderStatusResult().getId());
+        assertEquals(orderStatusResponse.getOrder().getId(), response.getOrder().getId());
     }
 
 

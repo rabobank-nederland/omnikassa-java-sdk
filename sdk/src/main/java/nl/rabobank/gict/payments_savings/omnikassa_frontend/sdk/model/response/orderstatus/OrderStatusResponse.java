@@ -4,13 +4,13 @@ import kong.unirest.json.JSONObject;
 
 public class OrderStatusResponse {
 
-    private final OrderStatusResult orderStatusResult;
+    private final OrderStatusResult order;
 
     public OrderStatusResponse(JSONObject jsonObject) {
-        this.orderStatusResult = new OrderStatusResult(jsonObject.getJSONObject("order"));
+        this.order = new OrderStatusResult(jsonObject.getJSONObject("order"));
     }
 
-    public OrderStatusResult getOrderStatusResult() {
-        return orderStatusResult;
+    public OrderStatusResult getOrder() {
+        return order;
     }
 }

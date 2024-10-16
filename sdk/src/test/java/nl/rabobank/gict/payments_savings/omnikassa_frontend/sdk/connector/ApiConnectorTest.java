@@ -327,18 +327,18 @@ public class ApiConnectorTest {
         when(jsonTemplate.getForProductionEnv("payment-api/v2/orders/" + orderId, "token")).thenReturn(orderStatus);
 
         OrderStatusResponse actualResponse = classUnderTest.getOrderStatus(orderId, "token");
-        OrderStatusResult actualResult = actualResponse.getOrderStatusResult();
+        OrderStatusResult actualResult = actualResponse.getOrder();
 
         assertThat(actualResult.getMerchantOrderId(), is("25da863a-60a5-475d-ae47-c0e4bd1bec31"));
         assertThat(actualResult.getId(), is("ORDER1"));
-        assertThat(actualResult.getOrderStatus(), is("COMPLETED"));
+        assertThat(actualResult.getStatus(), is("COMPLETED"));
         assertThat(actualResult.getTotalAmount().getCurrency(), is(EUR));
         assertThat(actualResult.getTotalAmount().getAmount(), is(new BigDecimal("1.00")));
-        assertThat(actualResult.getTransactionInfoOrderStatus().get(0).getId(), is("1"));
-        assertThat(actualResult.getTransactionInfoOrderStatus().get(0).getPaymentBrand(), is("IDEAL"));
-        assertThat(actualResult.getTransactionInfoOrderStatus().get(0).getType(), is(TransactionType.AUTHORIZE));
-        assertThat(actualResult.getTransactionInfoOrderStatus().get(0).getStatus(), is(TransactionStatus.COMPLETED));
-        assertThat(actualResult.getTransactionInfoOrderStatus().get(0).getAmount().getAmount(), is(new BigDecimal("1.00")));
+        assertThat(actualResult.getTransactions().get(0).getId(), is("1"));
+        assertThat(actualResult.getTransactions().get(0).getPaymentBrand(), is("IDEAL"));
+        assertThat(actualResult.getTransactions().get(0).getType(), is(TransactionType.AUTHORIZE));
+        assertThat(actualResult.getTransactions().get(0).getStatus(), is(TransactionStatus.COMPLETED));
+        assertThat(actualResult.getTransactions().get(0).getAmount().getAmount(), is(new BigDecimal("1.00")));
     }
 
     @Test
@@ -349,14 +349,14 @@ public class ApiConnectorTest {
         when(jsonTemplate.getForProductionEnv("payment-api/v2/orders/" + orderId, "token")).thenReturn(orderStatus);
 
         OrderStatusResponse actualResponse = classUnderTest.getOrderStatus(orderId, "token");
-        OrderStatusResult actualResult = actualResponse.getOrderStatusResult();
+        OrderStatusResult actualResult = actualResponse.getOrder();
 
         assertThat(actualResult.getMerchantOrderId(), is("25da863a-60a5-475d-ae47-c0e4bd1bec31"));
         assertThat(actualResult.getId(), is("ORDER1"));
-        assertThat(actualResult.getOrderStatus(), is("COMPLETED"));
+        assertThat(actualResult.getStatus(), is("COMPLETED"));
         assertThat(actualResult.getTotalAmount().getCurrency(), is(EUR));
         assertThat(actualResult.getTotalAmount().getAmount(), is(new BigDecimal("1.00")));
-        assertThat(actualResult.getTransactionInfoOrderStatus(), is(new ArrayList<>()));
+        assertThat(actualResult.getTransactions(), is(new ArrayList<>()));
     }
 
     @Test
