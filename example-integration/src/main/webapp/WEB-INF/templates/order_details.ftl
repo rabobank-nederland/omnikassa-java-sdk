@@ -69,6 +69,7 @@
                         <option value="" selected="selected"></option>
                         <option value="F">Female</option>
                         <option value="M">Male</option>
+                        <option value="O">Other</option>
                     </select>
                 </td>
             </tr>
@@ -97,7 +98,7 @@
                         <option value="ANY" selected="selected">Any</option>
                         <option value="IDEAL">iDEAL</option>
                         <option value="PAYPAL">PayPal</option>
-                        <option value="AFTERPAY">AfterPay</option>
+                        <option value="BILLINK">Billink</option>
                         <option value="MASTERCARD">Mastercard</option>
                         <option value="VISA">Visa</option>
                         <option value="BANCONTACT">Bancontact</option>
