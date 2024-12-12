@@ -40,7 +40,7 @@ public class OrderStatusResponseBuilder implements TestBuilder<OrderStatusRespon
         transaction.put("id", 123);
         transaction.put("paymentBrand", "paymentBrand");
         transaction.put("type", TransactionType.AUTHORIZE);
-        transaction.put("status", TransactionStatus.COMPLETED);
+        transaction.put("status", TransactionStatus.SUCCESS);
         transaction.put("amount", amount);
         transaction.put("createdAt", "2018-08-02T09:29:56.123+02:00");
         transaction.put("lastUpdatedAt", "2018-08-02T09:29:56+02:00");

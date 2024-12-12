@@ -4,7 +4,7 @@ package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.connector;
 import kong.unirest.UnirestException;
 import kong.unirest.json.JSONObject;
 
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.IllegalApiResponseException;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.ApiResponseException;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.RabobankSdkException;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.UnsupportedSandboxOperationException;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.AccessToken;
@@ -192,7 +192,7 @@ public class ApiConnector {
 
             @Override
             JSONObject fetch() throws UnsupportedSandboxOperationException {
-                return jsonTemplate.getForProductionEnv("payment-api/v2/orders/" + orderId, token);
+                return jsonTemplate.getForProductionEnv("v2/orders/" + orderId, token);
             }
 
             @Override
@@ -265,9 +265,9 @@ public class ApiConnector {
             }
         }
 
-        private void checkedForErrorsInResponse(JSONObject jsonObject) throws IllegalApiResponseException {
-            if (jsonObject.has(IllegalApiResponseException.ERROR_CODE_FIELD_NAME)) {
-                throw IllegalApiResponseException.of(jsonObject);
+        private void checkedForErrorsInResponse(JSONObject jsonObject) throws ApiResponseException {
+            if (jsonObject.has(ApiResponseException.ERROR_CODE_FIELD_NAME)) {
+                throw ApiResponseException.of(jsonObject);
             }
         }
 
