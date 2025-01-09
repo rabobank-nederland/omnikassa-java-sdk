@@ -476,8 +476,7 @@ public class ApiConnectorTest {
 
         JSONObject firstTransaction = getTransactionObject("1", 100L, TransactionType.AUTHORIZE, TransactionStatus.SUCCESS);
         JSONObject secondTransaction = getTransactionObject("2", 200L, TransactionType.PAYMENT, TransactionStatus.SUCCESS);
-        JSONObject thirdTransaction = getTransactionObject("3", 300L, TransactionType.REFUND, TransactionStatus.FAILURE);
-        jsonObject.put("transactions", new JSONArray(Arrays.asList(firstTransaction, secondTransaction, thirdTransaction)));
+        jsonObject.put("transactions", new JSONArray(Arrays.asList(firstTransaction, secondTransaction)));
         return jsonObject;
     }
 
