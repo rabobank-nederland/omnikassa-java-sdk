@@ -52,7 +52,8 @@ public class WebShopOrder {
                                               String preselectedIssuerId,
                                               String initiatingParty,
                                               boolean skipHppResultPage,
-                                              String shopperBankstatementReference) {
+                                              String shopperBankstatementReference,
+                                              String purchaseOrderReference) {
         return new Builder()
                 .withMerchantOrderId(String.valueOf(orderId))
                 .withAmount(Money.fromEuros(EUR, getTotalPrice()))
@@ -69,6 +70,7 @@ public class WebShopOrder {
                 .withInitiatingParty(initiatingParty)
                 .withSkipHppResultPage(skipHppResultPage)
                 .withShopperBankstatementReference(shopperBankstatementReference)
+                .withPurchaseOrderReference(purchaseOrderReference)
                 .build();
     }
 

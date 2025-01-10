@@ -56,7 +56,22 @@ public class MerchantOrderRequest implements JsonConvertible {
         }
         CustomerInformation customerInformation = merchantOrder.getCustomerInformation();
         if (customerInformation != null) {
-            jsonObject.put("customerInformation", customerInformation.asJson());
+            JSONObject customerInformationObject = new JSONObject();
+            customerInformationObject.put("dateOfBirth", customerInformation.getDateOfBirth());
+            customerInformationObject.put("emailAddress", customerInformation.getEmailAddress());
+            customerInformationObject.put("gender", customerInformation.getGender());
+            customerInformationObject.put("initials", customerInformation.getInitials());
+            customerInformationObject.put("telephoneNumber", customerInformation.getTelephoneNumber());
+            customerInformationObject.put("fullName", customerInformation.getFullName());
+            if (customerInformation.getCompanyName() != null && customerInformation.getCompanyNumber() != null) {
+                JSONObject companyInformationObject = new JSONObject();
+                companyInformationObject.put("name", customerInformation.getCompanyName());
+                companyInformationObject.put("companyNumber", customerInformation.getCompanyNumber());
+                companyInformationObject.put("vatNumber", customerInformation.getCompanyVatNumber());
+                companyInformationObject.put("countryCode", customerInformation.getCompanyCountryCode());
+                customerInformationObject.put("company", companyInformationObject);
+            }
+            jsonObject.put("customerInformation", customerInformationObject);
         }
         Address billingDetails = merchantOrder.getBillingDetail();
         if (billingDetails != null) {
@@ -70,6 +85,11 @@ public class MerchantOrderRequest implements JsonConvertible {
         String shopperBankstatementReference = merchantOrder.getShopperBankstatementReference();
         if (shopperBankstatementReference != null) {
             jsonObject.put("shopperBankstatementReference", shopperBankstatementReference);
+        }
+        String purchaseOrderReference = merchantOrder.getPurchaseOrderReference();
+        if (purchaseOrderReference != null) {
+            jsonObject.put("purchaseOrderReference", purchaseOrderReference);
+
         }
         return jsonObject;
     }

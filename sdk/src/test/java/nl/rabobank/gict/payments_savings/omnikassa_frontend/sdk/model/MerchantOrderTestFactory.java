@@ -32,6 +32,7 @@ public class MerchantOrderTestFactory {
                 .withSkipHppResultPage(true)
                 .withPaymentBrandMetaData(getPaymentBrandMetaData())
                 .withShopperBankstatementReference("bankstatementReference")
+                .withPurchaseOrderReference("ABC1234556")
                 .build();
     }
 

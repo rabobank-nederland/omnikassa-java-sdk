@@ -54,7 +54,13 @@
     "gender": "M",
     "initials": "J.",
     "telephoneNumber": "0031204111111",
-    "fullName": "Jan de Ruiter"
+    "fullName": "Jan de Ruiter",
+    "company": {
+      "name": "Lorem Ipsum",
+      "companyNumber": "ABCDEF123",
+      "vatNumber": "123",
+      "countryCode": "NL"
+    }
   },
   "paymentBrand": "IDEAL",
   "paymentBrandForce": "FORCE_ALWAYS",
@@ -63,5 +69,6 @@
     "issuerId": "RABONL2U"
   },
   "skipHppResultPage": true,
-  "shopperBankstatementReference": "bankstatementReference"
+  "shopperBankstatementReference": "bankstatementReference",
+  "purchaseOrderReference": "ABC1234556"
 }

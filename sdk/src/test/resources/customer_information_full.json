@@ -4,5 +4,9 @@
   "gender": "M",
   "initials": "J.",
   "telephoneNumber": "0031204111111",
-  "fullName": "Jan de Ruiter"
+  "fullName": "Jan de Ruiter",
+  "companyName": "Lorem Ipsum",
+  "companyNumber":"ABCDEF123",
+  "companyVatNumber":"123",
+  "companyCountryCode": "NL"
 }

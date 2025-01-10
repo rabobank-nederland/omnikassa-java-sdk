@@ -1,5 +1,6 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.order_details;
 
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.CountryCode;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.order_details.CustomerInformation.Builder;
 
 import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.Gender.M;
@@ -13,6 +14,10 @@ public class CustomerInformationFactory {
                 .withInitials("J.")
                 .withTelephoneNumber("0031204111111")
                 .withFullName("Jan de Ruiter")
+                .withCompanyName("Lorem Ipsum")
+                .withCompanyNumber("ABCDEF123")
+                .withCompanyVatNumber("123")
+                .withCompanyCountryCode(CountryCode.NL)
                 .build();
     }
 

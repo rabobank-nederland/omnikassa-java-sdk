@@ -3,6 +3,7 @@ package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.order_det
 import kong.unirest.json.JSONObject;
 
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.JsonConvertible;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.CountryCode;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.Gender;
 
 import java.util.Objects;
@@ -17,6 +18,10 @@ public final class CustomerInformation implements JsonConvertible {
     private final String telephoneNumber;
     private final Gender gender;
     private final String fullName;
+    private final String companyName;
+    private final String companyNumber;
+    private final String companyVatNumber;
+    private final CountryCode companyCountryCode;
 
     CustomerInformation(Builder builder) {
         emailAddress = builder.emailAddress;
@@ -25,6 +30,10 @@ public final class CustomerInformation implements JsonConvertible {
         initials = builder.initials;
         telephoneNumber = builder.telephoneNumber;
         fullName = builder.fullName;
+        companyName = builder.companyName;
+        companyNumber = builder.companyNumber;
+        companyVatNumber = builder.companyVatNumber;
+        companyCountryCode = builder.companyCountryCode;
     }
 
     public String getEmailAddress() {
@@ -51,6 +60,19 @@ public final class CustomerInformation implements JsonConvertible {
         return fullName;
     }
 
+    public String getCompanyName() {
+        return companyName;
+    }
+    public String getCompanyNumber() {
+        return companyNumber;
+    }
+    public String getCompanyVatNumber() {
+        return companyVatNumber;
+    }
+    public CountryCode getCompanyCountryCode() {
+        return companyCountryCode;
+    }
+
     @Override
     public JSONObject asJson() {
         JSONObject jsonObject = new JSONObject();
@@ -60,6 +82,10 @@ public final class CustomerInformation implements JsonConvertible {
         jsonObject.put("initials", initials);
         jsonObject.put("telephoneNumber", telephoneNumber);
         jsonObject.put("fullName", fullName);
+        jsonObject.put("companyName", companyName);
+        jsonObject.put("companyNumber", companyNumber);
+        jsonObject.put("companyVatNumber", companyVatNumber);
+        jsonObject.put("companyCountryCode", companyCountryCode);
 
         return jsonObject;
     }
@@ -73,7 +99,7 @@ public final class CustomerInformation implements JsonConvertible {
 
     @Override
     public int hashCode() {
-        return Objects.hash(emailAddress, dateOfBirth, initials, telephoneNumber, gender, fullName);
+        return Objects.hash(emailAddress, dateOfBirth, initials, telephoneNumber, gender, fullName, companyName, companyNumber, companyVatNumber, companyCountryCode);
     }
 
     @Override
@@ -90,7 +116,11 @@ public final class CustomerInformation implements JsonConvertible {
                Objects.equals(initials, that.initials) &&
                Objects.equals(telephoneNumber, that.telephoneNumber) &&
                gender == that.gender &&
-               Objects.equals(fullName, that.fullName);
+               Objects.equals(fullName, that.fullName) &&
+               Objects.equals(companyName, that.companyName) &&
+               Objects.equals(companyNumber, that.companyNumber) &&
+               Objects.equals(companyVatNumber, that.companyVatNumber) &&
+               Objects.equals(companyCountryCode, that.companyCountryCode);
     }
 
     public static class Builder {
@@ -100,6 +130,10 @@ public final class CustomerInformation implements JsonConvertible {
         private String telephoneNumber;
         private String dateOfBirth;
         private String fullName;
+        private String companyName;
+        private String companyNumber;
+        private String companyVatNumber;
+        private CountryCode companyCountryCode;
 
         /**
          * @param emailAddress | Optional
@@ -163,6 +197,43 @@ public final class CustomerInformation implements JsonConvertible {
          */
         public Builder withFullName(String fullName) {
             this.fullName = fullName;
+            return this;
+        }
+
+        /**
+         * @param companyName | Optional
+         *                 | Maximum length of '50' characters
+         * @return Builder
+         */
+        public Builder withCompanyName(String companyName) {
+            this.companyName = companyName;
+            return this;
+        }
+        /**
+         * @param companyNumber | Optional
+         *                 | Maximum length of '255' characters
+         * @return Builder
+         */
+        public Builder withCompanyNumber(String companyNumber) {
+            this.companyNumber = companyNumber;
+            return this;
+        }
+        /**
+         * @param companyVatNumber | Optional
+         *                 | Maximum length of '50' characters
+         * @return Builder
+         */
+        public Builder withCompanyVatNumber(String companyVatNumber) {
+            this.companyVatNumber = companyVatNumber;
+            return this;
+        }
+        /**
+         * @param countryCode | Optional
+         *                    | Must be a valid CountryCode
+         * @return Builder
+         */
+        public Builder withCompanyCountryCode(CountryCode countryCode) {
+            this.companyCountryCode = countryCode;
             return this;
         }
 

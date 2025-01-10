@@ -5,6 +5,7 @@ import kong.unirest.json.JSONObject;
 import org.junit.Test;
 
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.JsonFileConverter;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.CountryCode;
 
 import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.Gender.M;
 import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.order_details.CustomerInformationFactory.customerInformation;
@@ -27,6 +28,10 @@ public class CustomerInformationTest {
         assertThat(customerInformation.getInitials(), nullValue());
         assertThat(customerInformation.getTelephoneNumber(), nullValue());
         assertThat(customerInformation.getFullName(), nullValue());
+        assertThat(customerInformation.getCompanyName(), nullValue());
+        assertThat(customerInformation.getCompanyNumber(), nullValue());
+        assertThat(customerInformation.getCompanyVatNumber(), nullValue());
+        assertThat(customerInformation.getCompanyCountryCode(), nullValue());
     }
 
     @Test
@@ -37,6 +42,10 @@ public class CustomerInformationTest {
         assertThat(customerInformationFull.getInitials(), is("J."));
         assertThat(customerInformationFull.getTelephoneNumber(), is("0031204111111"));
         assertThat(customerInformationFull.getFullName(), is("Jan de Ruiter"));
+        assertThat(customerInformationFull.getCompanyName(), is("Lorem Ipsum"));
+        assertThat(customerInformationFull.getCompanyNumber(), is("ABCDEF123"));
+        assertThat(customerInformationFull.getCompanyVatNumber(), is("123"));
+        assertThat(customerInformationFull.getCompanyCountryCode(), is(CountryCode.valueOf("NL")));
     }
 
     @Test
@@ -49,6 +58,10 @@ public class CustomerInformationTest {
         expectedJson.put("initials",(String)null);
         expectedJson.put("telephoneNumber",(String)null);
         expectedJson.put("fullName",(String)null);
+        expectedJson.put("companyName",(String)null);
+        expectedJson.put("companyNumber",(String)null);
+        expectedJson.put("companyVatNumber",(String)null);
+        expectedJson.put("companyCountryCode",(String)null);
 
         assertEquals(actualJson, expectedJson);
     }

@@ -30,6 +30,7 @@ public final class MerchantOrder {
     private final String shopperBankstatementReference;
 
     private final String initiatingParty;
+    private final String purchaseOrderReference;
 
     private MerchantOrder(Builder builder) {
         this.merchantOrderId = builder.merchantOrderId;
@@ -47,6 +48,7 @@ public final class MerchantOrder {
         this.paymentBrandMetaData = builder.paymentBrandMetaData;
         this.skipHppResultPage = builder.skipHppResultPage;
         this.shopperBankstatementReference = builder.shopperBankstatementReference;
+        this.purchaseOrderReference = builder.purchaseOrderReference;
     }
     public String getInitiatingParty() {
         return initiatingParty;
@@ -107,6 +109,10 @@ public final class MerchantOrder {
         return shopperBankstatementReference;
     }
 
+    public String getPurchaseOrderReference() {
+        return purchaseOrderReference;
+    }
+
     public static class Builder {
 
         private String merchantOrderId;
@@ -124,6 +130,8 @@ public final class MerchantOrder {
         private String initiatingParty;
         private boolean skipHppResultPage = false;
         private String shopperBankstatementReference;
+        private String purchaseOrderReference;
+
 
         /**
          * @param merchantOrderId | Must not be `null`
@@ -271,6 +279,19 @@ public final class MerchantOrder {
          */
         public Builder withShopperBankstatementReference(String shopperBankstatementReference) {
             this.shopperBankstatementReference = shopperBankstatementReference;
+            return this;
+        }
+
+        /**
+         * Purchase order reference (PO reference).
+
+         * @param purchaseOrderReference | Optional
+         *                               | Must only contain alphabetic characters
+         *                               | Maximum length of '50' characters
+         * @return Builder
+         */
+        public Builder withPurchaseOrderReference(String purchaseOrderReference) {
+            this.purchaseOrderReference = purchaseOrderReference;
             return this;
         }
 

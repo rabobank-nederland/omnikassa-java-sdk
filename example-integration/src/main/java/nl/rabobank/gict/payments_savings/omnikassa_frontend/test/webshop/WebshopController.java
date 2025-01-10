@@ -251,9 +251,10 @@ class WebshopController {
         boolean skipHppResultPage = parseBoolean(request.getParameter("skipHppResultPage"));
         String initiatingParty = request.getParameter("initiatingParty");
         String shopperBankstatementReference = request.getParameter("shopperBankstatementReference");
+        String purchaseOrderReference = request.getParameter("purchaseOrderReference");
         return webShopOrderMap.get(iterator).prepareMerchantOrder(customerInformation, shippingDetails, billingDetails,
                                                                   paymentBrand, paymentBrandForce, preselectedIssuerId,
-                                                                  initiatingParty, skipHppResultPage, shopperBankstatementReference);
+                                                                  initiatingParty, skipHppResultPage, shopperBankstatementReference, purchaseOrderReference);
     }
 
     private CustomerInformation createCustomerInformation(HttpServletRequest request) {
@@ -264,6 +265,10 @@ class WebshopController {
                 .withEmailAddress(request.getParameter("email"))
                 .withDateOfBirth(request.getParameter("birthDate"))
                 .withFullName(request.getParameter("fullName"))
+                .withCompanyName(request.getParameter("companyName"))
+                .withCompanyNumber(request.getParameter("companyNumber"))
+                .withCompanyVatNumber(request.getParameter("companyVatNumber"))
+                .withCompanyCountryCode(CountryCode.valueOf(request.getParameter("countryCode")))
                 .build();
     }
 
