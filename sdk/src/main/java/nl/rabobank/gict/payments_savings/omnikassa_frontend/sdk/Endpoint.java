@@ -18,6 +18,7 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.M
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.PaymentBrandsResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.RefundDetailsResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.TransactionRefundableDetailsResponse;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.orderstatus.*;
 
 import java.util.UUID;
 
@@ -51,8 +52,8 @@ public final class Endpoint {
      * @deprecated This method is deprecated, use the {@link Endpoint#createInstance(Environment, String, TokenProvider)} instead.
      */
     @Deprecated
-    public static Endpoint createInstance(String baseURL, byte[] signingKey, TokenProvider tokenProvider) {
-        return createInstance(baseURL, signingKey, tokenProvider, null, null);
+    public static Endpoint createInstance(String baseURL, String suffix, byte[] signingKey, TokenProvider tokenProvider) {
+        return createInstance(baseURL, suffix, signingKey, tokenProvider, null, null);
     }
 
     /**
@@ -69,11 +70,12 @@ public final class Endpoint {
      */
     @Deprecated
     public static Endpoint createInstance(String baseURL,
+                                          String suffix,
                                           byte[] signingKey,
                                           TokenProvider tokenProvider,
                                           String userAgent,
                                           String partnerReference) {
-        ApiConnector connector = new ApiConnector(baseURL, signingKey, userAgent, partnerReference);
+        ApiConnector connector = new ApiConnector(baseURL, suffix, signingKey, userAgent, partnerReference);
         return new Endpoint(connector, tokenProvider, signingKey);
     }
 
@@ -123,7 +125,7 @@ public final class Endpoint {
                                           String userAgent,
                                           String partnerReference) {
         byte[] signingKey = decodeBase64(base64encodedSigningKey);
-        return createInstance(environment.getUrl(), signingKey, tokenProvider, userAgent, partnerReference);
+        return createInstance(environment.getUrl(), environment.getSuffix(), signingKey, tokenProvider, userAgent, partnerReference);
     }
 
     /**
@@ -231,6 +233,21 @@ public final class Endpoint {
             logAndGetNewToken(e);
             return connector.getRefundableDetails(transactionId, tokenProvider.getAccessToken());
         }
+    }
+
+    /**
+     *
+     *  This function will get details for specific order.
+     *
+     * @param orderId id of Order
+     * @return String for order status
+     * @throws RabobankSdkException when problems occurred during the request, e.g. server not reachable, invalid signature, invalid authentication etc.
+     */
+
+    public OrderStatusResponse getOrderStatus(String orderId)
+            throws RabobankSdkException {
+
+            return connector.getOrderStatus(orderId, tokenProvider.getAccessToken());
     }
 
 

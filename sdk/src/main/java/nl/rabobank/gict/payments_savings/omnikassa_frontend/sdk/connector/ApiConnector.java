@@ -4,8 +4,9 @@ package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.connector;
 import kong.unirest.UnirestException;
 import kong.unirest.json.JSONObject;
 
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.IllegalApiResponseException;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.ApiResponseException;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.RabobankSdkException;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.UnsupportedSandboxOperationException;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.AccessToken;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.InitiateRefundRequest;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.MerchantOrderRequest;
@@ -17,6 +18,7 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.P
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.RefundDetailsResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.SignedResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.TransactionRefundableDetailsResponse;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.orderstatus.OrderStatusResponse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,14 +38,16 @@ public class ApiConnector {
 
     private String userAgent;
     private String partnerReference;
+    private final String suffix;
 
-    ApiConnector(UnirestJSONTemplate jsonTemplate, byte[] signingKey, String userAgent, String partnerReference) {
+    ApiConnector(UnirestJSONTemplate jsonTemplate, String suffix, byte[] signingKey, String userAgent, String partnerReference) {
         this.jsonTemplate = jsonTemplate;
         this.signingKey = signingKey;
+        this.suffix = suffix;
     }
 
-    public ApiConnector(String baseURL, byte[] signingKey, String userAgent, String partnerReference) {
-        this(new UnirestJSONTemplate(baseURL), signingKey, userAgent, partnerReference);
+    public ApiConnector(String baseURL, String suffix, byte[] signingKey, String userAgent, String partnerReference) {
+        this(new UnirestJSONTemplate(baseURL), suffix, signingKey, userAgent, partnerReference);
     }
 
     /**
@@ -62,7 +66,7 @@ public class ApiConnector {
             JSONObject fetch() {
                 Map<String, String> requestHeaders = new HashMap<>();
                 requestHeaders.put(X_API_USER_AGENT, getUserAgentHeaderString());
-                return jsonTemplate.postWithHeader("order/server/api/v2/order", order, requestHeaders, token);
+                return jsonTemplate.postWithHeader(suffix + "order/server/api/v2/order", order, requestHeaders, token);
             }
 
             @Override
@@ -85,7 +89,7 @@ public class ApiConnector {
 
             @Override
             JSONObject fetch() {
-                return jsonTemplate.get("order/server/api/v2/events/results/" + apiNotification.getEventName(),
+                return jsonTemplate.get(suffix + "order/server/api/v2/events/results/" + apiNotification.getEventName(),
                                         apiNotification.getAuthentication());
             }
 
@@ -117,7 +121,7 @@ public class ApiConnector {
             JSONObject fetch() throws UnirestException {
                 Map<String, String> requestHeaders = new HashMap<>();
                 requestHeaders.put("request-id", requestId.toString());
-                return jsonTemplate.postWithHeader("order/server/api/v2/refund/transactions/" + transactionId + "/refunds", refundRequest, requestHeaders, token);
+                return jsonTemplate.postWithHeader(suffix + "order/server/api/v2/refund/transactions/" + transactionId + "/refunds", refundRequest, requestHeaders, token);
             }
 
             @Override
@@ -142,7 +146,7 @@ public class ApiConnector {
 
             @Override
             JSONObject fetch() throws UnirestException {
-                return jsonTemplate.get("order/server/api/v2/refund/transactions/" + transactionId + "/refunds/" + refundId, token);
+                return jsonTemplate.get(suffix + "order/server/api/v2/refund/transactions/" + transactionId + "/refunds/" + refundId, token);
             }
 
             @Override
@@ -166,7 +170,7 @@ public class ApiConnector {
 
             @Override
             JSONObject fetch() throws UnirestException {
-                return jsonTemplate.get("order/server/api/v2/refund/transactions/" + transactionId + "/refundable-details", token);
+                return jsonTemplate.get(suffix + "order/server/api/v2/refund/transactions/" + transactionId + "/refundable-details", token);
             }
 
             @Override
@@ -176,12 +180,35 @@ public class ApiConnector {
         }.execute();
     }
 
+    /**
+     *
+     * @param orderId id of Order
+     * @param token access token
+     * @return String for order status
+     * @throws RabobankSdkException when problems occurred during the request, e.g. server not reachable, invalid signature, invalid authentication etc.
+     */
+    public OrderStatusResponse getOrderStatus(final String orderId, final String token) throws RabobankSdkException {
+        return new RequestTemplate<OrderStatusResponse>() {
+
+            @Override
+            JSONObject fetch() throws UnsupportedSandboxOperationException {
+                return jsonTemplate.getForProductionEnv("v2/orders/" + orderId, token);
+            }
+
+            @Override
+            OrderStatusResponse convert(JSONObject result) {
+                return new OrderStatusResponse(result);
+            }
+        }.execute();
+    }
+
+
     public AccessToken retrieveNewToken(final String refreshToken) throws RabobankSdkException {
         return new RequestTemplate<AccessToken>() {
 
             @Override
             JSONObject fetch() {
-                return jsonTemplate.get("gatekeeper/refresh", refreshToken);
+                return jsonTemplate.get(suffix + "gatekeeper/refresh", refreshToken);
             }
 
             @Override
@@ -196,7 +223,7 @@ public class ApiConnector {
 
             @Override
             JSONObject fetch() {
-                return jsonTemplate.get("order/server/api/payment-brands", accessToken);
+                return jsonTemplate.get(suffix + "order/server/api/payment-brands", accessToken);
             }
 
             @Override
@@ -210,7 +237,7 @@ public class ApiConnector {
         return new RequestTemplate<IdealIssuersResponse>() {
             @Override
             JSONObject fetch() {
-                return jsonTemplate.get("ideal/server/api/v2/issuers", accessToken);
+                return jsonTemplate.get(suffix + "ideal/server/api/v2/issuers", accessToken);
             }
 
             @Override
@@ -238,13 +265,13 @@ public class ApiConnector {
             }
         }
 
-        private void checkedForErrorsInResponse(JSONObject jsonObject) throws IllegalApiResponseException {
-            if (jsonObject.has(IllegalApiResponseException.ERROR_CODE_FIELD_NAME)) {
-                throw IllegalApiResponseException.of(jsonObject);
+        private void checkedForErrorsInResponse(JSONObject jsonObject) throws ApiResponseException {
+            if (jsonObject.has(ApiResponseException.ERROR_CODE_FIELD_NAME)) {
+                throw ApiResponseException.of(jsonObject);
             }
         }
 
-        abstract JSONObject fetch();
+        abstract JSONObject fetch() throws RabobankSdkException;
 
         abstract T convert(JSONObject result);
     }

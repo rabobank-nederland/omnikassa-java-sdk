@@ -20,6 +20,10 @@ the [SDK manual](https://github.com/rabobank-nederland/omnikassa-sdk-doc/blob/ma
 
 ## Release notes
 
+### Version 1.16.0
+
+* Extended SDK to retrieve status of order for a specific merchant.
+
 ### Version 1.15.0
 
 * Removed support and mentions of Payment Brand AFTERPAY.
