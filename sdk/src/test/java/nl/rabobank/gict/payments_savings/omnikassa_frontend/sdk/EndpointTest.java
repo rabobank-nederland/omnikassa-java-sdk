@@ -1,5 +1,6 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk;
 
+import kong.unirest.HttpStatus;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.connector.ApiConnector;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.connector.TokenProviderSpy;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.InvalidAccessTokenException;
@@ -7,9 +8,11 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.Rabob
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.AccessTokenBuilder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.MerchantOrderTestFactory;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.Signable;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.TokenStatus;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.InitiateRefundRequest;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.MerchantOrderRequest;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.*;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.cardonfile.CardsOnFileResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.orderstatus.*;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.utils.RefundTestFactory;
 
@@ -197,6 +200,37 @@ public class EndpointTest {
         assertEquals(orderStatusResponse.getOrder().getId(), response.getOrder().getId());
     }
 
+    @Test
+    public void getShopperPaymentDetails_HappyFlow() throws RabobankSdkException {
+        tokenProvider.setValidAccessToken();
+        String shopperId = UUID.randomUUID().toString();
+        CardsOnFileResponse cardsOnFileResponse = prepareCardsOnFileResponse(shopperId);
+
+        when(apiConnector.getShopperPaymentDetails(any(), any())).thenReturn(cardsOnFileResponse);
+
+        CardsOnFileResponse response = endpoint.getShopperPaymentDetails(shopperId);
+
+        assertThat(response.getCardOnFileList().size(), is(1));
+        assertThat(response.getCardOnFileList().get(0).getReference(), is(shopperId));
+        assertThat(response.getCardOnFileList().get(0).getCardExpiry(), is("4298-40"));
+        assertThat(response.getCardOnFileList().get(0).getTokenExpiry(), is("1607-22"));
+        assertThat(response.getCardOnFileList().get(0).getStatus(), is(TokenStatus.ACTIVE));
+    }
+
+    @Test
+    public void deleteShopperPaymentDetails_HappyFlow() throws RabobankSdkException {
+        tokenProvider.setValidAccessToken();
+        String id = UUID.randomUUID().toString();
+        String shopperRef = UUID.randomUUID().toString();
+
+
+        when(apiConnector.deleteShopperPaymentDetails(any(), any(), any())).thenReturn(HttpStatus.OK);
+
+        int status = endpoint.deleteShopperPaymentDetails(id, shopperRef);
+
+        assertThat(status, is(HttpStatus.OK));
+    }
+
 
     @Test
     public void createInstanceOldStyle() {
@@ -311,6 +345,10 @@ public class EndpointTest {
 
     private OrderStatusResponse prepareOrderStatusResponse(String orderId) {
         return new OrderStatusResponseBuilder().withId(orderId).build();
+    }
+
+    private CardsOnFileResponse prepareCardsOnFileResponse(String shopperId) {
+        return new CardsOnFileResponseBuilder().withReference(shopperId).build();
     }
 
     private InitiateRefundRequest prepareInitiateRefundRequest() {

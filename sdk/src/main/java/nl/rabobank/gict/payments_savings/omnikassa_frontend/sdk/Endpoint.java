@@ -1,5 +1,6 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk;
 
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.cardonfile.CardsOnFileResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -248,6 +249,36 @@ public final class Endpoint {
             throws RabobankSdkException {
 
             return connector.getOrderStatus(orderId, tokenProvider.getAccessToken());
+    }
+
+    /**
+     *
+     *  This function will get list of cards on file for specific shopper.
+     *
+     * @param shopperRef reference of Shopper
+     * @return The response contains list of cards stored by shopper.
+     * @throws RabobankSdkException when problems occurred during the request, e.g. server not reachable, invalid signature, invalid authentication etc.
+     */
+
+    public CardsOnFileResponse getShopperPaymentDetails(String shopperRef)
+            throws RabobankSdkException {
+        validateAccessToken();
+        return connector.getShopperPaymentDetails(shopperRef, tokenProvider.getAccessToken());
+    }
+
+    /**
+     *
+     *  This function will delete specific card details from list of cards on file for specific shopper.
+     *
+     * @param shopperRef reference of Shopper
+     * @param reference reference of Card
+     * @return HTTP status code
+     * @throws RabobankSdkException when problems occurred during the request, e.g. server not reachable, invalid signature, invalid authentication etc.
+     */
+
+    public int deleteShopperPaymentDetails(String shopperRef, String reference) throws RabobankSdkException{
+
+        return connector.deleteShopperPaymentDetails(shopperRef, reference, tokenProvider.getAccessToken());
     }
 
 
