@@ -250,10 +250,15 @@ class WebshopController {
         PaymentBrandForce paymentBrandForce = getEnum(PaymentBrandForce.class, request.getParameter("paymentBrandForce"));
         String preselectedIssuerId = getPreselectedIssuerId(request);
         boolean skipHppResultPage = parseBoolean(request.getParameter("skipHppResultPage"));
+        String shopperId = request.getParameter("shopperId");
+        boolean cof = parseBoolean(request.getParameter("enableCardsOnFile"));
         String initiatingParty = request.getParameter("initiatingParty");
         String shopperBankstatementReference = request.getParameter("shopperBankstatementReference");
+        if (cof && ( shopperId.isEmpty() || customerInformation.getEmailAddress().isEmpty())) {
+            throw new IllegalArgumentException("shopperId and Customer email are required when Cards on File is enabled");
+        }
         return webShopOrderMap.get(iterator).prepareMerchantOrder(customerInformation, shippingDetails, billingDetails,
-                                                                  paymentBrand, paymentBrandForce, preselectedIssuerId,
+                                                                  paymentBrand, paymentBrandForce, preselectedIssuerId, cof, shopperId,
                                                                   initiatingParty, skipHppResultPage, shopperBankstatementReference);
     }
 

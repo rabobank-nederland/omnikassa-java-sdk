@@ -1,5 +1,6 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.test.webshop.model;
 
+import java.util.HashMap;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.MerchantOrder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.MerchantOrder.Builder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.Money;
@@ -11,14 +12,13 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.order_deta
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import static java.math.BigDecimal.ZERO;
 import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.Currency.EUR;
 import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.Language.NL;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 
 public class WebShopOrder {
@@ -50,6 +50,8 @@ public class WebShopOrder {
                                               PaymentBrand paymentBrand,
                                               PaymentBrandForce paymentBrandForce,
                                               String preselectedIssuerId,
+                                              boolean cof,
+                                              String shopperId,
                                               String initiatingParty,
                                               boolean skipHppResultPage,
                                               String shopperBankstatementReference) {
@@ -65,19 +67,21 @@ public class WebShopOrder {
                 .withOrderItems(orderItems)
                 .withPaymentBrand(paymentBrand)
                 .withPaymentBrandForce(paymentBrandForce)
-                .withPaymentBrandMetaData(preparePaymentBrandMetaData(preselectedIssuerId))
+                .withPaymentBrandMetaData(preparePaymentBrandMetaData(preselectedIssuerId,cof))
+                .withShopperId(shopperId)
                 .withInitiatingParty(initiatingParty)
                 .withSkipHppResultPage(skipHppResultPage)
                 .withShopperBankstatementReference(shopperBankstatementReference)
                 .build();
     }
 
-    private Map<String, String> preparePaymentBrandMetaData(String preselectedIssuerId) {
-        if (isBlank(preselectedIssuerId)) {
-            return null;
+    private Map<String, Object> preparePaymentBrandMetaData(String preselectedIssuerId, boolean cof) {
+        Map<String, Object> paymentBrandMetaData = new HashMap<>();
+        if (isNotBlank(preselectedIssuerId)) {
+            paymentBrandMetaData.put("issuerId", preselectedIssuerId);
         }
-
-        return Collections.singletonMap("issuerId", preselectedIssuerId);
+        paymentBrandMetaData.put("enableCardOnFile", cof);
+        return paymentBrandMetaData;
     }
 
     private BigDecimal getTotalPrice() {

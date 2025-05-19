@@ -51,6 +51,7 @@
     </script>
     <script src="https://unpkg.com/@alenaksu/json-viewer@2.0.0/dist/json-viewer.bundle.js"></script>
     <script>
+
         $("[data-card-button]").on("click", function(event) {
             var referenceID = this.id;
 
@@ -58,20 +59,17 @@
             const urlParams = new URLSearchParams(queryString);
 
             var shopperID = urlParams.get('shopperId');
-            var webShop = urlParams.get('selectedWebshop');
-
-            $("#selectedWebshop").val(webShop).change();
 
             $.ajax({
                 url: "/cards-on-file/delete-card",
                 type: "POST",
                 data: {
                     referenceId: referenceID,
-                    shopperId: shopperID,
-                    selectedWebshop: $("#selectedWebshop").val()
+                    shopperId: shopperID
                 },
             }).then( () => window.location.reload());
         });
+
     </script>
     </div>
     </body>

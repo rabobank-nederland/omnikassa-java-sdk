@@ -50,7 +50,7 @@ public class MerchantOrderRequest implements JsonConvertible {
         if (paymentBrandForce != null) {
             jsonObject.put("paymentBrandForce", paymentBrandForce.name());
         }
-        Map<String, String> paymentBrandMetaData = merchantOrder.getPaymentBrandMetaData();
+        Map<String, Object> paymentBrandMetaData = merchantOrder.getPaymentBrandMetaData();
         if (paymentBrandMetaData != null && !paymentBrandMetaData.isEmpty()) {
             jsonObject.put("paymentBrandMetaData", paymentBrandMetaData);
         }
