@@ -4,19 +4,19 @@ import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONObject;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.TestBuilder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.TokenStatus;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.cardonfile.CardsOnFileResponse;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.cardonfile.GetShopperPaymentDetailsResponse;
 
-public class CardsOnFileResponseBuilder implements TestBuilder<CardsOnFileResponse>{
-    private String reference;
+public class GetShopperPaymentDetailsResponseBuilder implements TestBuilder<GetShopperPaymentDetailsResponse>{
+    private String id;
 
-    public CardsOnFileResponseBuilder withReference(String reference) {
-        this.reference = reference;
+    public GetShopperPaymentDetailsResponseBuilder withId(String id) {
+        this.id = id;
         return this;
     }
 
     @Override
-    public CardsOnFileResponse build() {
-        return new CardsOnFileResponse(buildJsonObject());
+    public GetShopperPaymentDetailsResponse build() {
+        return new GetShopperPaymentDetailsResponse(buildJsonObject());
     }
 
     @Override
@@ -27,7 +27,7 @@ public class CardsOnFileResponseBuilder implements TestBuilder<CardsOnFileRespon
         JSONObject cardOnFile = new JSONObject();
         cardOnFileList.put(cardOnFile);
 
-        cardOnFile.put("reference", reference);
+        cardOnFile.put("id", id);
         cardOnFile.put("last4Digits", "0127");
         cardOnFile.put("brand", "MAESTRO");
         cardOnFile.put("cardExpiry", "4298-40");

@@ -6,7 +6,7 @@ import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONObject;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.ApiResponseException;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.TokenStatus;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.cardonfile.CardsOnFileResponse;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.cardonfile.GetShopperPaymentDetailsResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -381,10 +381,10 @@ public class ApiConnectorTest {
 
         when(jsonTemplate.getShopperPaymentDetails("v1/shopper-payment-details", shopperRef, "token")).thenReturn(cardOnFileList);
 
-        CardsOnFileResponse actualResponse = classUnderTest.getShopperPaymentDetails(shopperRef, "token");
+        GetShopperPaymentDetailsResponse actualResponse = classUnderTest.getShopperPaymentDetails(shopperRef, "token");
 
         assertThat(actualResponse.getCardOnFileList().size(), is(2));
-        assertThat(actualResponse.getCardOnFileList().get(0).getReference(), is("reference1"));
+        assertThat(actualResponse.getCardOnFileList().get(0).getId(), is("reference1"));
         assertThat(actualResponse.getCardOnFileList().get(0).getBrand(), is("MASTERCARD"));
         assertThat(actualResponse.getCardOnFileList().get(0).getLast4Digits(), is("1234"));
         assertThat(actualResponse.getCardOnFileList().get(0).getStatus(), is(TokenStatus.ACTIVE));
@@ -547,7 +547,7 @@ public class ApiConnectorTest {
 
     private JSONArray getCardOnFileResult() {
         JSONObject firstCardOnFile = new JSONObject();
-        firstCardOnFile.put("reference", "reference1");
+        firstCardOnFile.put("id", "reference1");
         firstCardOnFile.put("last4Digits", "1234");
         firstCardOnFile.put("brand", "MASTERCARD");
         firstCardOnFile.put("cardExpiry", "4298-40");
@@ -555,7 +555,7 @@ public class ApiConnectorTest {
         firstCardOnFile.put("status", TokenStatus.ACTIVE);
 
         JSONObject secondCardOnFile = new JSONObject();
-        secondCardOnFile.put("reference", "reference2");
+        secondCardOnFile.put("id", "reference2");
         secondCardOnFile.put("last4Digits", "4321");
         secondCardOnFile.put("brand", "VISA");
         secondCardOnFile.put("cardExpiry", "4298-41");

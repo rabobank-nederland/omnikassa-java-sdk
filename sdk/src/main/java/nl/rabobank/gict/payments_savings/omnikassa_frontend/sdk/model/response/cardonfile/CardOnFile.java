@@ -4,7 +4,7 @@ import kong.unirest.json.JSONObject;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.TokenStatus;
 
 public class CardOnFile {
-    private final String reference;
+    private final String id;
     private final String last4Digits;
     private final String brand;
     private final String cardExpiry;
@@ -12,7 +12,7 @@ public class CardOnFile {
     private final TokenStatus status;
 
     public CardOnFile(JSONObject jsonObject) {
-        this.reference = jsonObject.getString("reference");
+        this.id = jsonObject.getString("id");
         this.last4Digits = jsonObject.getString("last4Digits");
         this.brand = jsonObject.getString("brand");
         this.cardExpiry = jsonObject.getString("cardExpiry");
@@ -20,7 +20,7 @@ public class CardOnFile {
         this.status = jsonObject.getEnum(TokenStatus.class, "status");
     }
 
-    public String getReference() { return reference; }
+    public String getId() { return id; }
 
     public String getLast4Digits() { return last4Digits; }
 

@@ -12,7 +12,7 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.Endpoint;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.connector.TokenProvider;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.RabobankSdkException;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.cardonfile.CardOnFile;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.cardonfile.CardsOnFileResponse;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.cardonfile.GetShopperPaymentDetailsResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.test.webshop.model.CustomTokenProvider;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,7 +51,7 @@ class CardsOnFileController {
         String shopperRef = request.getParameter("shopperId");
 
         if ( validateParameters(shopperRef)){
-            List<CardOnFile> cards = Objects.requireNonNull(getCardsOnFile(shopperRef)).getCardOnFileList();
+            List<CardOnFile> cards = getCardsOnFile(shopperRef).getCardOnFileList();
             modelMap.put("cardsOnFile", cards);
         }
 
@@ -61,23 +61,23 @@ class CardsOnFileController {
     ModelAndView removeCardsOnFile( HttpServletRequest request, ModelMap modelMap)
             throws RabobankSdkException {
 
-        String reference = request.getParameter("referenceId");
+        String id = request.getParameter("id");
         String shopperRef = request.getParameter("shopperId");
 
-        if (validateParameters(shopperRef, reference)) {
-            deleteCardsOnFile(shopperRef, reference);
+        if (validateParameters(shopperRef, id)) {
+            deleteCardsOnFile(shopperRef, id);
         }
         return new ModelAndView("cards-on-file", modelMap);
     }
 
-    private CardsOnFileResponse getCardsOnFile(String shopperRef) throws RabobankSdkException {
+    private GetShopperPaymentDetailsResponse getCardsOnFile(String shopperRef) throws RabobankSdkException {
         logger.info("Retrieving cards on file for shopperId: {}", shopperRef);
         return endpoint.getShopperPaymentDetails(shopperRef);
     }
-    private int deleteCardsOnFile(String shopperRef, String reference)
+    private int deleteCardsOnFile(String shopperRef, String id)
             throws RabobankSdkException {
-        logger.info("Deleting cards on file with reference: {} for shopperRef: {}", reference, shopperRef);
-        return endpoint.deleteShopperPaymentDetails(shopperRef, reference);
+        logger.info("Deleting cards on file with id: {} for shopperRef: {}", id, shopperRef);
+        return endpoint.deleteShopperPaymentDetails(shopperRef, id);
     }
 
     private byte[] getSigningKey(String base64EncodedSigningKey) {

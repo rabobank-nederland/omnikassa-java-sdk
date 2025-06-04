@@ -30,17 +30,17 @@
                 <h6>Saved cards:</h6>
                 <table class="d-flex flex-column">
                     <#list cardsOnFile as entry>
-                        <tr class="d-flex flex-row mt-2 order" data-card-id="${entry.reference}">
-                            <td style="width: ${columnForReferenceIdWidth}">${entry.reference}</td>
+                        <tr class="d-flex flex-row mt-2 order" data-card-id="${entry.id}">
+                            <td style="width: ${columnForReferenceIdWidth}">${entry.id}</td>
                             <td style="width: ${columnForBrand}">${entry.brand}</td>
                             <td style="width: ${columnForLastDigits}">${entry.last4Digits}</td>
                             <td style="flex-grow: 1">${entry.status}</td>
                             <td style="width: 100px">
                                 <span
-                                        data-card-button="${entry.reference}"
+                                        data-card-button="${entry.id}"
                                         class="btn btn-primary"
                                         style="display: <#if entry.status == 'DELETED'>none<#else>inline-block</#if>;"
-                                        id="${entry.reference}"
+                                        id="${entry.id}"
                                         role="button">Delete
                                 </span>
                             </td>

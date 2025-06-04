@@ -12,7 +12,7 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.Toke
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.InitiateRefundRequest;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.MerchantOrderRequest;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.*;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.cardonfile.CardsOnFileResponse;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.cardonfile.GetShopperPaymentDetailsResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.orderstatus.*;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.utils.RefundTestFactory;
 
@@ -204,14 +204,14 @@ public class EndpointTest {
     public void getShopperPaymentDetails_HappyFlow() throws RabobankSdkException {
         tokenProvider.setValidAccessToken();
         String shopperId = UUID.randomUUID().toString();
-        CardsOnFileResponse cardsOnFileResponse = prepareCardsOnFileResponse(shopperId);
+        GetShopperPaymentDetailsResponse getShopperPaymentDetailsResponse = prepareGetShopperPaymentDetailsResponse(shopperId);
 
-        when(apiConnector.getShopperPaymentDetails(any(), any())).thenReturn(cardsOnFileResponse);
+        when(apiConnector.getShopperPaymentDetails(any(), any())).thenReturn(getShopperPaymentDetailsResponse);
 
-        CardsOnFileResponse response = endpoint.getShopperPaymentDetails(shopperId);
+        GetShopperPaymentDetailsResponse response = endpoint.getShopperPaymentDetails(shopperId);
 
         assertThat(response.getCardOnFileList().size(), is(1));
-        assertThat(response.getCardOnFileList().get(0).getReference(), is(shopperId));
+        assertThat(response.getCardOnFileList().get(0).getId(), is(shopperId));
         assertThat(response.getCardOnFileList().get(0).getCardExpiry(), is("4298-40"));
         assertThat(response.getCardOnFileList().get(0).getTokenExpiry(), is("1607-22"));
         assertThat(response.getCardOnFileList().get(0).getStatus(), is(TokenStatus.ACTIVE));
@@ -347,8 +347,8 @@ public class EndpointTest {
         return new OrderStatusResponseBuilder().withId(orderId).build();
     }
 
-    private CardsOnFileResponse prepareCardsOnFileResponse(String shopperId) {
-        return new CardsOnFileResponseBuilder().withReference(shopperId).build();
+    private GetShopperPaymentDetailsResponse prepareGetShopperPaymentDetailsResponse(String shopperId) {
+        return new GetShopperPaymentDetailsResponseBuilder().withId(shopperId).build();
     }
 
     private InitiateRefundRequest prepareInitiateRefundRequest() {

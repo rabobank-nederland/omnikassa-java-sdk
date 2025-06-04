@@ -1,6 +1,6 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk;
 
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.cardonfile.CardsOnFileResponse;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.cardonfile.GetShopperPaymentDetailsResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -256,11 +256,11 @@ public final class Endpoint {
      *  This function will get list of cards on file for specific shopper.
      *
      * @param shopperRef reference of Shopper
-     * @return The response contains list of cards stored by shopper.
-     * @throws RabobankSdkException when problems occurred during the request, e.g. server not reachable, invalid signature, invalid authentication etc.
+     * @return The response contains a list of cards stored by shopper.
+     * @throws RabobankSdkException when problems occurred during the request, e.g., server not reachable, invalid signature, invalid authentication etc.
      */
 
-    public CardsOnFileResponse getShopperPaymentDetails(String shopperRef)
+    public GetShopperPaymentDetailsResponse getShopperPaymentDetails(String shopperRef)
             throws RabobankSdkException {
         validateAccessToken();
         return connector.getShopperPaymentDetails(shopperRef, tokenProvider.getAccessToken());
@@ -268,17 +268,17 @@ public final class Endpoint {
 
     /**
      *
-     *  This function will delete specific card details from list of cards on file for specific shopper.
+     *  This function will delete specific card details from a list of cards on file for a specific shopper.
      *
      * @param shopperRef reference of Shopper
-     * @param reference reference of Card
+     * @param id reference of Card
      * @return HTTP status code
-     * @throws RabobankSdkException when problems occurred during the request, e.g. server not reachable, invalid signature, invalid authentication etc.
+     * @throws RabobankSdkException when problems occurred during the request, e.g., server not reachable, invalid signature, invalid authentication etc.
      */
 
-    public int deleteShopperPaymentDetails(String shopperRef, String reference) throws RabobankSdkException{
+    public int deleteShopperPaymentDetails(String shopperRef, String id) throws RabobankSdkException{
 
-        return connector.deleteShopperPaymentDetails(shopperRef, reference, tokenProvider.getAccessToken());
+        return connector.deleteShopperPaymentDetails(shopperRef, id, tokenProvider.getAccessToken());
     }
 
 
