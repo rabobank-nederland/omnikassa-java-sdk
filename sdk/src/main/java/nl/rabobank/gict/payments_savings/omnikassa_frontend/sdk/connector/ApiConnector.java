@@ -18,7 +18,7 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.P
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.RefundDetailsResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.SignedResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.TransactionRefundableDetailsResponse;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.cardonfile.GetShopperPaymentDetailsResponse;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.cardonfile.ShopperPaymentDetailsResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.orderstatus.OrderStatusResponse;
 
 import java.util.HashMap;
@@ -210,16 +210,16 @@ public class ApiConnector {
      * @return The response contains a list of cards stored by shopper
      * @throws RabobankSdkException when problems occurred during the request, e.g., server not reachable, invalid signature, invalid authentication, etc.
      */
-    public GetShopperPaymentDetailsResponse getShopperPaymentDetails(String shopperRef, String token) throws RabobankSdkException {
-        return new RequestTemplate<GetShopperPaymentDetailsResponse>() {
+    public ShopperPaymentDetailsResponse getShopperPaymentDetails(String shopperRef, String token) throws RabobankSdkException {
+        return new RequestTemplate<ShopperPaymentDetailsResponse>() {
             @Override
             JSONObject fetch() throws RabobankSdkException {
                 return jsonTemplate.getShopperPaymentDetails("v1/shopper-payment-details", shopperRef, token);
             }
 
             @Override
-            GetShopperPaymentDetailsResponse convert(JSONObject result) {
-                return new GetShopperPaymentDetailsResponse(result);
+            ShopperPaymentDetailsResponse convert(JSONObject result) {
+                return new ShopperPaymentDetailsResponse(result);
             }
         }.execute();
     }

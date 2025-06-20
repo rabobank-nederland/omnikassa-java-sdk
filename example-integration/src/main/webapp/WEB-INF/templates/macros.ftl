@@ -53,19 +53,19 @@
     <script>
 
         $("[data-card-button]").on("click", function(event) {
-            var referenceID = this.id;
+            var reference = this.id;
 
             const queryString = window.location.search;
             const urlParams = new URLSearchParams(queryString);
 
-            var shopperID = urlParams.get('shopperId');
+            var shopperRef = urlParams.get('shopperRef');
 
             $.ajax({
                 url: "/cards-on-file/delete-card",
                 type: "POST",
                 data: {
-                    referenceId: referenceID,
-                    shopperId: shopperID
+                    reference: reference,
+                    shopperRef: shopperRef
                 },
             }).then( () => window.location.reload());
         });

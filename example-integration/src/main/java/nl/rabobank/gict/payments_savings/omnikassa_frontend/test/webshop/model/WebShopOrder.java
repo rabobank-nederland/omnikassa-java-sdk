@@ -51,7 +51,7 @@ public class WebShopOrder {
                                               PaymentBrandForce paymentBrandForce,
                                               String preselectedIssuerId,
                                               boolean cof,
-                                              String shopperId,
+                                              String shopperRef,
                                               String initiatingParty,
                                               boolean skipHppResultPage,
                                               String shopperBankstatementReference) {
@@ -68,7 +68,7 @@ public class WebShopOrder {
                 .withPaymentBrand(paymentBrand)
                 .withPaymentBrandForce(paymentBrandForce)
                 .withPaymentBrandMetaData(preparePaymentBrandMetaData(preselectedIssuerId,cof))
-                .withShopperId(shopperId)
+                .withShopperRef(shopperRef)
                 .withInitiatingParty(initiatingParty)
                 .withSkipHppResultPage(skipHppResultPage)
                 .withShopperBankstatementReference(shopperBankstatementReference)

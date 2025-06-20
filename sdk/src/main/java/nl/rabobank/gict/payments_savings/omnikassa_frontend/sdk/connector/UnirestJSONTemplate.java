@@ -73,10 +73,10 @@ class UnirestJSONTemplate {
         return getRequest.asJson().getBody().getObject();
     }
 
-    public JSONObject getShopperPaymentDetails(String path, String shopperId, String token) throws
+    public JSONObject getShopperPaymentDetails(String path, String shopperRef, String token) throws
                                                                                             RabobankSdkException {
         GetRequest jsonResponse = Unirest.get( baseURL + "/" + path)
-                                         .queryString("shopper-ref", shopperId)
+                                         .queryString("shopper-ref", shopperRef)
                                          .header("Content-type", "application/json")
                                          .header("Authorization", "Bearer " + token);
 

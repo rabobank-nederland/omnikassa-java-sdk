@@ -27,7 +27,7 @@ public final class MerchantOrder {
     private final PaymentBrandForce paymentBrandForce;
     private final Map<String, Object> paymentBrandMetaData;
     private final boolean skipHppResultPage;
-    private final String shopperId;
+    private final String shopperRef;
     private final String shopperBankstatementReference;
 
     private final String initiatingParty;
@@ -47,7 +47,7 @@ public final class MerchantOrder {
         this.initiatingParty = builder.initiatingParty;
         this.paymentBrandMetaData = builder.paymentBrandMetaData;
         this.skipHppResultPage = builder.skipHppResultPage;
-        this.shopperId = builder.shopperId;
+        this.shopperRef = builder.shopperRef;
         this.shopperBankstatementReference = builder.shopperBankstatementReference;
     }
     public String getInitiatingParty() {
@@ -125,7 +125,7 @@ public final class MerchantOrder {
         private Map<String, Object> paymentBrandMetaData = Collections.emptyMap();
         private String initiatingParty;
         private boolean skipHppResultPage = false;
-        private String shopperId;
+        private String shopperRef;
         private String shopperBankstatementReference;
 
         /**
@@ -238,8 +238,8 @@ public final class MerchantOrder {
             return this;
         }
 
-        public Builder withShopperId(String shopperId) {
-            this.shopperId = shopperId;
+        public Builder withShopperRef(String shopperRef) {
+            this.shopperRef = shopperRef;
             return this;
         }
 

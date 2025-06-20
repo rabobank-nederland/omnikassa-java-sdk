@@ -12,10 +12,10 @@
         <div class="d-flex flex-column gap-4">
             <div class="d-flex align-items-center">
                 <div class="p-2" style="width: ${columnWidth}">
-                    <label for="shopperId">Shopper Id:</label>
+                    <label for="shopperRef">Shopper-Ref:</label>
                 </div>
                 <div class="p-2" style="width: calc(100% - ${columnWidth})">
-                    <input id="card_on_file_shopper_id" name="shopperId" class="form-control"/>
+                    <input id="card_on_file_shopper_ref" name="shopperRef" class="form-control"/>
                 </div>
                 <div class="p-2" style="width: calc(100% - ${columnWidth})">
                     <input type="submit" id="getCardsOnFile" value="Find" class="btn btn-primary">

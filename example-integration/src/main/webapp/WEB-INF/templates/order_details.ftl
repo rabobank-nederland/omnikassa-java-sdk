@@ -156,10 +156,10 @@
             </tr>
             <tr>
                 <td>
-                    <label for="shopper_id" class="form-label">Shopper Id:</label>
+                    <label for="shopper_ref" class="form-label">Shopper-Ref:</label>
                 </td>
                 <td>
-                    <input id="shopper_id" name="shopperId"  class="form-control" >
+                    <input id="shopper_ref" name="shopperRef"  class="form-control" >
                 </td>
             </tr>
             <tr>

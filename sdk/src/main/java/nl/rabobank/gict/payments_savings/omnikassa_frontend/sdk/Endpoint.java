@@ -1,6 +1,5 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk;
 
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.cardonfile.GetShopperPaymentDetailsResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +18,8 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.M
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.PaymentBrandsResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.RefundDetailsResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.TransactionRefundableDetailsResponse;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.orderstatus.*;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.cardonfile.ShopperPaymentDetailsResponse;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.orderstatus.OrderStatusResponse;
 
 import java.util.UUID;
 
@@ -260,7 +260,7 @@ public final class Endpoint {
      * @throws RabobankSdkException when problems occurred during the request, e.g., server not reachable, invalid signature, invalid authentication etc.
      */
 
-    public GetShopperPaymentDetailsResponse getShopperPaymentDetails(String shopperRef)
+    public ShopperPaymentDetailsResponse getShopperPaymentDetails(String shopperRef)
             throws RabobankSdkException {
         validateAccessToken();
         return connector.getShopperPaymentDetails(shopperRef, tokenProvider.getAccessToken());

@@ -1,6 +1,5 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.cardonfile;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -9,10 +8,10 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import kong.unirest.json.JSONObject;
 
-public class GetShopperPaymentDetailsResponse {
+public class ShopperPaymentDetailsResponse {
 
     private final List<CardOnFile> cardOnFileList;
-    public GetShopperPaymentDetailsResponse(JSONObject jsonObject) {
+    public ShopperPaymentDetailsResponse(JSONObject jsonObject) {
 
         List<CardOnFile> cofileList = Collections.emptyList();
         if(jsonObject.has("cardOnFileList")) {
@@ -30,7 +29,7 @@ public class GetShopperPaymentDetailsResponse {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        GetShopperPaymentDetailsResponse that = (GetShopperPaymentDetailsResponse) o;
+        ShopperPaymentDetailsResponse that = (ShopperPaymentDetailsResponse) o;
         return Objects.equals(cardOnFileList, that.cardOnFileList);
     }
 

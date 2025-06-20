@@ -6,7 +6,7 @@ import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONObject;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.ApiResponseException;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.TokenStatus;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.cardonfile.GetShopperPaymentDetailsResponse;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.cardonfile.ShopperPaymentDetailsResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -381,7 +381,7 @@ public class ApiConnectorTest {
 
         when(jsonTemplate.getShopperPaymentDetails("v1/shopper-payment-details", shopperRef, "token")).thenReturn(cardOnFileList);
 
-        GetShopperPaymentDetailsResponse actualResponse = classUnderTest.getShopperPaymentDetails(shopperRef, "token");
+        ShopperPaymentDetailsResponse actualResponse = classUnderTest.getShopperPaymentDetails(shopperRef, "token");
 
         assertThat(actualResponse.getCardOnFileList().size(), is(2));
         assertThat(actualResponse.getCardOnFileList().get(0).getId(), is("reference1"));

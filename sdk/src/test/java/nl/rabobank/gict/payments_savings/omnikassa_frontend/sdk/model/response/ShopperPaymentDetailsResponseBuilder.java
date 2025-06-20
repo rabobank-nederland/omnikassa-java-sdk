@@ -4,19 +4,19 @@ import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONObject;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.TestBuilder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.TokenStatus;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.cardonfile.GetShopperPaymentDetailsResponse;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.cardonfile.ShopperPaymentDetailsResponse;
 
-public class GetShopperPaymentDetailsResponseBuilder implements TestBuilder<GetShopperPaymentDetailsResponse>{
+public class ShopperPaymentDetailsResponseBuilder implements TestBuilder<ShopperPaymentDetailsResponse>{
     private String id;
 
-    public GetShopperPaymentDetailsResponseBuilder withId(String id) {
+    public ShopperPaymentDetailsResponseBuilder withId(String id) {
         this.id = id;
         return this;
     }
 
     @Override
-    public GetShopperPaymentDetailsResponse build() {
-        return new GetShopperPaymentDetailsResponse(buildJsonObject());
+    public ShopperPaymentDetailsResponse build() {
+        return new ShopperPaymentDetailsResponse(buildJsonObject());
     }
 
     @Override
