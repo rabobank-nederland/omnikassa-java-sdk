@@ -167,10 +167,14 @@
                        class="form-check-input">
             </td>
         </tr>
-        <tr>
-            <td colspan="2" align="center">
-                <input type="submit" value="place order" class="btn btn-primary">
-            </td>
-        </tr>
     </table>
+    <div class="d-flex justify-content-center">
+        <div class="p-2">
+            <input type="submit" value="place order" class="btn btn-primary">
+
+            <button id="confirmFastCheckoutOrder" class="btn btn-primary">
+                Checkout
+            </button>
+        </div>
+    </div>
 </form>
