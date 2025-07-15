@@ -5,10 +5,13 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.connector.TokenP
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.InvalidAccessTokenException;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.RabobankSdkException;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.AccessTokenBuilder;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.IdealFastCheckoutOrderTestFactory;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.MerchantOrderTestFactory;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.Signable;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.IdealFastCheckoutMerchantOrderRequest;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.InitiateRefundRequest;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.MerchantOrderRequest;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.OrderRequestFactory;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.*;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.orderstatus.*;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.utils.RefundTestFactory;
@@ -53,7 +56,7 @@ public class EndpointTest {
     @Before
     public void setUp() {
         initializeTokenProvider();
-        endpoint = new Endpoint(apiConnector, tokenProvider, SIGNING_KEY);
+        endpoint = new Endpoint(apiConnector, tokenProvider, new OrderRequestFactory(), SIGNING_KEY);
     }
 
     private void initializeTokenProvider() {
@@ -68,6 +71,17 @@ public class EndpointTest {
         when(apiConnector.announceMerchantOrder(any(MerchantOrderRequest.class), any(String.class))).thenReturn(prepareMerchantOrderResponse());
 
         String returnUrl = endpoint.announceOrder(MerchantOrderTestFactory.any());
+
+        assertEquals(EXPECTED_REDIRECT_URL, returnUrl);
+    }
+
+    @Test
+    public void fastCheckoutAnnounceMerchantOrder_HappyFlow() throws Exception {
+        tokenProvider.setValidAccessToken();
+
+        when(apiConnector.announceMerchantOrder(any(IdealFastCheckoutMerchantOrderRequest.class), any(String.class))).thenReturn(prepareMerchantOrderResponse());
+
+        String returnUrl = endpoint.announceIdealFastCheckoutOrder(IdealFastCheckoutOrderTestFactory.any());
 
         assertEquals(EXPECTED_REDIRECT_URL, returnUrl);
     }

@@ -1,5 +1,8 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk;
 
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.IdealFastCheckoutOrder;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.JsonConvertible;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.OrderRequestFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,13 +34,15 @@ import static org.apache.commons.codec.binary.Base64.decodeBase64;
 public final class Endpoint {
     private static final Logger LOGGER = LoggerFactory.getLogger(Endpoint.class);
 
+    private final OrderRequestFactory orderRequestFactory;
     private final ApiConnector connector;
     private final TokenProvider tokenProvider;
     private final byte[] signingKey;
 
-    Endpoint(ApiConnector connector, TokenProvider tokenProvider, byte[] signingKey) {
+    Endpoint(ApiConnector connector, TokenProvider tokenProvider, OrderRequestFactory orderRequestFactory, byte[] signingKey) {
         this.connector = connector;
         this.tokenProvider = tokenProvider;
+        this.orderRequestFactory = orderRequestFactory;
         this.signingKey = signingKey;
     }
 
@@ -76,7 +81,7 @@ public final class Endpoint {
                                           String userAgent,
                                           String partnerReference) {
         ApiConnector connector = new ApiConnector(baseURL, suffix, signingKey, userAgent, partnerReference);
-        return new Endpoint(connector, tokenProvider, signingKey);
+        return new Endpoint(connector, tokenProvider,  new OrderRequestFactory(), signingKey);
     }
 
     /**
@@ -139,29 +144,40 @@ public final class Endpoint {
         return announce(merchantOrder).getRedirectUrl();
     }
 
+    /**
+     * This function will send FastCheckoutMerchantOrder to the Rabobank.
+     *
+     * @param idealFastCheckoutOrder containing the details of the fast checkout order
+     * @return The result is the issuer selection Url to which the customer should be redirected.
+     * @throws RabobankSdkException when problems occurred during the request, e.g. server not reachable, invalid signature, invalid authentication etc.
+     */
+    public String announceIdealFastCheckoutOrder(IdealFastCheckoutOrder idealFastCheckoutOrder) throws RabobankSdkException {
+        return announce(idealFastCheckoutOrder).getRedirectUrl();
+    }
 
-    private MerchantOrderResponse doAnnounceOrder(MerchantOrderRequest merchantOrderRequest)
+
+    private MerchantOrderResponse doAnnounceOrder(JsonConvertible orderRequest)
             throws RabobankSdkException {
-        return connector.announceMerchantOrder(merchantOrderRequest, tokenProvider.getAccessToken());
+        return connector.announceMerchantOrder(orderRequest, tokenProvider.getAccessToken());
     }
 
     /**
      * this function send the MerchantOrder to Rabobank
      *
-     * @param merchantOrder containing detail of the order
+     * @param order containing detail of the order
      * @return holder object contains redirect url and omnikassa order id
      * @throws RabobankSdkException when problems occurred during the request, e.g. server not reachable, invalid signature, invalid authentication etc.
      */
-    public MerchantOrderResponse announce(MerchantOrder merchantOrder) throws RabobankSdkException {
+    public MerchantOrderResponse announce(Object order) throws RabobankSdkException {
         validateAccessToken();
 
-        MerchantOrderRequest merchantOrderRequest = new MerchantOrderRequest(merchantOrder);
+        JsonConvertible orderRequest = orderRequestFactory.retrieveCorrectRequest(order);
 
         try {
-            return doAnnounceOrder(merchantOrderRequest);
+            return doAnnounceOrder(orderRequest);
         } catch (InvalidAccessTokenException e) {
             logAndGetNewToken(e);
-            return doAnnounceOrder(merchantOrderRequest);
+            return doAnnounceOrder(orderRequest);
         }
     }
 

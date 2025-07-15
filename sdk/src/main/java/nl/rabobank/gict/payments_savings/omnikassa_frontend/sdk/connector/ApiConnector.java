@@ -8,6 +8,7 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.ApiRe
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.RabobankSdkException;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.UnsupportedSandboxOperationException;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.AccessToken;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.JsonConvertible;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.InitiateRefundRequest;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.MerchantOrderRequest;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.ApiNotification;
@@ -58,7 +59,7 @@ public class ApiConnector {
      * @return MerchantOrderResponse for requested order
      * @throws RabobankSdkException when problems occurred during the request, e.g. server not reachable, invalid signature, invalid authentication etc.
      */
-    public MerchantOrderResponse announceMerchantOrder(final MerchantOrderRequest order, final String token)
+    public MerchantOrderResponse announceMerchantOrder(final JsonConvertible order, final String token)
             throws RabobankSdkException {
         return new RequestTemplate<MerchantOrderResponse>() {
 
