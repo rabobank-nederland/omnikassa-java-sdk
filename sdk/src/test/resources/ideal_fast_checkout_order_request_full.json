@@ -1,0 +1,41 @@
+{
+  "timestamp": "2017-08-07T16:28:51.504+02:00",
+  "merchantOrderId": "ORDID123",
+  "amount": {
+    "currency": "EUR",
+    "amount": "495"
+  },
+  "language": "NL",
+  "description": "An example description",
+  "merchantReturnURL": "http://localhost/",
+  "shippingCost": {
+    "currency": "EUR",
+    "amount": "125"
+  },
+  "skipHppResultPage": false,
+  "orderItems": [
+    {
+      "id":"1",
+      "quantity": 1,
+      "name": "Test product",
+      "description": "Description",
+      "amount": {
+        "currency": "EUR",
+        "amount": "1000"
+      },
+      "tax": {
+        "currency": "EUR",
+        "amount": "100"
+      },
+      "category": "PHYSICAL",
+      "vatCategory":"2"
+    }
+  ],
+  "paymentBrand": "IDEAL",
+  "paymentBrandForce": "FORCE_ALWAYS",
+  "paymentBrandMetaData": {
+    "fastCheckout": {
+      "requiredCheckoutFields" : ["CUSTOMER_INFORMATION", "SHIPPING_ADDRESS"]
+    }
+  }
+}
