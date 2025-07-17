@@ -95,6 +95,7 @@ class WebshopController {
     @GetMapping(value = "/home")
     ModelAndView fakeWebShop(ModelMap modelMap) {
         modelMap.addAttribute("shoppingCart", webShopOrderMap.get(iterator));
+        modelMap.addAttribute("requiredCheckoutFields", RequiredCheckoutFields.values());
         return new ModelAndView(FAKE_WEBSHOP, modelMap);
     }
 
@@ -129,6 +130,7 @@ class WebshopController {
             webShopOrderMap.get(iterator).addItem(orderItem);
         }
         modelMap.addAttribute("shoppingCart", webShopOrderMap.get(iterator));
+        modelMap.addAttribute("requiredCheckoutFields", RequiredCheckoutFields.values());
         return new ModelAndView(FAKE_WEBSHOP, modelMap);
     }
 

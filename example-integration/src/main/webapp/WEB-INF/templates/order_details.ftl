@@ -160,6 +160,18 @@
     <table class="table">
         <tr>
             <td>
+                <label for="fast_checkout_requested_fields">Fast checkout requested fields:</label>
+            </td>
+            <td>
+                <select id="required_fast_checkout_fields" style="width: 75%" name="requiredFastCheckoutFields">
+                    <#list requiredCheckoutFields as requiredCheckoutField>
+                        <option value="${requiredCheckoutField}">${requiredCheckoutField}</option>
+                    </#list>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
                 <label for="skip_hpp_result_page">Skip HPP result page?</label>
             </td>
             <td>
