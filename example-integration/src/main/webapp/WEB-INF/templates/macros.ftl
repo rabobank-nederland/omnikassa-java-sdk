@@ -42,4 +42,16 @@
     </div>
     </body>
     </html>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#confirmFastCheckoutOrder").click(function() {
+                console.log("submit ideal fast checkout order..")
+                const form = document.getElementById('order');
+                form.method = 'POST';
+                form.action = '/webshop/idealFastCheckout';
+                form.submit();
+            });
+        });
+    </script>
 </#macro>

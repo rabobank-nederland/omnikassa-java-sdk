@@ -1,5 +1,6 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.test.webshop.model;
 
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.IdealFastCheckoutOrder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.MerchantOrder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.MerchantOrder.Builder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.Money;
@@ -69,6 +70,18 @@ public class WebShopOrder {
                 .withInitiatingParty(initiatingParty)
                 .withSkipHppResultPage(skipHppResultPage)
                 .withShopperBankstatementReference(shopperBankstatementReference)
+                .build();
+    }
+
+    public IdealFastCheckoutOrder prepareIdealFastCheckoutOrder(Map<String, Object> paymentBrandMetaData,
+                                                                String merchantReturnUrl) {
+        return new IdealFastCheckoutOrder.Builder()
+                .withMerchantOrderId(String.valueOf(orderId))
+                .withOrderItems(orderItems)
+                .withAmount(Money.fromEuros(EUR, getTotalPrice()))
+                .withMerchantReturnURL(merchantReturnUrl)
+                .withDescription("An example description")
+                .withPaymentBrandMetaData(paymentBrandMetaData)
                 .build();
     }
 

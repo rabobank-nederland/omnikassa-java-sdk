@@ -1,6 +1,6 @@
 <#import "macros.ftl" as macros />
 
-<form method="post" action="/webshop/orders" name="order">
+<form method="post" action="/webshop/orders" name="order" id="order">
     <p>
         <a class="btn" data-bs-toggle="collapse" href="#customerInfo" role="button" aria-expanded="false"
            aria-controls="customerInfo">
