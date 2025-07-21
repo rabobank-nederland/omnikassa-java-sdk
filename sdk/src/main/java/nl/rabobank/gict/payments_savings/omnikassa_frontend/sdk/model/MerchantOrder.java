@@ -73,6 +73,8 @@ public final class MerchantOrder {
         return merchantReturnURL;
     }
 
+    public String getShopperRef() {return shopperRef;}
+
     public List<OrderItem> getOrderItems() {
         return orderItems;
     }
@@ -111,6 +113,7 @@ public final class MerchantOrder {
 
     public static class Builder {
 
+        private String shopperRef;
         private String merchantOrderId;
         private Money amount;
         private Language language;
@@ -125,7 +128,6 @@ public final class MerchantOrder {
         private Map<String, Object> paymentBrandMetaData = Collections.emptyMap();
         private String initiatingParty;
         private boolean skipHppResultPage = false;
-        private String shopperRef;
         private String shopperBankstatementReference;
 
         /**
@@ -238,6 +240,10 @@ public final class MerchantOrder {
             return this;
         }
 
+        /**
+         * @param shopperRef | Optional
+         * @return Builder
+         */
         public Builder withShopperRef(String shopperRef) {
             this.shopperRef = shopperRef;
             return this;

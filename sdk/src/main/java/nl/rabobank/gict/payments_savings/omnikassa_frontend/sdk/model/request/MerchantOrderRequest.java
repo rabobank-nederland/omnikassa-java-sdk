@@ -37,6 +37,7 @@ public class MerchantOrderRequest implements JsonConvertible {
         jsonObject.put("language", merchantOrder.getLanguage().toString());
         jsonObject.put("description", merchantOrder.getDescription());
         jsonObject.put("merchantReturnURL", merchantOrder.getMerchantReturnURL());
+        jsonObject.put("shopperRef", merchantOrder.getShopperRef());
         jsonObject.put("orderItems", getOrderItemsAsJson());
         Address shippingDetails = merchantOrder.getShippingDetail();
         if (shippingDetails != null) {

@@ -26,6 +26,7 @@
   ],
   "merchantOrderId": "ORDID123",
   "merchantReturnURL": "http://localhost/",
+  "shopperRef": null,
   "shippingDetail": {
     "middleName": "de",
     "lastName": "Ruiter",
