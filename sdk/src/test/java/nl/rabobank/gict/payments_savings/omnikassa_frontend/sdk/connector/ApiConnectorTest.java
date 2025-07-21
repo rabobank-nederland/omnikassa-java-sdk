@@ -1,9 +1,12 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.connector;
 
+import kong.unirest.HttpStatus;
 import kong.unirest.UnirestException;
 import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONObject;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.ApiResponseException;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.TokenStatus;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.cardonfile.ShopperPaymentDetailsResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -372,6 +375,38 @@ public class ApiConnectorTest {
     }
 
     @Test
+    public void testGetShopperPaymentDetails() throws Exception {
+        String shopperRef = UUID.randomUUID().toString();
+        JSONObject cardOnFileList = new JSONObject().put("cardOnFileList", getCardOnFileResult());
+
+        when(jsonTemplate.getShopperPaymentDetails("v1/shopper-payment-details", shopperRef, "token")).thenReturn(cardOnFileList);
+
+        ShopperPaymentDetailsResponse actualResponse = classUnderTest.getShopperPaymentDetails(shopperRef, "token");
+
+        assertThat(actualResponse.getCardOnFileList().size(), is(2));
+        assertThat(actualResponse.getCardOnFileList().get(0).getId(), is("reference1"));
+        assertThat(actualResponse.getCardOnFileList().get(0).getBrand(), is("MASTERCARD"));
+        assertThat(actualResponse.getCardOnFileList().get(0).getLast4Digits(), is("1234"));
+        assertThat(actualResponse.getCardOnFileList().get(0).getStatus(), is(TokenStatus.ACTIVE));
+        assertThat(actualResponse.getCardOnFileList().get(0).getCardExpiry(), is("4298-40"));
+        assertThat(actualResponse.getCardOnFileList().get(0).getTokenExpiry(), is("1607-22"));
+
+    }
+
+    @Test
+    public void testDeleteShopperPaymentDetails() throws Exception {
+        String id = UUID.randomUUID().toString();
+        String shopperRef = UUID.randomUUID().toString();
+
+        when(jsonTemplate.deleteShopperPaymentDetails("v1/shopper-payment-details/" + shopperRef, id, "token")).thenReturn(HttpStatus.OK);
+
+        int actualResponse = classUnderTest.deleteShopperPaymentDetails(id, shopperRef, "token");
+
+        assertEquals(HttpStatus.OK, actualResponse);
+
+    }
+
+    @Test
     public void testRetrieveNewToken_HappyFlow() throws Exception {
         when(jsonTemplate.get("gatekeeper/refresh", "refreshtoken")).thenReturn(prepareAccessTokenResponse());
 
@@ -508,5 +543,25 @@ public class ApiConnectorTest {
         jsonObject.put("totalAmount", getJsonMoney(Currency.EUR, 100));
 
         return jsonObject;
+    }
+
+    private JSONArray getCardOnFileResult() {
+        JSONObject firstCardOnFile = new JSONObject();
+        firstCardOnFile.put("id", "reference1");
+        firstCardOnFile.put("last4Digits", "1234");
+        firstCardOnFile.put("brand", "MASTERCARD");
+        firstCardOnFile.put("cardExpiry", "4298-40");
+        firstCardOnFile.put("tokenExpiry", "1607-22");
+        firstCardOnFile.put("status", TokenStatus.ACTIVE);
+
+        JSONObject secondCardOnFile = new JSONObject();
+        secondCardOnFile.put("id", "reference2");
+        secondCardOnFile.put("last4Digits", "4321");
+        secondCardOnFile.put("brand", "VISA");
+        secondCardOnFile.put("cardExpiry", "4298-41");
+        secondCardOnFile.put("tokenExpiry", "1607-23");
+        secondCardOnFile.put("status", TokenStatus.INACTIVE);
+
+        return new JSONArray(Arrays.asList(firstCardOnFile, secondCardOnFile));
     }
 }

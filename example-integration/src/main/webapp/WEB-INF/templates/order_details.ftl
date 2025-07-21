@@ -148,6 +148,22 @@
             </tr>
             <tr>
                 <td>
+                    <label for="enable_cards_on_file">Enable CoF</label>
+                </td>
+                <td>
+                    <input type="checkbox" id="enable_cards_on_file" name="enableCardsOnFile" value="true" class="form-check-input">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="shopper_ref" class="form-label">Shopper-Ref:</label>
+                </td>
+                <td>
+                    <input id="shopper_ref" name="shopperRef"  class="form-control" >
+                </td>
+            </tr>
+            <tr>
+                <td>
                     <label for="shopper_bankstatement_reference">Shopper bankstatement reference</label>
                 </td>
                 <td>

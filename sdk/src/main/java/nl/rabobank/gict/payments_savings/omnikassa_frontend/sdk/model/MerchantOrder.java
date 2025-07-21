@@ -25,8 +25,9 @@ public final class MerchantOrder {
     private final CustomerInformation customerInformation;
     private final PaymentBrand paymentBrand;
     private final PaymentBrandForce paymentBrandForce;
-    private final Map<String, String> paymentBrandMetaData;
+    private final Map<String, Object> paymentBrandMetaData;
     private final boolean skipHppResultPage;
+    private final String shopperRef;
     private final String shopperBankstatementReference;
 
     private final String initiatingParty;
@@ -46,6 +47,7 @@ public final class MerchantOrder {
         this.initiatingParty = builder.initiatingParty;
         this.paymentBrandMetaData = builder.paymentBrandMetaData;
         this.skipHppResultPage = builder.skipHppResultPage;
+        this.shopperRef = builder.shopperRef;
         this.shopperBankstatementReference = builder.shopperBankstatementReference;
     }
     public String getInitiatingParty() {
@@ -71,6 +73,8 @@ public final class MerchantOrder {
         return merchantReturnURL;
     }
 
+    public String getShopperRef() {return shopperRef;}
+
     public List<OrderItem> getOrderItems() {
         return orderItems;
     }
@@ -91,7 +95,7 @@ public final class MerchantOrder {
         return paymentBrandForce;
     }
 
-    public Map<String, String> getPaymentBrandMetaData() {
+    public Map<String, Object> getPaymentBrandMetaData() {
         return paymentBrandMetaData;
     }
 
@@ -109,6 +113,7 @@ public final class MerchantOrder {
 
     public static class Builder {
 
+        private String shopperRef;
         private String merchantOrderId;
         private Money amount;
         private Language language;
@@ -120,7 +125,7 @@ public final class MerchantOrder {
         private CustomerInformation customerInformation;
         private PaymentBrand paymentBrand;
         private PaymentBrandForce paymentBrandForce;
-        private Map<String, String> paymentBrandMetaData = Collections.emptyMap();
+        private Map<String, Object> paymentBrandMetaData = Collections.emptyMap();
         private String initiatingParty;
         private boolean skipHppResultPage = false;
         private String shopperBankstatementReference;
@@ -230,8 +235,17 @@ public final class MerchantOrder {
          * @param paymentBrandMetaData | Optional
          * @return Builder
          */
-        public Builder withPaymentBrandMetaData(Map<String, String> paymentBrandMetaData) {
+        public Builder withPaymentBrandMetaData(Map<String, Object> paymentBrandMetaData) {
             this.paymentBrandMetaData = paymentBrandMetaData;
+            return this;
+        }
+
+        /**
+         * @param shopperRef | Optional
+         * @return Builder
+         */
+        public Builder withShopperRef(String shopperRef) {
+            this.shopperRef = shopperRef;
             return this;
         }
 

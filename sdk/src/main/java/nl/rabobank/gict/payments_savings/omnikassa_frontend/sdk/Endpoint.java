@@ -18,7 +18,8 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.M
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.PaymentBrandsResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.RefundDetailsResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.TransactionRefundableDetailsResponse;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.orderstatus.*;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.cardonfile.ShopperPaymentDetailsResponse;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.orderstatus.OrderStatusResponse;
 
 import java.util.UUID;
 
@@ -248,6 +249,36 @@ public final class Endpoint {
             throws RabobankSdkException {
 
             return connector.getOrderStatus(orderId, tokenProvider.getAccessToken());
+    }
+
+    /**
+     *
+     *  This function will get list of cards on file for specific shopper.
+     *
+     * @param shopperRef reference of Shopper
+     * @return The response contains a list of cards stored by shopper.
+     * @throws RabobankSdkException when problems occurred during the request, e.g., server not reachable, invalid signature, invalid authentication etc.
+     */
+
+    public ShopperPaymentDetailsResponse getShopperPaymentDetails(String shopperRef)
+            throws RabobankSdkException {
+        validateAccessToken();
+        return connector.getShopperPaymentDetails(shopperRef, tokenProvider.getAccessToken());
+    }
+
+    /**
+     *
+     *  This function will delete specific card details from a list of cards on file for a specific shopper.
+     *
+     * @param shopperRef reference of Shopper
+     * @param id reference of Card
+     * @return HTTP status code
+     * @throws RabobankSdkException when problems occurred during the request, e.g., server not reachable, invalid signature, invalid authentication etc.
+     */
+
+    public int deleteShopperPaymentDetails(String shopperRef, String id) throws RabobankSdkException{
+
+        return connector.deleteShopperPaymentDetails(shopperRef, id, tokenProvider.getAccessToken());
     }
 
 
