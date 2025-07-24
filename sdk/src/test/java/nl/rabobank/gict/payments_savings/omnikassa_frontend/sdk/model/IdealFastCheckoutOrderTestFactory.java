@@ -36,8 +36,7 @@ public class IdealFastCheckoutOrderTestFactory {
         requiredCheckoutFields.add(RequiredCheckoutFields.CUSTOMER_INFORMATION);
         requiredCheckoutFields.add(RequiredCheckoutFields.SHIPPING_ADDRESS);
         FastCheckout fastCheckout = new FastCheckout.Builder()
-                .withRequiredCheckoutFields(requiredCheckoutFields)
-                .build();
+                .build(requiredCheckoutFields);
         paymentBrandMetaData.put("fastCheckout", fastCheckout);
 
         return paymentBrandMetaData;

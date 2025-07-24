@@ -244,11 +244,10 @@ class WebshopController {
             Set<RequiredCheckoutFields> requiredFastCheckoutFields = Arrays.stream(fastCheckoutFields)
                     .map(RequiredCheckoutFields::valueOf)
                     .collect(Collectors.toSet());
-            paymentBrandMetaData.put("fastCheckout", new FastCheckout.Builder().withRequiredCheckoutFields(requiredFastCheckoutFields).build());
+            paymentBrandMetaData.put("fastCheckout", new FastCheckout.Builder().build(requiredFastCheckoutFields));
 
         } else {
-            paymentBrandMetaData.put("fastCheckout", new FastCheckout.Builder()
-                    .withRequiredCheckoutFields(Arrays.stream(RequiredCheckoutFields.values()).collect(Collectors.toSet())).build());
+            paymentBrandMetaData.put("fastCheckout", new FastCheckout.Builder().build(Arrays.stream(RequiredCheckoutFields.values()).collect(Collectors.toSet())));
         }
         return paymentBrandMetaData;
     }

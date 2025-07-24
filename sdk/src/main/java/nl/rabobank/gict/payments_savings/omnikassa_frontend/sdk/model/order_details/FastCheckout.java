@@ -1,5 +1,6 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.order_details;
 
+import lombok.NonNull;
 import kong.unirest.json.JSONObject;
 
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.JsonConvertible;
@@ -38,12 +39,8 @@ public class FastCheckout implements JsonConvertible {
          *                             |    SHIPPING_ADDRESS - Request to provide the shipping address of the shopper.
          * @return Builder
          */
-        public Builder withRequiredCheckoutFields(Set<RequiredCheckoutFields> requiredCheckoutFields) {
+        public FastCheckout build(@NonNull Set<RequiredCheckoutFields> requiredCheckoutFields) {
             this.requestedCheckoutFields = requiredCheckoutFields;
-            return this;
-        }
-
-        public FastCheckout build() {
             return new FastCheckout(this);
         }
     }

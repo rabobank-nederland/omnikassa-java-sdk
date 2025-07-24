@@ -1,5 +1,6 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model;
 
+import lombok.NonNull;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.Language;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.PaymentBrand;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.PaymentBrandForce;
@@ -103,7 +104,7 @@ public final class IdealFastCheckoutOrder {
          *                        |   Must adhere to the pattern: '[A-Za-z0-9]{1,24}', if the ID contains more than 24 characters, the extra characters are removed after the 24th character.
          * @return Builder
          */
-        public IdealFastCheckoutOrder.Builder withMerchantOrderId(String merchantOrderId) {
+        public IdealFastCheckoutOrder.Builder withMerchantOrderId(@NonNull String merchantOrderId) {
             this.merchantOrderId = merchantOrderId;
             return this;
         }
@@ -113,7 +114,7 @@ public final class IdealFastCheckoutOrder {
          *               | Must not exceed 99.999,99
          * @return Builder
          */
-        public IdealFastCheckoutOrder.Builder withAmount(Money amount) {
+        public IdealFastCheckoutOrder.Builder withAmount(@NonNull Money amount) {
             this.amount = amount;
             return this;
         }
@@ -123,7 +124,7 @@ public final class IdealFastCheckoutOrder {
          *                 | Must be a valid Language
          * @return Builder
          */
-        public IdealFastCheckoutOrder.Builder withLanguage(Language language) {
+        public IdealFastCheckoutOrder.Builder withLanguage(@NonNull Language language) {
             this.language = language;
             return this;
         }
@@ -143,7 +144,7 @@ public final class IdealFastCheckoutOrder {
          * @param orderItems | Must not be 'null'
          * @return Builder
          */
-        public IdealFastCheckoutOrder.Builder withOrderItems(List<OrderItem> orderItems) {
+        public IdealFastCheckoutOrder.Builder withOrderItems(@NonNull List<OrderItem> orderItems) {
             this.orderItems = orderItems;
             return this;
         }
@@ -154,17 +155,17 @@ public final class IdealFastCheckoutOrder {
          *                          | Must be a valid web address
          * @return Builder
          */
-        public IdealFastCheckoutOrder.Builder withMerchantReturnURL(String merchantReturnURL) {
+        public IdealFastCheckoutOrder.Builder withMerchantReturnURL(@NonNull String merchantReturnURL) {
             this.merchantReturnURL = merchantReturnURL;
             return this;
         }
 
         /**
-         * @param shippingCost | Optional
+         * @param shippingCost | Must not be 'null'
          *                     | Must not exceed 99.999,99
          * @return Builder
          */
-        public IdealFastCheckoutOrder.Builder withShippingCost(Money shippingCost) {
+        public IdealFastCheckoutOrder.Builder withShippingCost(@NonNull Money shippingCost) {
             this.shippingCost = shippingCost;
             return this;
         }
@@ -174,7 +175,7 @@ public final class IdealFastCheckoutOrder {
          * @param paymentBrandMetaData | Must not be 'null'
          * @return Builder
          */
-        public IdealFastCheckoutOrder.Builder withPaymentBrandMetaData(Map<String, Object> paymentBrandMetaData) {
+        public IdealFastCheckoutOrder.Builder withPaymentBrandMetaData(@NonNull Map<String, Object> paymentBrandMetaData) {
             this.paymentBrandMetaData = paymentBrandMetaData;
             return this;
         }
