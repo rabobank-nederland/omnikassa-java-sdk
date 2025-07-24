@@ -232,8 +232,9 @@ class WebshopController {
     }
 
     private IdealFastCheckoutOrder prepareIdealFastCheckoutOrder(HttpServletRequest request) {
+        Money shippingCost = Money.fromEuros(EUR, BigDecimal.valueOf(Double.parseDouble(request.getParameter("shippingCost"))));
         Map<String, Object> paymentBrandMetaData = createPaymentBrandMetaData(request);
-        return webShopOrderMap.get(iterator).prepareIdealFastCheckoutOrder(paymentBrandMetaData, fastCheckoutReturnUrl);
+        return webShopOrderMap.get(iterator).prepareIdealFastCheckoutOrder(shippingCost, paymentBrandMetaData, fastCheckoutReturnUrl);
     }
 
     private Map<String, Object> createPaymentBrandMetaData(HttpServletRequest request) {

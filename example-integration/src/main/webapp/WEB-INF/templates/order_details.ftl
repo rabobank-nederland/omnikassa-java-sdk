@@ -160,6 +160,14 @@
     <table class="table">
         <tr>
             <td>
+                <label for="shipping_cost">Shipping cost:</label>
+            </td>
+            <td>
+                <input name="shippingCost" type="number" min="0" value="0.01" step=".01" id="shipping_cost" class="form-control">
+            </td>
+        </tr>
+        <tr>
+            <td>
                 <label for="fast_checkout_requested_fields">Fast checkout requested fields:</label>
             </td>
             <td>

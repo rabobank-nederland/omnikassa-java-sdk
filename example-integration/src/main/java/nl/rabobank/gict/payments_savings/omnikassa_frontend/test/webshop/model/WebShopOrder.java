@@ -73,7 +73,8 @@ public class WebShopOrder {
                 .build();
     }
 
-    public IdealFastCheckoutOrder prepareIdealFastCheckoutOrder(Map<String, Object> paymentBrandMetaData,
+    public IdealFastCheckoutOrder prepareIdealFastCheckoutOrder(Money shippingCost,
+                                                                Map<String, Object> paymentBrandMetaData,
                                                                 String merchantReturnUrl) {
         return new IdealFastCheckoutOrder.Builder()
                 .withMerchantOrderId(String.valueOf(orderId))
@@ -81,6 +82,7 @@ public class WebShopOrder {
                 .withAmount(Money.fromEuros(EUR, getTotalPrice()))
                 .withMerchantReturnURL(merchantReturnUrl)
                 .withDescription("An example description")
+                .withShippingCost(shippingCost)
                 .withPaymentBrandMetaData(paymentBrandMetaData)
                 .build();
     }
