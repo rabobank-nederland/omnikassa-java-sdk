@@ -81,7 +81,7 @@ class WebshopController {
                       @Value("${suffix}") String suffix,
                       @Value("${user_agent:TestWebshop/1.14}") String userAgent,
                       @Value("${partner_reference}") String partnerReference,
-                      @Value("${partner_reference}") String fastCheckoutReturnUrl) {
+                      @Value("${fast-checkout-return-url}") String fastCheckoutReturnUrl) {
         this.signingKey = getSigningKey(key);
         this.baseUrl = baseUrl;
         TokenProvider tokenProvider = new CustomTokenProvider(token);

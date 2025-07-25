@@ -80,6 +80,7 @@ public class WebShopOrder {
                 .withMerchantOrderId(String.valueOf(orderId))
                 .withOrderItems(orderItems)
                 .withAmount(Money.fromEuros(EUR, getTotalPrice()))
+                .withLanguage(NL)
                 .withMerchantReturnURL(merchantReturnUrl)
                 .withDescription("An example description")
                 .withShippingCost(shippingCost)
