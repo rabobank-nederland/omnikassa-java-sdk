@@ -5,7 +5,7 @@
     <groupId>nl.rabobank.oss.omnikassa</groupId>
     <artifactId>java-sdk-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.17.1</version>
+    <version>1.18.0</version>
     <name>Rabobank OmniKassa - Java SDK - Parent</name>
 
     <properties>
