@@ -44,7 +44,7 @@ public class MerchantOrderTestFactory {
                 .withDescription("An example description");
     }
 
-    private static Map<String, String> getPaymentBrandMetaData() {
+    private static Map<String, Object> getPaymentBrandMetaData() {
         return Collections.singletonMap("issuerId", "RABONL2U");
     }
 }

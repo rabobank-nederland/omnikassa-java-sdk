@@ -37,6 +37,7 @@ public class MerchantOrderRequest implements JsonConvertible {
         jsonObject.put("language", merchantOrder.getLanguage().toString());
         jsonObject.put("description", merchantOrder.getDescription());
         jsonObject.put("merchantReturnURL", merchantOrder.getMerchantReturnURL());
+        jsonObject.put("shopperRef", merchantOrder.getShopperRef());
         jsonObject.put("orderItems", getOrderItemsAsJson());
         Address shippingDetails = merchantOrder.getShippingDetail();
         if (shippingDetails != null) {
@@ -50,7 +51,7 @@ public class MerchantOrderRequest implements JsonConvertible {
         if (paymentBrandForce != null) {
             jsonObject.put("paymentBrandForce", paymentBrandForce.name());
         }
-        Map<String, String> paymentBrandMetaData = merchantOrder.getPaymentBrandMetaData();
+        Map<String, Object> paymentBrandMetaData = merchantOrder.getPaymentBrandMetaData();
         if (paymentBrandMetaData != null && !paymentBrandMetaData.isEmpty()) {
             jsonObject.put("paymentBrandMetaData", paymentBrandMetaData);
         }

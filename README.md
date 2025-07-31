@@ -20,6 +20,14 @@ the [SDK manual](https://github.com/rabobank-nederland/omnikassa-sdk-doc/blob/ma
 
 ## Release notes
 
+### Version 1.18.0
+
+* Extended SDK to support ideal fast checkout.
+
+### Version 1.17.0
+
+* Extended SDK to support cards on file merchant orders.
+
 ### Version 1.16.0
 
 * Extended SDK to retrieve status of order for a specific merchant.
