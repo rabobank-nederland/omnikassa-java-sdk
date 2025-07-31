@@ -1,7 +1,13 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.test.webshop;
 
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.IdealFastCheckoutOrder;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.*;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.CountryCode;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.Gender;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.ItemCategory;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.PaymentBrand;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.PaymentBrandForce;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.RequiredCheckoutFields;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.VatCategory;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.order_details.FastCheckout;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,12 +48,16 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.test.webshop.model.W
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.test.webshop.model.enums.PaymentStatusMessage;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
