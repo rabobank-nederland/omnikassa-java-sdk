@@ -75,7 +75,7 @@ public class ApiConnectorTest {
 
     @Before
     public void setUp() {
-        classUnderTest = new ApiConnector(jsonTemplate, "", SIGNING_KEY, null, null);
+        classUnderTest = new ApiConnector(jsonTemplate, SIGNING_KEY, null, null);
     }
 
     @Test

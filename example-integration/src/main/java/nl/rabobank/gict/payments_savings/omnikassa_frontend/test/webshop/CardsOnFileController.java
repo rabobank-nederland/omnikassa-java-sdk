@@ -3,7 +3,6 @@ package nl.rabobank.gict.payments_savings.omnikassa_frontend.test.webshop;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
@@ -37,12 +36,11 @@ class CardsOnFileController {
     public CardsOnFileController(@Value("${signing_key}") String key,
                                  @Value("${refresh_token}") String token,
                                  @Value("${base_url}") String baseUrl,
-                                 @Value("${suffix}") String suffix,
                                  @Value("${user_agent:TestWebshop/1.14}") String userAgent,
                                  @Value("${partner_reference}") String partnerReference) {
         this.signingKey = getSigningKey(key);
         TokenProvider tokenProvider = new CustomTokenProvider(token);
-        endpoint = Endpoint.createInstance(baseUrl, suffix, signingKey, tokenProvider, userAgent, partnerReference);
+        endpoint = Endpoint.createInstance(baseUrl, signingKey, tokenProvider, userAgent, partnerReference);
     }
 
     @GetMapping(value = "/cards")

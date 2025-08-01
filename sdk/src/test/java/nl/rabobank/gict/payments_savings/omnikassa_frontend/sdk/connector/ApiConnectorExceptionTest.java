@@ -18,7 +18,7 @@ public class ApiConnectorExceptionTest {
     @Before
     public void setUp() {
         UnirestJSONTemplate jsonTemplate = new UnirestJSONTemplate("https://betalen.rabobank.nl");
-        classUnderTest = new ApiConnector(jsonTemplate, "", SIGNING_KEY, null, null);
+        classUnderTest = new ApiConnector(jsonTemplate, SIGNING_KEY, null, null);
     }
 
     @Test

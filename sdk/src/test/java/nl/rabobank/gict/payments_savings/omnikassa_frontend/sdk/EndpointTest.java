@@ -247,7 +247,7 @@ public class EndpointTest {
 
     @Test
     public void createInstanceOldStyle() {
-        Endpoint oldStyle = Endpoint.createInstance("http://localhost", "", new byte[]{1, 2, 3}, tokenProvider);
+        Endpoint oldStyle = Endpoint.createInstance("http://localhost", new byte[]{1, 2, 3}, tokenProvider);
         assertThat(oldStyle, notNullValue());
     }
 
