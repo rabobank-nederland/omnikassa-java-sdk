@@ -5,7 +5,7 @@
     <parent>
         <artifactId>java-sdk-parent</artifactId>
         <groupId>nl.rabobank.oss.omnikassa</groupId>
-        <version>1.17.0</version>
+        <version>1.18.0</version>
     </parent>
 
     <name>Rabobank OmniKassa - Java SDK - Release</name>
@@ -17,6 +17,12 @@
             <groupId>nl.rabobank.oss.omnikassa</groupId>
             <artifactId>omnikassa-sdk</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.38</version>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 

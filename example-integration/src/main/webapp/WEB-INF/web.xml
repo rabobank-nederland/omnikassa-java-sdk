@@ -6,6 +6,8 @@
 
     <display-name>Fake Webshop Stub</display-name>
 
+    <absolute-ordering/>
+
     <servlet>
         <servlet-name>dispatcher</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>

@@ -1,6 +1,6 @@
 <#import "macros.ftl" as macros />
 
-<form method="post" action="/webshop/orders" name="order">
+<form method="post" action="/webshop/orders" name="order" id="order">
     <p>
         <a class="btn" data-bs-toggle="collapse" href="#customerInfo" role="button" aria-expanded="false"
            aria-controls="customerInfo">
@@ -176,6 +176,26 @@
     <table class="table">
         <tr>
             <td>
+                <label for="shipping_cost">Shipping cost:</label>
+            </td>
+            <td>
+                <input name="shippingCost" type="number" min="0" value="0.01" step=".01" id="shipping_cost" class="form-control">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="fast_checkout_requested_fields">Fast checkout requested fields:</label>
+            </td>
+            <td>
+                <select id="required_fast_checkout_fields" style="width: 75%" name="requiredFastCheckoutFields">
+                    <#list requiredCheckoutFields as requiredCheckoutField>
+                        <option value="${requiredCheckoutField}">${requiredCheckoutField}</option>
+                    </#list>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
                 <label for="skip_hpp_result_page">Skip HPP result page?</label>
             </td>
             <td>
@@ -183,10 +203,14 @@
                        class="form-check-input">
             </td>
         </tr>
-        <tr>
-            <td colspan="2" align="center">
-                <input type="submit" value="place order" class="btn btn-primary">
-            </td>
-        </tr>
     </table>
+    <div class="d-flex justify-content-center">
+        <div class="p-2">
+            <input type="submit" value="place order" class="btn btn-primary">
+
+            <button id="confirmFastCheckoutOrder" class="btn btn-primary">
+                Checkout
+            </button>
+        </div>
+    </div>
 </form>

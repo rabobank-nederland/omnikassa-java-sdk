@@ -29,6 +29,7 @@ public final class MerchantOrder {
     private final boolean skipHppResultPage;
     private final String shopperRef;
     private final String shopperBankstatementReference;
+    private Money shippingCost;
 
     private final String initiatingParty;
 
@@ -49,6 +50,7 @@ public final class MerchantOrder {
         this.skipHppResultPage = builder.skipHppResultPage;
         this.shopperRef = builder.shopperRef;
         this.shopperBankstatementReference = builder.shopperBankstatementReference;
+        this.shippingCost = builder.shippingCost;
     }
     public String getInitiatingParty() {
         return initiatingParty;
@@ -129,6 +131,7 @@ public final class MerchantOrder {
         private String initiatingParty;
         private boolean skipHppResultPage = false;
         private String shopperBankstatementReference;
+        private Money shippingCost;
 
         /**
          * @param merchantOrderId | Must not be `null`
@@ -285,6 +288,16 @@ public final class MerchantOrder {
          */
         public Builder withShopperBankstatementReference(String shopperBankstatementReference) {
             this.shopperBankstatementReference = shopperBankstatementReference;
+            return this;
+        }
+
+        /**
+         * @param shippingCost | Optional
+         *                     | Must not exceed 99.999,99
+         * @return Builder
+         */
+        public Builder withShippingCost(Money shippingCost) {
+            this.shippingCost = shippingCost;
             return this;
         }
 

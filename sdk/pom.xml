@@ -5,7 +5,7 @@
     <parent>
         <artifactId>java-sdk-parent</artifactId>
         <groupId>nl.rabobank.oss.omnikassa</groupId>
-        <version>1.17.0</version>
+        <version>1.18.0</version>
     </parent>
 
     <packaging>jar</packaging>
@@ -84,6 +84,12 @@
         <dependency>
             <groupId>nl.jqno.equalsverifier</groupId>
             <artifactId>equalsverifier</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.38</version>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 

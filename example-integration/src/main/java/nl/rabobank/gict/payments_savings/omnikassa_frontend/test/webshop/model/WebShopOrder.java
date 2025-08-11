@@ -1,6 +1,6 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.test.webshop.model;
 
-import java.util.HashMap;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.IdealFastCheckoutOrder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.MerchantOrder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.MerchantOrder.Builder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.Money;
@@ -12,6 +12,7 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.order_deta
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -74,6 +75,22 @@ public class WebShopOrder {
                 .withShopperBankstatementReference(shopperBankstatementReference)
                 .build();
     }
+
+    public IdealFastCheckoutOrder prepareIdealFastCheckoutOrder(Money shippingCost,
+                                                                Map<String, Object> paymentBrandMetaData,
+                                                                String merchantReturnUrl) {
+        return new IdealFastCheckoutOrder.Builder()
+                .withMerchantOrderId(String.valueOf(orderId))
+                .withOrderItems(orderItems)
+                .withMerchantReturnURL(merchantReturnUrl)
+                .withAmount(Money.fromEuros(EUR, getTotalPrice()))
+                .withLanguage(NL)
+                .withDescription("An example description")
+                .withShippingCost(shippingCost)
+                .withPaymentBrandMetaData(paymentBrandMetaData)
+                .build();
+    }
+
 
     private Map<String, Object> preparePaymentBrandMetaData(String preselectedIssuerId, boolean cof) {
         Map<String, Object> paymentBrandMetaData = new HashMap<>();

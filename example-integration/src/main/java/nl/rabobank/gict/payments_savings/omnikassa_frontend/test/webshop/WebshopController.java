@@ -1,5 +1,14 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.test.webshop;
 
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.IdealFastCheckoutOrder;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.CountryCode;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.Gender;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.ItemCategory;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.PaymentBrand;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.PaymentBrandForce;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.RequiredCheckoutFields;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.VatCategory;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.order_details.FastCheckout;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -20,12 +29,6 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.connector.TokenP
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.RabobankSdkException;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.MerchantOrder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.Money;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.CountryCode;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.Gender;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.ItemCategory;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.PaymentBrand;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.PaymentBrandForce;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.VatCategory;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.order_details.Address;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.order_details.CustomerInformation;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.order_details.OrderItem;
@@ -48,12 +51,15 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import static java.lang.Boolean.parseBoolean;
 import static java.math.RoundingMode.HALF_UP;
@@ -71,6 +77,7 @@ class WebshopController {
 
     private int iterator = 0;
     private final String baseUrl;
+    private final String fastCheckoutReturnUrl;
     private final Map<Integer, WebShopOrder> webShopOrderMap = new HashMap<>();
     private final Endpoint endpoint;
     private ApiNotification latestApiNotification;
@@ -83,11 +90,14 @@ class WebshopController {
                       @Value("${base_url}") String baseUrl,
                       @Value("${suffix}") String suffix,
                       @Value("${user_agent:TestWebshop/1.14}") String userAgent,
-                      @Value("${partner_reference}") String partnerReference) {
+                      @Value("${partner_reference}") String partnerReference,
+                      @Value("${fast-checkout-return-url}") String fastCheckoutReturnUrl) {
         this.signingKey = getSigningKey(key);
         this.baseUrl = baseUrl;
         TokenProvider tokenProvider = new CustomTokenProvider(token);
         endpoint = Endpoint.createInstance(baseUrl, suffix, signingKey, tokenProvider, userAgent, partnerReference);
+
+        this.fastCheckoutReturnUrl = fastCheckoutReturnUrl;
         
         webShopOrderMap.put(iterator, new WebShopOrder(iterator));
     }
@@ -95,6 +105,7 @@ class WebshopController {
     @GetMapping(value = "/home")
     ModelAndView fakeWebShop(ModelMap modelMap) {
         modelMap.addAttribute("shoppingCart", webShopOrderMap.get(iterator));
+        modelMap.addAttribute("requiredCheckoutFields", RequiredCheckoutFields.values());
         return new ModelAndView(FAKE_WEBSHOP, modelMap);
     }
 
@@ -129,6 +140,7 @@ class WebshopController {
             webShopOrderMap.get(iterator).addItem(orderItem);
         }
         modelMap.addAttribute("shoppingCart", webShopOrderMap.get(iterator));
+        modelMap.addAttribute("requiredCheckoutFields", RequiredCheckoutFields.values());
         return new ModelAndView(FAKE_WEBSHOP, modelMap);
     }
 
@@ -210,6 +222,44 @@ class WebshopController {
             model.addAttribute("transactionRefundableDetails", fetchTransactionRefundableDetails(request.getParameter("transactionId")));
         }
         return "refund-details";
+    }
+
+    @PostMapping("/idealFastCheckout")
+    ModelAndView submitIdealFastCheckout(HttpServletRequest request) throws RabobankSdkException {
+        MerchantOrderResponse idealFastCheckoutRedirectUrl = announceIdealFastCheckout(request);
+        createNewOrder();
+
+        return new ModelAndView("redirect:" +idealFastCheckoutRedirectUrl.getRedirectUrl());
+    }
+
+    private MerchantOrderResponse announceIdealFastCheckout(HttpServletRequest request)
+            throws RabobankSdkException {
+
+        IdealFastCheckoutOrder idealFastCheckoutOrder = prepareIdealFastCheckoutOrder(request);
+        logger.info(() -> "Fast checkout order: " + idealFastCheckoutOrder);
+
+        return endpoint.announce(idealFastCheckoutOrder);
+    }
+
+    private IdealFastCheckoutOrder prepareIdealFastCheckoutOrder(HttpServletRequest request) {
+        Money shippingCost = Money.fromEuros(EUR, BigDecimal.valueOf(Double.parseDouble(request.getParameter("shippingCost"))));
+        Map<String, Object> paymentBrandMetaData = createPaymentBrandMetaData(request);
+        return webShopOrderMap.get(iterator).prepareIdealFastCheckoutOrder(shippingCost, paymentBrandMetaData, fastCheckoutReturnUrl);
+    }
+
+    private Map<String, Object> createPaymentBrandMetaData(HttpServletRequest request) {
+        Map<String, Object> paymentBrandMetaData = new HashMap<>();
+        String[] fastCheckoutFields = request.getParameterValues("requiredFastCheckoutFields");
+        if(fastCheckoutFields != null ){
+            Set<RequiredCheckoutFields> requiredFastCheckoutFields = Arrays.stream(fastCheckoutFields)
+                    .map(RequiredCheckoutFields::valueOf)
+                    .collect(Collectors.toSet());
+            paymentBrandMetaData.put("fastCheckout", new FastCheckout.Builder().build(requiredFastCheckoutFields));
+
+        } else {
+            paymentBrandMetaData.put("fastCheckout", new FastCheckout.Builder().build(Arrays.stream(RequiredCheckoutFields.values()).collect(Collectors.toSet())));
+        }
+        return paymentBrandMetaData;
     }
 
     private void updateModelWithIdealIssuers(ModelMap model) throws RabobankSdkException {
