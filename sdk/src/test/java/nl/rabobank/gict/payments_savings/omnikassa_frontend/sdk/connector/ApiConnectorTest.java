@@ -5,8 +5,10 @@ import kong.unirest.UnirestException;
 import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONObject;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.ApiResponseException;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.CountryCode;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.TokenStatus;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.cardonfile.ShopperPaymentDetailsResponse;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,7 +42,6 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.T
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.utils.RefundTestFactory;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
@@ -62,9 +63,10 @@ import static org.mockito.Mockito.when;
 public class ApiConnectorTest {
     private static final Map<String, String> DEFAULT_USER_AGENT_HEADER = Collections.singletonMap("X-Api-User-Agent", "RabobankOmnikassaJavaSDK/1.14");
     private static final byte[] SIGNING_KEY = "secret".getBytes(UTF_8);
-    private static final String ORDER_SERVER_API_ORDER = "order/server/api/v2/order";
-    private static final String ORDER_SERVER_API_EVENTS_RESULTS_EVENT = "order/server/api/v2/events/results/event";
-    private static final String API_REFUND_ENDPOINT = "order/server/api/v2/refund/transactions/";
+    private static final String GATEKEEPER_API = "omnikassa-api/gatekeeper/refresh";
+    private static final String ORDER_SERVER_API_ORDER = "omnikassa-api/order/server/api/v2/order";
+    private static final String ORDER_SERVER_API_EVENTS_RESULTS_EVENT = "omnikassa-api/order/server/api/v2/events/results/event";
+    private static final String API_REFUND_ENDPOINT = "omnikassa-api/order/server/api/v2/refund/transactions/";
     private static final String ACTIVE = "Active";
     private static final String INACTIVE = "InActive";
 
@@ -75,7 +77,7 @@ public class ApiConnectorTest {
 
     @Before
     public void setUp() {
-        classUnderTest = new ApiConnector(jsonTemplate, "", SIGNING_KEY, null, null);
+        classUnderTest = new ApiConnector( jsonTemplate, SIGNING_KEY, null, null);
     }
 
     @Test
@@ -186,7 +188,7 @@ public class ApiConnectorTest {
     public void testGetRefundRequest_HappyFlow() throws Exception {
         UUID transaction = UUID.randomUUID();
         UUID refund = UUID.randomUUID();
-        when(jsonTemplate.get(API_REFUND_ENDPOINT + transaction + "/refunds/" + refund, "token")).thenReturn(RefundTestFactory.defaultRefundDetailsResponseJsonObject());
+        when(jsonTemplate.getWithHeader(API_REFUND_ENDPOINT + transaction + "/refunds/" + refund, "token")).thenReturn(RefundTestFactory.defaultRefundDetailsResponseJsonObject());
 
         RefundDetailsResponse refundDetailsResponse = classUnderTest.getRefundRequest(transaction, refund, "token");
 
@@ -197,7 +199,7 @@ public class ApiConnectorTest {
     @Test
     public void testGetRefundableDetails_HappyFlow() throws Exception {
         UUID transaction = UUID.randomUUID();
-        when(jsonTemplate.get(API_REFUND_ENDPOINT + transaction + "/refundable-details", "token")).thenReturn(RefundTestFactory.defaultTransactionRefundableDetailsResponseJsonObject());
+        when(jsonTemplate.getWithHeader(API_REFUND_ENDPOINT + transaction + "/refundable-details", "token")).thenReturn(RefundTestFactory.defaultTransactionRefundableDetailsResponseJsonObject());
 
         TransactionRefundableDetailsResponse transactionRefundableDetailsResponse = classUnderTest.getRefundableDetails(transaction, "token");
 
@@ -208,7 +210,7 @@ public class ApiConnectorTest {
     public void testGetAnnouncementData_HappyFlow() throws Exception {
         ApiNotification apiNotification = new ApiNotificationBuilder().build();
 
-        when(jsonTemplate.get(ORDER_SERVER_API_EVENTS_RESULTS_EVENT, apiNotification.getAuthentication())).thenReturn(prepareMerchantOrderStatusResponse());
+        when(jsonTemplate.getWithHeader(ORDER_SERVER_API_EVENTS_RESULTS_EVENT, apiNotification.getAuthentication())).thenReturn(prepareMerchantOrderStatusResponse());
 
         MerchantOrderStatusResponse merchantOrderStatusResponse = classUnderTest.getAnnouncementData(apiNotification);
 
@@ -221,21 +223,19 @@ public class ApiConnectorTest {
 
     @Test
     public void testRetrievePaymentBrandOk() throws Exception {
-        when(jsonTemplate.get("order/server/api/payment-brands", "accessToken")).thenReturn(createPaymentBrandResponse());
+        when(jsonTemplate.getWithHeader("omnikassa-api/order/server/api/payment-brands", "accessToken")).thenReturn(createPaymentBrandResponse());
 
         PaymentBrandsResponse paymentBrandsResponse = classUnderTest.retrievePaymentBrands("accessToken");
-        assertThat(paymentBrandsResponse.getPaymentBrands().size(), is(3));
+        assertThat(paymentBrandsResponse.getPaymentBrands().size(), is(2));
         assertThat(paymentBrandsResponse.getPaymentBrands().get(0).getName(), is("IDEAL"));
         assertThat(paymentBrandsResponse.getPaymentBrands().get(1).getName(), is("MASTERCARD"));
-        assertThat(paymentBrandsResponse.getPaymentBrands().get(2).getName(), is("BILLINK"));
         assertThat(paymentBrandsResponse.getPaymentBrands().get(0).isActive(), is(true));
         assertThat(paymentBrandsResponse.getPaymentBrands().get(1).isActive(), is(false));
-        assertThat(paymentBrandsResponse.getPaymentBrands().get(2).isActive(), is(false));
     }
 
     @Test(expected = RabobankSdkException.class)
     public void testRetrievePaymentBrand_UniRestException() throws Exception {
-        when(jsonTemplate.get("order/server/api/payment-brands", "accessToken")).thenThrow(new UnirestException("UniREST test"));
+        when(jsonTemplate.getWithHeader("omnikassa-api/order/server/api/payment-brands", "accessToken")).thenThrow(new UnirestException("UniREST test"));
 
         classUnderTest.retrievePaymentBrands("accessToken");
     }
@@ -292,7 +292,7 @@ public class ApiConnectorTest {
     public void testGetAnnouncementData_InvalidSignature() throws Exception {
         ApiNotification apiNotification = new ApiNotificationBuilder().build();
 
-        when(jsonTemplate.get(ORDER_SERVER_API_EVENTS_RESULTS_EVENT, apiNotification.getAuthentication())).thenReturn(prepareMerchantOrderStatusResponseInvalidSignature());
+        when(jsonTemplate.getWithHeader(ORDER_SERVER_API_EVENTS_RESULTS_EVENT, apiNotification.getAuthentication())).thenReturn(prepareMerchantOrderStatusResponseInvalidSignature());
 
         classUnderTest.getAnnouncementData(apiNotification);
     }
@@ -301,7 +301,7 @@ public class ApiConnectorTest {
     public void testGetAnnouncementData_UniRestException() throws Exception {
         ApiNotification apiNotification = new ApiNotificationBuilder().build();
 
-        when(jsonTemplate.get(ORDER_SERVER_API_EVENTS_RESULTS_EVENT, apiNotification.getAuthentication())).thenThrow(new UnirestException("UniREST test"));
+        when(jsonTemplate.getWithHeader(ORDER_SERVER_API_EVENTS_RESULTS_EVENT, apiNotification.getAuthentication())).thenThrow(new UnirestException("UniREST test"));
 
         classUnderTest.getAnnouncementData(apiNotification);
     }
@@ -310,7 +310,7 @@ public class ApiConnectorTest {
     public void testGetAnnouncementData_ApiReturnsError() throws Exception {
         ApiNotification apiNotification = new ApiNotificationBuilder().build();
 
-        when(jsonTemplate.get(ORDER_SERVER_API_EVENTS_RESULTS_EVENT, apiNotification.getAuthentication())).thenReturn(prepareErrorResponse());
+        when(jsonTemplate.getWithHeader(ORDER_SERVER_API_EVENTS_RESULTS_EVENT, apiNotification.getAuthentication())).thenReturn(prepareErrorResponse());
 
         classUnderTest.getAnnouncementData(apiNotification);
     }
@@ -319,31 +319,9 @@ public class ApiConnectorTest {
     public void testGetAnnouncementData_ApiReturnsAuthenticationError() throws Exception {
         ApiNotification apiNotification = new ApiNotificationBuilder().build();
 
-        when(jsonTemplate.get(ORDER_SERVER_API_EVENTS_RESULTS_EVENT, apiNotification.getAuthentication())).thenReturn(prepareAuthenticationErrorResponse());
+        when(jsonTemplate.getWithHeader(ORDER_SERVER_API_EVENTS_RESULTS_EVENT, apiNotification.getAuthentication())).thenReturn(prepareAuthenticationErrorResponse());
 
         classUnderTest.getAnnouncementData(apiNotification);
-    }
-
-    @Test
-    public void testGetOrderStatus() throws Exception {
-        String orderId = "3dfe639-967a-473d-8642-fa9347223d7a";
-        JSONObject orderStatus = new JSONObject().put("order", getOrderStatusResult());
-
-        when(jsonTemplate.getForProductionEnv("v2/orders/" + orderId, "token")).thenReturn(orderStatus);
-
-        OrderStatusResponse actualResponse = classUnderTest.getOrderStatus(orderId, "token");
-        OrderStatusResult actualResult = actualResponse.getOrder();
-
-        assertThat(actualResult.getMerchantOrderId(), is("25da863a-60a5-475d-ae47-c0e4bd1bec31"));
-        assertThat(actualResult.getId(), is("ORDER1"));
-        assertThat(actualResult.getStatus(), is("COMPLETED"));
-        assertThat(actualResult.getTotalAmount().getCurrency(), is(EUR));
-        assertThat(actualResult.getTotalAmount().getAmount(), is(new BigDecimal("1.00")));
-        assertThat(actualResult.getTransactions().get(0).getId(), is("1"));
-        assertThat(actualResult.getTransactions().get(0).getPaymentBrand(), is("IDEAL"));
-        assertThat(actualResult.getTransactions().get(0).getType(), is(TransactionType.AUTHORIZE));
-        assertThat(actualResult.getTransactions().get(0).getStatus(), is(TransactionStatus.SUCCESS));
-        assertThat(actualResult.getTransactions().get(0).getAmount().getAmount(), is(new BigDecimal("1.00")));
     }
 
     @Test
@@ -351,27 +329,92 @@ public class ApiConnectorTest {
         String orderId = "3dfe639-967a-473d-8642-fa9347223d7a";
         JSONObject orderStatus = new JSONObject().put("order", getOrderStatusResultWithoutTransactions());
 
-        when(jsonTemplate.getForProductionEnv("v2/orders/" + orderId, "token")).thenReturn(orderStatus);
+        when(jsonTemplate.getOrderStatus("v2/orders/" + orderId, "token")).thenReturn(orderStatus);
 
         OrderStatusResponse actualResponse = classUnderTest.getOrderStatus(orderId, "token");
         OrderStatusResult actualResult = actualResponse.getOrder();
 
-        assertThat(actualResult.getMerchantOrderId(), is("25da863a-60a5-475d-ae47-c0e4bd1bec31"));
-        assertThat(actualResult.getId(), is("ORDER1"));
-        assertThat(actualResult.getStatus(), is("COMPLETED"));
-        assertThat(actualResult.getTotalAmount().getCurrency(), is(EUR));
-        assertThat(actualResult.getTotalAmount().getAmount(), is(new BigDecimal("1.00")));
-        assertThat(actualResult.getTransactions(), is(new ArrayList<>()));
+        assertEquals("25da863a-60a5-475d-ae47-c0e4bd1bec31", actualResult.getMerchantOrderId());
+        assertEquals("ORDER1", actualResult.getId());
+        assertEquals("COMPLETED", actualResult.getStatus());
+        assertEquals(EUR, actualResult.getTotalAmount().getCurrency());
+        assertEquals(new BigDecimal("1.00"), actualResult.getTotalAmount().getAmount());
+        assertNull(actualResult.getTransactions());
+        assertNull(actualResult.getCheckoutDetails());
     }
 
-    @Test(expected = ApiResponseException.class)
-    public void testGetOrderStatus_ApiReturnsError() throws Exception {
+    @Test
+    public void testGetOrderStatus() throws Exception {
+        String orderId = "3dfe639-967a-473d-8642-fa9347223d7a";
+        JSONObject orderStatus = new JSONObject().put("order", getOrderStatusResult());
 
-        String orderId = "3dfe639-967a-473d-8642-fa9347221111";
+        when(jsonTemplate.getOrderStatus("v2/orders/" + orderId, "token")).thenReturn(orderStatus);
 
-        when(jsonTemplate.getForProductionEnv("v2/orders/" + orderId, "token")).thenReturn(prepareUnexpectedOrderStatusErrorResponse());
+        OrderStatusResponse actualResponse = classUnderTest.getOrderStatus(orderId, "token");
+        OrderStatusResult actualResult = actualResponse.getOrder();
 
-        classUnderTest.getOrderStatus(orderId, "token");
+        assertEquals("25da863a-60a5-475d-ae47-c0e4bd1bec31", actualResult.getMerchantOrderId());
+        assertEquals("ORDER1", actualResult.getId());
+        assertEquals("COMPLETED", actualResult.getStatus());
+        assertEquals(EUR, actualResult.getTotalAmount().getCurrency());
+        assertEquals(new BigDecimal("1.00"), actualResult.getTotalAmount().getAmount());
+        assertEquals("1", actualResult.getTransactions().get(0).getId());
+        assertEquals("IDEAL", actualResult.getTransactions().get(0).getPaymentBrand());
+        assertEquals(TransactionType.AUTHORIZE, actualResult.getTransactions().get(0).getType());
+        assertEquals(TransactionStatus.SUCCESS, actualResult.getTransactions().get(0).getStatus());
+        assertEquals(new BigDecimal("1.00"), actualResult.getTransactions().get(0).getAmount().getAmount());
+        assertNull(actualResult.getCheckoutDetails());
+    }
+
+    @Test
+    public void testGetOrderStatusWithCheckoutDetails() throws Exception {
+        String orderId = "3dfe639-967a-473d-8642-fa9347223d7a";
+        JSONObject orderStatus = new JSONObject().put("order", getOrderStatusResultWithCheckoutDetails());
+
+        when(jsonTemplate.getOrderStatus("v2/orders/" + orderId, "token")).thenReturn(orderStatus);
+
+        OrderStatusResponse actualResponse = classUnderTest.getOrderStatus(orderId, "token");
+        OrderStatusResult actualResult = actualResponse.getOrder();
+
+        assertEquals("25da863a-60a5-475d-ae47-c0e4bd1bec31", actualResult.getMerchantOrderId());
+        assertEquals("ORDER1", actualResult.getId());
+        assertEquals("COMPLETED", actualResult.getStatus());
+        assertEquals(EUR, actualResult.getTotalAmount().getCurrency());
+        assertEquals(new BigDecimal("1.00"), actualResult.getTotalAmount().getAmount());
+        assertEquals("1", actualResult.getTransactions().get(0).getId());
+        assertEquals("IDEAL", actualResult.getTransactions().get(0).getPaymentBrand());
+        assertEquals(TransactionType.AUTHORIZE, actualResult.getTransactions().get(0).getType());
+        assertEquals(TransactionStatus.SUCCESS, actualResult.getTransactions().get(0).getStatus());
+        assertEquals(new BigDecimal("1.00"), actualResult.getTransactions().get(0).getAmount().getAmount());
+
+        assertNotNull(actualResult.getCheckoutDetails());
+        assertNotNull(actualResult.getCheckoutDetails().getCustomerInformation());
+        assertEquals("John", actualResult.getCheckoutDetails().getCustomerInformation().getFirstName());
+        assertEquals("Doe", actualResult.getCheckoutDetails().getCustomerInformation().getLastName());
+        assertEquals("john.doe@example.com", actualResult.getCheckoutDetails().getCustomerInformation().getEmailAddress());
+        assertEquals("555-555-5555", actualResult.getCheckoutDetails().getCustomerInformation().getTelephoneNumber());
+        assertEquals("Company" ,actualResult.getCheckoutDetails().getCustomerInformation().getCompany().getName());
+
+        assertNotNull(actualResult.getCheckoutDetails().getBillingAddress());
+        assertEquals("Street1", actualResult.getCheckoutDetails().getBillingAddress().getStreet());
+        assertEquals("123", actualResult.getCheckoutDetails().getBillingAddress().getHouseNumber());
+        assertEquals("A", actualResult.getCheckoutDetails().getBillingAddress().getHouseNumberAddition());
+        assertEquals("12345", actualResult.getCheckoutDetails().getBillingAddress().getPostalCode());
+        assertEquals("City" ,actualResult.getCheckoutDetails().getBillingAddress().getCity());
+        assertEquals(CountryCode.NL , actualResult.getCheckoutDetails().getBillingAddress().getCountryCode());
+        assertEquals("John" ,actualResult.getCheckoutDetails().getBillingAddress().getFirstName());
+        assertEquals("Doe" ,actualResult.getCheckoutDetails().getBillingAddress().getLastName());
+
+
+        assertNotNull(actualResult.getCheckoutDetails().getShippingAddress());
+        assertEquals("Street2", actualResult.getCheckoutDetails().getShippingAddress().getStreet());
+        assertEquals("321", actualResult.getCheckoutDetails().getShippingAddress().getHouseNumber());
+        assertEquals("B", actualResult.getCheckoutDetails().getShippingAddress().getHouseNumberAddition());
+        assertEquals("54321", actualResult.getCheckoutDetails().getShippingAddress().getPostalCode());
+        assertEquals("City" ,actualResult.getCheckoutDetails().getShippingAddress().getCity());
+        assertEquals(CountryCode.NL , actualResult.getCheckoutDetails().getShippingAddress().getCountryCode());
+        assertEquals("John" ,actualResult.getCheckoutDetails().getShippingAddress().getFirstName());
+        assertEquals("Doe" ,actualResult.getCheckoutDetails().getShippingAddress().getLastName());
     }
 
     @Test
@@ -408,7 +451,7 @@ public class ApiConnectorTest {
 
     @Test
     public void testRetrieveNewToken_HappyFlow() throws Exception {
-        when(jsonTemplate.get("gatekeeper/refresh", "refreshtoken")).thenReturn(prepareAccessTokenResponse());
+        when(jsonTemplate.getWithHeader(GATEKEEPER_API, "refreshtoken")).thenReturn(prepareAccessTokenResponse());
 
         AccessToken accessToken = classUnderTest.retrieveNewToken("refreshtoken");
 
@@ -419,14 +462,14 @@ public class ApiConnectorTest {
 
     @Test(expected = RabobankSdkException.class)
     public void testRetrieveNewToken_UniRestException() throws Exception {
-        when(jsonTemplate.get("gatekeeper/refresh", "refreshtoken")).thenThrow(new UnirestException("UniREST test"));
+        when(jsonTemplate.getWithHeader(GATEKEEPER_API, "refreshtoken")).thenThrow(new UnirestException("UniREST test"));
 
         classUnderTest.retrieveNewToken("refreshtoken");
     }
 
     @Test(expected = RabobankSdkException.class)
     public void testRetrieveNewToken_ApiReturnsError() throws Exception {
-        when(jsonTemplate.get("gatekeeper/refresh", "refreshtoken")).thenThrow(new UnirestException("UniREST test"));
+        when(jsonTemplate.getWithHeader(GATEKEEPER_API, "refreshtoken")).thenThrow(new UnirestException("UniREST test"));
 
         classUnderTest.retrieveNewToken("refreshtoken");
     }
@@ -456,15 +499,6 @@ public class ApiConnectorTest {
         return jsonObject;
     }
 
-    private JSONObject prepareUnexpectedOrderStatusErrorResponse() {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("errorCode", "5500");
-        jsonObject.put("title", "Token error");
-        jsonObject.put("status", "520");
-        jsonObject.put("errorMessage", "Failed to fetch JWT from auth object.");
-        return jsonObject;
-    }
-
     private JSONObject prepareMerchantOrderStatusResponseInvalidSignature() {
         return new MerchantOrderStatusResponseBuilder().withSignature("").buildJsonObject();
     }
@@ -486,35 +520,63 @@ public class ApiConnectorTest {
         JSONObject paymentBrand2 = new JSONObject();
         paymentBrand2.put("name", "MASTERCARD");
         paymentBrand2.put("status", INACTIVE);
-
-        JSONObject paymentBrand3 = new JSONObject();
-        paymentBrand3.put("name", "BILLINK");
-        paymentBrand3.put("status", INACTIVE);
-
         jsonArray.put(paymentBrand1);
         jsonArray.put(paymentBrand2);
-        jsonArray.put(paymentBrand3);
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("paymentBrands", jsonArray);
 
         return jsonObject;
     }
-
     private JSONObject getOrderStatusResult() {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("merchantOrderId", "25da863a-60a5-475d-ae47-c0e4bd1bec31");
-        jsonObject.put("id", "ORDER1");
-        jsonObject.put("status", "COMPLETED");
-        jsonObject.put("statusLastUpdatedAt", "2000-01-01T00:00:00.000-0200");
-        jsonObject.put("totalAmount", getJsonMoney(Currency.EUR, 100));
+        JSONObject jsonObject = getOrderStatusResultWithoutTransactions();
 
         JSONObject firstTransaction = getTransactionObject("1", 100L, TransactionType.AUTHORIZE, TransactionStatus.SUCCESS);
         JSONObject secondTransaction = getTransactionObject("2", 200L, TransactionType.PAYMENT, TransactionStatus.SUCCESS);
         jsonObject.put("transactions", new JSONArray(Arrays.asList(firstTransaction, secondTransaction)));
         return jsonObject;
     }
+    private JSONObject getOrderStatusResultWithCheckoutDetails() {
+        JSONObject jsonObject = getOrderStatusResult();
+        JSONObject checkoutDetails = new JSONObject();
 
+        JSONObject customerInformation = new JSONObject();
+
+        customerInformation.put("firstName", "John");
+        customerInformation.put("lastName", "Doe");
+        customerInformation.put("emailAddress", "john.doe@example.com");
+        customerInformation.put("telephoneNumber", "555-555-5555");
+        customerInformation.put("company", new JSONObject().put("name", "Company"));
+
+        JSONObject billingAddress = new JSONObject();
+
+        billingAddress.put("street", "Street1");
+        billingAddress.put("houseNumber", "123");
+        billingAddress.put("houseNumberAddition","A");
+        billingAddress.put("postalCode", "12345");
+        billingAddress.put("city", "City");
+        billingAddress.put("countryCode", "NL");
+        billingAddress.put("firstName", "John");
+        billingAddress.put("lastName", "Doe");
+
+        JSONObject shippingAddress = new JSONObject();
+
+        shippingAddress.put("street", "Street2");
+        shippingAddress.put("houseNumber", "321");
+        shippingAddress.put("houseNumberAddition","B");
+        shippingAddress.put("postalCode", "54321");
+        shippingAddress.put("city", "City");
+        shippingAddress.put("countryCode", "NL");
+        shippingAddress.put("firstName", "John");
+        shippingAddress.put("lastName", "Doe");
+
+        checkoutDetails.put("customerInformation", customerInformation);
+        checkoutDetails.put("billingAddress", billingAddress);
+        checkoutDetails.put("shippingAddress", shippingAddress);
+
+        jsonObject.put("checkoutDetails", checkoutDetails);
+        return jsonObject;
+    }
     private JSONObject getJsonMoney(Currency currency, long amountInCents) {
         JSONObject object = new JSONObject();
         object.put("amount", String.valueOf(amountInCents));
