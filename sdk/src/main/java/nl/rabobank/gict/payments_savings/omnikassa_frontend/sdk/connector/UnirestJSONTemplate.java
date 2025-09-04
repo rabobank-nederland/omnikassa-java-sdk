@@ -16,6 +16,10 @@ import java.util.Map;
 
 class UnirestJSONTemplate {
     private final String baseURL;
+    private static final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String BEARER_TOKEN_PREFIX = "Bearer ";
+    private static final String CONTENT_TYPE_HEADER = "Content-type";
+    private static final String APPLICATION_JSON = "application/json";
 
     UnirestJSONTemplate(String baseURL) {
         this.baseURL = baseURL;
@@ -23,8 +27,8 @@ class UnirestJSONTemplate {
 
     public JSONObject getWithHeader(String path, String token) {
         GetRequest jsonResponse = Unirest.get(baseURL + "/" + path)
-                                         .header("Content-type", "application/json")
-                                         .header("Authorization", "Bearer " + token);
+                                         .header(CONTENT_TYPE_HEADER, APPLICATION_JSON)
+                                         .header(AUTHORIZATION_HEADER, BEARER_TOKEN_PREFIX + token);
 
         return jsonResponse.asJson().getBody().getObject();
     }
@@ -38,8 +42,8 @@ class UnirestJSONTemplate {
 
     public JSONObject postWithHeader(String path, JsonConvertible body, Map<String, String> headers, String token) {
         RequestBodyEntity requestBodyEntity = Unirest.post(baseURL + "/" + path)
-                                                     .header("Content-type", "application/json")
-                                                     .header("Authorization", "Bearer " + token)
+                                                     .header(CONTENT_TYPE_HEADER, APPLICATION_JSON)
+                                                     .header(AUTHORIZATION_HEADER, BEARER_TOKEN_PREFIX + token)
                                                      .body(body.asJson());
 
         return requestBodyEntity.asJson().getBody().getObject();
@@ -47,8 +51,8 @@ class UnirestJSONTemplate {
 
     public JSONObject getOrderStatus(String path, String token) throws RabobankSdkException {
         GetRequest getRequest = Unirest.get(baseURL + "/" + path)
-                                       .header("Content-type", "application/json")
-                                       .header("Authorization", "Bearer " + token);
+                                       .header(CONTENT_TYPE_HEADER, APPLICATION_JSON)
+                                       .header(AUTHORIZATION_HEADER, BEARER_TOKEN_PREFIX + token);
 
         return getRequest.asJson().getBody().getObject();
     }
@@ -57,8 +61,8 @@ class UnirestJSONTemplate {
                                                                                             RabobankSdkException {
         GetRequest jsonResponse = Unirest.get( baseURL + "/" + path)
                                          .queryString("shopper-ref", shopperRef)
-                                         .header("Content-type", "application/json")
-                                         .header("Authorization", "Bearer " + token);
+                                         .header(CONTENT_TYPE_HEADER, APPLICATION_JSON)
+                                         .header(AUTHORIZATION_HEADER, BEARER_TOKEN_PREFIX + token);
 
         return getJSONObject(jsonResponse.asJson(), jsonResponse.getHttpMethod(), jsonResponse.getUrl());
     }
@@ -66,8 +70,8 @@ class UnirestJSONTemplate {
     public int deleteShopperPaymentDetails(String path, String shopperRef, String token) {
         return Unirest.delete(baseURL + "/" + path)
                       .queryString("shopper-ref", shopperRef)
-                      .header("Content-type", "application/json")
-                      .header("Authorization", "Bearer " + token)
+                      .header(CONTENT_TYPE_HEADER, APPLICATION_JSON)
+                      .header(AUTHORIZATION_HEADER, BEARER_TOKEN_PREFIX + token)
                       .asJson().getStatus();
     }
 
