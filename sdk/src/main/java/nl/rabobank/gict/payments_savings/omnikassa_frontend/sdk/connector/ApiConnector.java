@@ -227,6 +227,7 @@ public class ApiConnector {
     /**
      * @param shopperRef reference of Shopper
      * @param id reference of Card
+     * @param token access token
      * @return HTTP status code
      * @throws RabobankSdkException when problems occurred during the request, e.g., server not reachable, invalid signature, invalid authentication etc.
      */
@@ -239,7 +240,7 @@ public class ApiConnector {
 
             @Override
             JSONObject fetch() {
-                return jsonTemplate.get(suffix + "gatekeeper/refresh", refreshToken);
+                return jsonTemplate.get( "gatekeeper/refresh", refreshToken);
             }
 
             @Override

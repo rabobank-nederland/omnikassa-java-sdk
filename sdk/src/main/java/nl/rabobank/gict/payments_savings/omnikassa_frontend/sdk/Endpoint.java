@@ -51,6 +51,7 @@ public final class Endpoint {
      * Use this method to retrieve an instance of the Endpont
      *
      * @param baseURL       this is the Url that points to the Rabobank API
+     * @param suffix        this is the suffix that points to the Rabobank API
      * @param signingKey    this is the key given by the Rabobank to sign all communication
      * @param tokenProvider this must be your own implementation of the tokenProvider, see developer-manual
      * @return new instance of Endpoint
@@ -66,6 +67,7 @@ public final class Endpoint {
      * Use this method to retrieve an instance of the Endpont
      *
      * @param baseURL          this is the Url that points to the Rabobank API
+     * @param suffix           this is the suffix that points to the Rabobank API
      * @param signingKey       this is the key given by the Rabobank to sign all communication
      * @param tokenProvider    this must be your own implementation of the tokenProvider, see developer-manual
      * @param userAgent        this is the User-Agent value you want to give your implementation
@@ -191,6 +193,7 @@ public final class Endpoint {
      */
     public MerchantOrderStatusResponse retrieveAnnouncement(ApiNotification apiNotification)
             throws RabobankSdkException {
+        validateAccessToken();
         apiNotification.validateSignature(signingKey);
 
         return connector.getAnnouncementData(apiNotification);
@@ -209,6 +212,7 @@ public final class Endpoint {
                                                            UUID transactionId,
                                                            UUID requestId)
             throws RabobankSdkException {
+        validateAccessToken();
         try {
             return connector.postRefundRequest(refundRequest, transactionId, requestId, tokenProvider.getAccessToken());
         } catch (InvalidAccessTokenException e) {
@@ -227,6 +231,7 @@ public final class Endpoint {
      */
     public RefundDetailsResponse fetchRefundTransaction(UUID transactionId, UUID refundId)
             throws RabobankSdkException {
+        validateAccessToken();
         try {
             return connector.getRefundRequest(transactionId, refundId, tokenProvider.getAccessToken());
         } catch (InvalidAccessTokenException e) {
@@ -244,6 +249,7 @@ public final class Endpoint {
      */
     public TransactionRefundableDetailsResponse fetchRefundableTransactionDetails(UUID transactionId)
             throws RabobankSdkException {
+        validateAccessToken();
         try {
             return connector.getRefundableDetails(transactionId, tokenProvider.getAccessToken());
         } catch (InvalidAccessTokenException e) {
@@ -264,7 +270,8 @@ public final class Endpoint {
     public OrderStatusResponse getOrderStatus(String orderId)
             throws RabobankSdkException {
 
-            return connector.getOrderStatus(orderId, tokenProvider.getAccessToken());
+        validateAccessToken();
+        return connector.getOrderStatus(orderId, tokenProvider.getAccessToken());
     }
 
     /**
@@ -293,7 +300,7 @@ public final class Endpoint {
      */
 
     public int deleteShopperPaymentDetails(String shopperRef, String id) throws RabobankSdkException{
-
+        validateAccessToken();
         return connector.deleteShopperPaymentDetails(shopperRef, id, tokenProvider.getAccessToken());
     }
 

@@ -3,7 +3,6 @@ package nl.rabobank.gict.payments_savings.omnikassa_frontend.test.webshop;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;

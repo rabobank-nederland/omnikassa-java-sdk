@@ -1,5 +1,12 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.test.webshop;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import kong.unirest.json.JSONObject;
+import lombok.SneakyThrows;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.ApiResponseException;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.IdealFastCheckoutOrder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.CountryCode;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.Gender;
@@ -9,6 +16,7 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.Paym
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.RequiredCheckoutFields;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.VatCategory;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.order_details.FastCheckout;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.orderstatus.OrderStatusResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -73,6 +81,12 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @PropertySource("classpath:application.properties")
 @RequestMapping("/webshop")
 class WebshopController {
+
+    public static final ObjectMapper OBJECT_MAPPER = JsonMapper
+            .builder()
+            .addModule( new JavaTimeModule())
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            .build();
     private static final String FAKE_WEBSHOP = "fake-webshop";
 
     private int iterator = 0;
@@ -112,7 +126,8 @@ class WebshopController {
     @PostMapping(value = "/orders")
     ModelAndView placeOrder(HttpServletRequest request) throws RabobankSdkException {
         MerchantOrderResponse orderResponse = announceOrder(request);
-        createNewOrder();
+        WebShopOrder webShopOrder = webShopOrderMap.get(iterator);
+        webShopOrder.setOmnikassaOrderId(orderResponse.getOmnikassaOrderId());
         return new ModelAndView("redirect:" + orderResponse.getRedirectUrl());
     }
 
@@ -227,8 +242,8 @@ class WebshopController {
     @PostMapping("/idealFastCheckout")
     ModelAndView submitIdealFastCheckout(HttpServletRequest request) throws RabobankSdkException {
         MerchantOrderResponse idealFastCheckoutRedirectUrl = announceIdealFastCheckout(request);
-        createNewOrder();
-
+        WebShopOrder webShopOrder = webShopOrderMap.get(iterator);
+        webShopOrder.setOmnikassaOrderId(idealFastCheckoutRedirectUrl.getOmnikassaOrderId());
         return new ModelAndView("redirect:" +idealFastCheckoutRedirectUrl.getRedirectUrl());
     }
 
@@ -238,7 +253,42 @@ class WebshopController {
         IdealFastCheckoutOrder idealFastCheckoutOrder = prepareIdealFastCheckoutOrder(request);
         logger.info(() -> "Fast checkout order: " + idealFastCheckoutOrder);
 
+        createNewOrder(idealFastCheckoutOrder.getAmount().getAmount());
         return endpoint.announce(idealFastCheckoutOrder);
+    }
+
+    @GetMapping("/order/status")
+    ModelAndView orderStatus(HttpServletRequest request, ModelMap modelMap) {
+        modelMap.addAttribute("webshopOrders", getRecentEntries());
+        String orderId = request.getParameter("orderId");
+        modelMap.put("orderStatus", "");
+        if (!isBlank(orderId)) {
+            modelMap.put("orderStatus", getOrderStatus(orderId));
+        }
+        return new ModelAndView("order-status", modelMap);
+    }
+
+    @SneakyThrows
+    private String getOrderStatus(String orderId) {
+        logger.info("Retrieving order status for orderId: " + orderId);
+        try {
+            OrderStatusResponse orderStatusResponse = endpoint.getOrderStatus(orderId);
+            String jsonAsString = OBJECT_MAPPER.writeValueAsString(orderStatusResponse);
+            logger.info(jsonAsString);
+            return jsonAsString;
+        } catch (ApiResponseException e){
+            return apiResponseExceptionMapping(e);
+
+        }
+    }
+
+    private String apiResponseExceptionMapping(ApiResponseException apiResponseException) {
+        return new JSONObject()
+                .put("status", apiResponseException.getStatus())
+                .put("title", apiResponseException.getTitle())
+                .put("errorCode", apiResponseException.getErrorCode())
+                .put("errorMessage", apiResponseException.getErrorMessage())
+                .toString();
     }
 
     private IdealFastCheckoutOrder prepareIdealFastCheckoutOrder(HttpServletRequest request) {
@@ -281,14 +331,15 @@ class WebshopController {
         iterator++;
     }
 
-    private void createNewOrder() {
+    private void createNewOrder(BigDecimal amount) {
         iterate();
-        webShopOrderMap.put(iterator, new WebShopOrder(iterator));
+        webShopOrderMap.put(iterator, new WebShopOrder(iterator, amount));
     }
 
     private MerchantOrderResponse announceOrder(HttpServletRequest request) throws RabobankSdkException {
         MerchantOrder merchantOrder = prepareOrder(request);
         logger.info(() -> "Merchant order is Announced with order Id: " + iterator);
+        createNewOrder(merchantOrder.getAmount().getAmount());
         return endpoint.announce(merchantOrder);
     }
 
@@ -426,4 +477,13 @@ class WebshopController {
             throws RabobankSdkException {
         return endpoint.fetchRefundableTransactionDetails(UUID.fromString(uuid));
     }
+
+    public List<Map.Entry<Integer, WebShopOrder>> getRecentEntries() {
+        return webShopOrderMap.entrySet().stream()
+                              .filter(entry -> entry.getValue().getOmnikassaOrderId() != null)
+                              .sorted((e1, e2) -> e2.getValue().getTimestamp().compareTo(e1.getValue().getTimestamp()))
+                              .limit(10)
+                              .collect(Collectors.toList());
+    }
+
 }

@@ -169,6 +169,7 @@ public class EndpointTest {
         apiNotification.setSignature(Signable.calculateSignature(apiNotification.getSignatureData(), SIGNING_KEY));
 
         when(apiConnector.getAnnouncementData(apiNotification)).thenReturn(merchantOrderStatusResponseJson);
+        when(apiConnector.retrieveNewToken("refreshToken")).thenReturn(new AccessTokenBuilder().build());
 
         endpoint.retrieveAnnouncement(apiNotification);
     }
@@ -176,6 +177,7 @@ public class EndpointTest {
     @Test(expected = RabobankSdkException.class)
     public void retrieveAnnouncement_InValidSignature() throws RabobankSdkException {
         ApiNotification apiNotification = prepareApiNotification();
+        when(apiConnector.retrieveNewToken("refreshToken")).thenReturn(new AccessTokenBuilder().build());
 
         endpoint.retrieveAnnouncement(apiNotification);
     }
@@ -185,6 +187,7 @@ public class EndpointTest {
         RefundDetailsResponse refundDetailsResponse = prepareRefundDetailsResponse();
 
         when(apiConnector.postRefundRequest(any(), any(), any(), any())).thenReturn(refundDetailsResponse);
+        when(apiConnector.retrieveNewToken("refreshToken")).thenReturn(new AccessTokenBuilder().build());
 
         RefundDetailsResponse response = endpoint.initiateRefundTransaction(prepareInitiateRefundRequest(), UUID.randomUUID(), UUID.randomUUID());
 
@@ -197,6 +200,7 @@ public class EndpointTest {
         RefundDetailsResponse refundDetailsResponse = prepareRefundDetailsResponse();
 
         when(apiConnector.getRefundRequest(any(), any(), any())).thenReturn(refundDetailsResponse);
+        when(apiConnector.retrieveNewToken("refreshToken")).thenReturn(new AccessTokenBuilder().build());
 
         RefundDetailsResponse response = endpoint.fetchRefundTransaction(UUID.randomUUID(),UUID.randomUUID());
 
@@ -209,6 +213,7 @@ public class EndpointTest {
         TransactionRefundableDetailsResponse refundableDetailsResponse = prepareRefundableDetailsResponse();
 
         when(apiConnector.getRefundableDetails(any(),any())).thenReturn(refundableDetailsResponse);
+        when(apiConnector.retrieveNewToken("refreshToken")).thenReturn(new AccessTokenBuilder().build());
 
         TransactionRefundableDetailsResponse response = endpoint.fetchRefundableTransactionDetails(UUID.randomUUID());
 
@@ -221,6 +226,7 @@ public class EndpointTest {
         OrderStatusResponse orderStatusResponse = prepareOrderStatusResponse(orderId);
 
         when(apiConnector.getOrderStatus(any(), any())).thenReturn(orderStatusResponse);
+        when(apiConnector.retrieveNewToken("refreshToken")).thenReturn(new AccessTokenBuilder().build());
 
         OrderStatusResponse response = endpoint.getOrderStatus(orderId);
 
