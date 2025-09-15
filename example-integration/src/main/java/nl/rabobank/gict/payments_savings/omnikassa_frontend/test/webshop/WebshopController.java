@@ -102,14 +102,13 @@ class WebshopController {
     WebshopController(@Value("${signing_key}") String key,
                       @Value("${refresh_token}") String token,
                       @Value("${base_url}") String baseUrl,
-                      @Value("${suffix}") String suffix,
                       @Value("${user_agent:TestWebshop/1.14}") String userAgent,
                       @Value("${partner_reference}") String partnerReference,
                       @Value("${fast-checkout-return-url}") String fastCheckoutReturnUrl) {
         this.signingKey = getSigningKey(key);
         this.baseUrl = baseUrl;
         TokenProvider tokenProvider = new CustomTokenProvider(token);
-        endpoint = Endpoint.createInstance(baseUrl, suffix, signingKey, tokenProvider, userAgent, partnerReference);
+        endpoint = Endpoint.createInstance(baseUrl, signingKey, tokenProvider, userAgent, partnerReference);
 
         this.fastCheckoutReturnUrl = fastCheckoutReturnUrl;
         

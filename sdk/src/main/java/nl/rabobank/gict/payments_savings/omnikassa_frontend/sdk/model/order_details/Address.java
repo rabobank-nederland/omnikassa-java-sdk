@@ -5,6 +5,7 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.JsonConver
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.CountryCode;
 
 import java.util.Objects;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.utils.JSONFieldUtil;
 
 /**
  * This class is used to contain the customer address details. You could use this class for shipping and/or billing details.
@@ -45,6 +46,19 @@ public class Address implements JsonConvertible {
         jsonObject.put("city", city);
         jsonObject.put("countryCode", countryCode.toString());
         return jsonObject;
+    }
+
+    public static Address fromJson(JSONObject jsonObject) {
+        return new Address.Builder()
+                .withStreet(JSONFieldUtil.getString(jsonObject, "street"))
+                .withHouseNumber(JSONFieldUtil.getString(jsonObject, "houseNumber"))
+                .withHouseNumberAddition(JSONFieldUtil.getString(jsonObject, "houseNumberAddition"))
+                .withPostalCode(JSONFieldUtil.getString(jsonObject, "postalCode"))
+                .withCity(JSONFieldUtil.getString(jsonObject, "city"))
+                .withCountryCode(CountryCode.valueOf(JSONFieldUtil.getString(jsonObject, "countryCode")))
+                .withFirstName(JSONFieldUtil.getString(jsonObject, "firstName"))
+                .withLastName(JSONFieldUtil.getString(jsonObject, "lastName"))
+                .build();
     }
 
     public String getFirstName() {
