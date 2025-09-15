@@ -13,7 +13,6 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.Rabob
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.AccessToken;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.MerchantOrder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.InitiateRefundRequest;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.MerchantOrderRequest;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.ApiNotification;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.IdealIssuersResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderResponse;
@@ -51,7 +50,6 @@ public final class Endpoint {
      * Use this method to retrieve an instance of the Endpont
      *
      * @param baseURL       this is the Url that points to the Rabobank API
-     * @param suffix        this is the suffix that points to the Rabobank API
      * @param signingKey    this is the key given by the Rabobank to sign all communication
      * @param tokenProvider this must be your own implementation of the tokenProvider, see developer-manual
      * @return new instance of Endpoint
@@ -67,7 +65,6 @@ public final class Endpoint {
      * Use this method to retrieve an instance of the Endpont
      *
      * @param baseURL          this is the Url that points to the Rabobank API
-     * @param suffix           this is the suffix that points to the Rabobank API
      * @param signingKey       this is the key given by the Rabobank to sign all communication
      * @param tokenProvider    this must be your own implementation of the tokenProvider, see developer-manual
      * @param userAgent        this is the User-Agent value you want to give your implementation
