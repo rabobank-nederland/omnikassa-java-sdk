@@ -31,8 +31,8 @@ import java.util.UUID;
 public class ApiConnector {
 
     public static final String X_API_USER_AGENT = "X-Api-User-Agent";
-
     public static final String SMARTPAY_USER_AGENT = "RabobankOmnikassaJavaSDK/1.14";
+    private static final String REFUND_TRANSACTIONS_PATH = "omnikassa-api/order/server/api/v2/refund/transactions/";
     private final byte[] signingKey;
     private final UnirestJSONTemplate jsonTemplate;
 
@@ -88,8 +88,8 @@ public class ApiConnector {
 
             @Override
             JSONObject fetch() {
-                return jsonTemplate.getWithHeader( "omnikassa-api/order/server/api/v2/events/results/" + apiNotification.getEventName(),
-                                        apiNotification.getAuthentication());
+                return jsonTemplate.getWithHeader("omnikassa-api/order/server/api/v2/events/results/" + apiNotification.getEventName(),
+                                                  apiNotification.getAuthentication());
             }
 
             @Override
@@ -120,7 +120,7 @@ public class ApiConnector {
             JSONObject fetch() throws UnirestException {
                 Map<String, String> requestHeaders = new HashMap<>();
                 requestHeaders.put("request-id", requestId.toString());
-                return jsonTemplate.postWithHeader("omnikassa-api/order/server/api/v2/refund/transactions/" + transactionId + "/refunds", refundRequest, requestHeaders, token);
+                return jsonTemplate.postWithHeader(REFUND_TRANSACTIONS_PATH + transactionId + "/refunds", refundRequest, requestHeaders, token);
             }
 
             @Override
@@ -145,7 +145,7 @@ public class ApiConnector {
 
             @Override
             JSONObject fetch() throws UnirestException {
-                return jsonTemplate.getWithHeader("omnikassa-api/order/server/api/v2/refund/transactions/" + transactionId + "/refunds/" + refundId, token);
+                return jsonTemplate.getWithHeader(REFUND_TRANSACTIONS_PATH + transactionId + "/refunds/" + refundId, token);
             }
 
             @Override
@@ -169,7 +169,7 @@ public class ApiConnector {
 
             @Override
             JSONObject fetch() throws UnirestException {
-                return jsonTemplate.getWithHeader("omnikassa-api/order/server/api/v2/refund/transactions/" + transactionId + "/refundable-details", token);
+                return jsonTemplate.getWithHeader(REFUND_TRANSACTIONS_PATH + transactionId + "/refundable-details", token);
             }
 
             @Override
@@ -182,7 +182,7 @@ public class ApiConnector {
     /**
      *
      * @param orderId id of Order
-     * @param token access token
+     * @param token   access token
      * @return String for order status
      * @throws RabobankSdkException when problems occurred during the request, e.g. server not reachable, invalid signature, invalid authentication etc.
      */
@@ -204,11 +204,12 @@ public class ApiConnector {
     /**
      *
      * @param shopperRef reference of Shopper
-     * @param token access token
+     * @param token      access token
      * @return The response contains a list of cards stored by shopper
      * @throws RabobankSdkException when problems occurred during the request, e.g., server not reachable, invalid signature, invalid authentication, etc.
      */
-    public ShopperPaymentDetailsResponse getShopperPaymentDetails(String shopperRef, String token) throws RabobankSdkException {
+    public ShopperPaymentDetailsResponse getShopperPaymentDetails(String shopperRef, String token)
+            throws RabobankSdkException {
         return new RequestTemplate<ShopperPaymentDetailsResponse>() {
             @Override
             JSONObject fetch() throws RabobankSdkException {
@@ -224,12 +225,12 @@ public class ApiConnector {
 
     /**
      * @param shopperRef reference of Shopper
-     * @param id reference of Card
+     * @param id         reference of Card
      * @return HTTP status code
      * @throws RabobankSdkException when problems occurred during the request, e.g., server not reachable, invalid signature, invalid authentication etc.
      */
     public int deleteShopperPaymentDetails(String shopperRef, String id, String token) throws RabobankSdkException {
-        return jsonTemplate.deleteShopperPaymentDetails("v1/shopper-payment-details/" + id, shopperRef , token);
+        return jsonTemplate.deleteShopperPaymentDetails("v1/shopper-payment-details/" + id, shopperRef, token);
     }
 
     public AccessToken retrieveNewToken(final String refreshToken) throws RabobankSdkException {
@@ -237,7 +238,7 @@ public class ApiConnector {
 
             @Override
             JSONObject fetch() {
-                return jsonTemplate.getWithHeader( "omnikassa-api/gatekeeper/refresh", refreshToken);
+                return jsonTemplate.getWithHeader("omnikassa-api/gatekeeper/refresh", refreshToken);
             }
 
             @Override

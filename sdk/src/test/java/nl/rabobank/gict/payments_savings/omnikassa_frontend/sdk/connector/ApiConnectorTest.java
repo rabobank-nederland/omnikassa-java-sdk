@@ -63,10 +63,10 @@ import static org.mockito.Mockito.when;
 public class ApiConnectorTest {
     private static final Map<String, String> DEFAULT_USER_AGENT_HEADER = Collections.singletonMap("X-Api-User-Agent", "RabobankOmnikassaJavaSDK/1.14");
     private static final byte[] SIGNING_KEY = "secret".getBytes(UTF_8);
-    private static final String GATEKEEPER_API = "omnikassa-api/gatekeeper/refresh";
-    private static final String ORDER_SERVER_API_ORDER = "omnikassa-api/order/server/api/v2/order";
-    private static final String ORDER_SERVER_API_EVENTS_RESULTS_EVENT = "omnikassa-api/order/server/api/v2/events/results/event";
-    private static final String API_REFUND_ENDPOINT = "omnikassa-api/order/server/api/v2/refund/transactions/";
+    private static final String GATEKEEPER_API_PATH = "omnikassa-api/gatekeeper/refresh";
+    private static final String ORDER_SERVER_API_PATH = "omnikassa-api/order/server/api/v2/order";
+    private static final String ORDER_SERVER_API_EVENTS_RESULTS_EVENT_PATH = "omnikassa-api/order/server/api/v2/events/results/event";
+    private static final String REFUND_TRANSACTIONS_PATH = "omnikassa-api/order/server/api/v2/refund/transactions/";
     private static final String ACTIVE = "Active";
     private static final String INACTIVE = "InActive";
 
@@ -84,7 +84,7 @@ public class ApiConnectorTest {
     public void testAnnounceMerchantOrder_HappyFlowWithDefaultUserAgent() throws Exception {
         MerchantOrderRequest merchantOrderRequest = createMerchantOrderRequest();
 
-        when(jsonTemplate.postWithHeader(ORDER_SERVER_API_ORDER, merchantOrderRequest, DEFAULT_USER_AGENT_HEADER, "token")).thenReturn(prepareMerchantOrderResponse());
+        when(jsonTemplate.postWithHeader(ORDER_SERVER_API_PATH, merchantOrderRequest, DEFAULT_USER_AGENT_HEADER, "token")).thenReturn(prepareMerchantOrderResponse());
 
         MerchantOrderResponse merchantOrderResponse = classUnderTest.announceMerchantOrder(merchantOrderRequest, "token");
 
@@ -96,7 +96,7 @@ public class ApiConnectorTest {
     public void testAnnounceMerchantOrder_HappyFlowWithPartnerReference() throws Exception {
         MerchantOrderRequest merchantOrderRequest = createMerchantOrderRequest();
 
-        when(jsonTemplate.postWithHeader(ORDER_SERVER_API_ORDER, merchantOrderRequest, Collections.singletonMap("X-Api-User-Agent", "RabobankOmnikassaJavaSDK/1.14 (pr: 12345)"), "token")).thenReturn(prepareMerchantOrderResponse());
+        when(jsonTemplate.postWithHeader(ORDER_SERVER_API_PATH, merchantOrderRequest, Collections.singletonMap("X-Api-User-Agent", "RabobankOmnikassaJavaSDK/1.14 (pr: 12345)"), "token")).thenReturn(prepareMerchantOrderResponse());
 
         classUnderTest.setPartnerReference("12345");
         MerchantOrderResponse merchantOrderResponse = classUnderTest.announceMerchantOrder(merchantOrderRequest, "token");
@@ -109,7 +109,7 @@ public class ApiConnectorTest {
     public void testAnnounceMerchantOrder_HappyFlowWithPartnerReferenceAndCustomUserAgent() throws Exception {
         MerchantOrderRequest merchantOrderRequest = createMerchantOrderRequest();
 
-        when(jsonTemplate.postWithHeader(ORDER_SERVER_API_ORDER, merchantOrderRequest, Collections.singletonMap("X-Api-User-Agent", "RabobankOmnikassaJavaSDK/1.14 CustomAgent/1 (pr: 12345)"), "token")).thenReturn(prepareMerchantOrderResponse());
+        when(jsonTemplate.postWithHeader(ORDER_SERVER_API_PATH, merchantOrderRequest, Collections.singletonMap("X-Api-User-Agent", "RabobankOmnikassaJavaSDK/1.14 CustomAgent/1 (pr: 12345)"), "token")).thenReturn(prepareMerchantOrderResponse());
 
         classUnderTest.setPartnerReference("12345");
         classUnderTest.setUserAgent("CustomAgent/1");
@@ -123,7 +123,7 @@ public class ApiConnectorTest {
     public void testAnnounceMerchantOrder_UniRestException() throws Exception {
         MerchantOrderRequest merchantOrderRequest = createMerchantOrderRequest();
 
-        when(jsonTemplate.postWithHeader(ORDER_SERVER_API_ORDER, merchantOrderRequest, DEFAULT_USER_AGENT_HEADER, "token")).thenThrow(new UnirestException("UniREST test"));
+        when(jsonTemplate.postWithHeader(ORDER_SERVER_API_PATH, merchantOrderRequest, DEFAULT_USER_AGENT_HEADER, "token")).thenThrow(new UnirestException("UniREST test"));
 
         classUnderTest.announceMerchantOrder(merchantOrderRequest, "token");
     }
@@ -133,7 +133,7 @@ public class ApiConnectorTest {
         try {
             MerchantOrderRequest merchantOrderRequest = createMerchantOrderRequest();
 
-            when(jsonTemplate.postWithHeader(ORDER_SERVER_API_ORDER, merchantOrderRequest, DEFAULT_USER_AGENT_HEADER, "token")).thenReturn(prepareErrorResponse());
+            when(jsonTemplate.postWithHeader(ORDER_SERVER_API_PATH, merchantOrderRequest, DEFAULT_USER_AGENT_HEADER, "token")).thenReturn(prepareErrorResponse());
 
             classUnderTest.announceMerchantOrder(merchantOrderRequest, "token");
             fail();
@@ -147,7 +147,7 @@ public class ApiConnectorTest {
     public void testAnnounceMerchantOrder_ApiReturnsUnexpectedError() throws Exception {
         MerchantOrderRequest merchantOrderRequest = createMerchantOrderRequest();
 
-        when(jsonTemplate.postWithHeader(ORDER_SERVER_API_ORDER, merchantOrderRequest, DEFAULT_USER_AGENT_HEADER, "token")).thenReturn(prepareUnexpectedErrorResponse());
+        when(jsonTemplate.postWithHeader(ORDER_SERVER_API_PATH, merchantOrderRequest, DEFAULT_USER_AGENT_HEADER, "token")).thenReturn(prepareUnexpectedErrorResponse());
 
         classUnderTest.announceMerchantOrder(merchantOrderRequest, "token");
     }
@@ -161,7 +161,7 @@ public class ApiConnectorTest {
         InitiateRefundRequest initiateRefundRequest = RefundTestFactory.defaultInitiateRefundRequest();
         UUID transaction = UUID.randomUUID();
         UUID requestId = UUID.randomUUID();
-        when(jsonTemplate.postWithHeader(API_REFUND_ENDPOINT + transaction + "/refunds", initiateRefundRequest, Collections.singletonMap("request-id", requestId.toString()), "token")).thenReturn(RefundTestFactory.defaultRefundDetailsResponseJsonObject());
+        when(jsonTemplate.postWithHeader(REFUND_TRANSACTIONS_PATH + transaction + "/refunds", initiateRefundRequest, Collections.singletonMap("request-id", requestId.toString()), "token")).thenReturn(RefundTestFactory.defaultRefundDetailsResponseJsonObject());
 
         RefundDetailsResponse refundDetailsResponse = classUnderTest.postRefundRequest(initiateRefundRequest, transaction, requestId, "token");
 
@@ -174,7 +174,7 @@ public class ApiConnectorTest {
         InitiateRefundRequest initiateRefundRequest = RefundTestFactory.defaultInitiateRefundRequest();
         UUID transaction = UUID.randomUUID();
         UUID requestId = UUID.randomUUID();
-        when(jsonTemplate.postWithHeader(API_REFUND_ENDPOINT + transaction + "/refunds", initiateRefundRequest, Collections.singletonMap("request-id", requestId.toString()), "token")).thenReturn(RefundTestFactory.refundDetailsResponseWithMinimumFieldsJsonObject());
+        when(jsonTemplate.postWithHeader(REFUND_TRANSACTIONS_PATH + transaction + "/refunds", initiateRefundRequest, Collections.singletonMap("request-id", requestId.toString()), "token")).thenReturn(RefundTestFactory.refundDetailsResponseWithMinimumFieldsJsonObject());
 
         RefundDetailsResponse refundDetailsResponse = classUnderTest.postRefundRequest(initiateRefundRequest, transaction, requestId, "token");
 
@@ -188,7 +188,7 @@ public class ApiConnectorTest {
     public void testGetRefundRequest_HappyFlow() throws Exception {
         UUID transaction = UUID.randomUUID();
         UUID refund = UUID.randomUUID();
-        when(jsonTemplate.getWithHeader(API_REFUND_ENDPOINT + transaction + "/refunds/" + refund, "token")).thenReturn(RefundTestFactory.defaultRefundDetailsResponseJsonObject());
+        when(jsonTemplate.getWithHeader(REFUND_TRANSACTIONS_PATH + transaction + "/refunds/" + refund, "token")).thenReturn(RefundTestFactory.defaultRefundDetailsResponseJsonObject());
 
         RefundDetailsResponse refundDetailsResponse = classUnderTest.getRefundRequest(transaction, refund, "token");
 
@@ -199,7 +199,7 @@ public class ApiConnectorTest {
     @Test
     public void testGetRefundableDetails_HappyFlow() throws Exception {
         UUID transaction = UUID.randomUUID();
-        when(jsonTemplate.getWithHeader(API_REFUND_ENDPOINT + transaction + "/refundable-details", "token")).thenReturn(RefundTestFactory.defaultTransactionRefundableDetailsResponseJsonObject());
+        when(jsonTemplate.getWithHeader(REFUND_TRANSACTIONS_PATH + transaction + "/refundable-details", "token")).thenReturn(RefundTestFactory.defaultTransactionRefundableDetailsResponseJsonObject());
 
         TransactionRefundableDetailsResponse transactionRefundableDetailsResponse = classUnderTest.getRefundableDetails(transaction, "token");
 
@@ -210,7 +210,7 @@ public class ApiConnectorTest {
     public void testGetAnnouncementData_HappyFlow() throws Exception {
         ApiNotification apiNotification = new ApiNotificationBuilder().build();
 
-        when(jsonTemplate.getWithHeader(ORDER_SERVER_API_EVENTS_RESULTS_EVENT, apiNotification.getAuthentication())).thenReturn(prepareMerchantOrderStatusResponse());
+        when(jsonTemplate.getWithHeader(ORDER_SERVER_API_EVENTS_RESULTS_EVENT_PATH, apiNotification.getAuthentication())).thenReturn(prepareMerchantOrderStatusResponse());
 
         MerchantOrderStatusResponse merchantOrderStatusResponse = classUnderTest.getAnnouncementData(apiNotification);
 
@@ -292,7 +292,7 @@ public class ApiConnectorTest {
     public void testGetAnnouncementData_InvalidSignature() throws Exception {
         ApiNotification apiNotification = new ApiNotificationBuilder().build();
 
-        when(jsonTemplate.getWithHeader(ORDER_SERVER_API_EVENTS_RESULTS_EVENT, apiNotification.getAuthentication())).thenReturn(prepareMerchantOrderStatusResponseInvalidSignature());
+        when(jsonTemplate.getWithHeader(ORDER_SERVER_API_EVENTS_RESULTS_EVENT_PATH, apiNotification.getAuthentication())).thenReturn(prepareMerchantOrderStatusResponseInvalidSignature());
 
         classUnderTest.getAnnouncementData(apiNotification);
     }
@@ -301,7 +301,7 @@ public class ApiConnectorTest {
     public void testGetAnnouncementData_UniRestException() throws Exception {
         ApiNotification apiNotification = new ApiNotificationBuilder().build();
 
-        when(jsonTemplate.getWithHeader(ORDER_SERVER_API_EVENTS_RESULTS_EVENT, apiNotification.getAuthentication())).thenThrow(new UnirestException("UniREST test"));
+        when(jsonTemplate.getWithHeader(ORDER_SERVER_API_EVENTS_RESULTS_EVENT_PATH, apiNotification.getAuthentication())).thenThrow(new UnirestException("UniREST test"));
 
         classUnderTest.getAnnouncementData(apiNotification);
     }
@@ -310,7 +310,7 @@ public class ApiConnectorTest {
     public void testGetAnnouncementData_ApiReturnsError() throws Exception {
         ApiNotification apiNotification = new ApiNotificationBuilder().build();
 
-        when(jsonTemplate.getWithHeader(ORDER_SERVER_API_EVENTS_RESULTS_EVENT, apiNotification.getAuthentication())).thenReturn(prepareErrorResponse());
+        when(jsonTemplate.getWithHeader(ORDER_SERVER_API_EVENTS_RESULTS_EVENT_PATH, apiNotification.getAuthentication())).thenReturn(prepareErrorResponse());
 
         classUnderTest.getAnnouncementData(apiNotification);
     }
@@ -319,7 +319,7 @@ public class ApiConnectorTest {
     public void testGetAnnouncementData_ApiReturnsAuthenticationError() throws Exception {
         ApiNotification apiNotification = new ApiNotificationBuilder().build();
 
-        when(jsonTemplate.getWithHeader(ORDER_SERVER_API_EVENTS_RESULTS_EVENT, apiNotification.getAuthentication())).thenReturn(prepareAuthenticationErrorResponse());
+        when(jsonTemplate.getWithHeader(ORDER_SERVER_API_EVENTS_RESULTS_EVENT_PATH, apiNotification.getAuthentication())).thenReturn(prepareAuthenticationErrorResponse());
 
         classUnderTest.getAnnouncementData(apiNotification);
     }
@@ -451,7 +451,7 @@ public class ApiConnectorTest {
 
     @Test
     public void testRetrieveNewToken_HappyFlow() throws Exception {
-        when(jsonTemplate.getWithHeader(GATEKEEPER_API, "refreshtoken")).thenReturn(prepareAccessTokenResponse());
+        when(jsonTemplate.getWithHeader(GATEKEEPER_API_PATH, "refreshtoken")).thenReturn(prepareAccessTokenResponse());
 
         AccessToken accessToken = classUnderTest.retrieveNewToken("refreshtoken");
 
@@ -462,14 +462,14 @@ public class ApiConnectorTest {
 
     @Test(expected = RabobankSdkException.class)
     public void testRetrieveNewToken_UniRestException() throws Exception {
-        when(jsonTemplate.getWithHeader(GATEKEEPER_API, "refreshtoken")).thenThrow(new UnirestException("UniREST test"));
+        when(jsonTemplate.getWithHeader(GATEKEEPER_API_PATH, "refreshtoken")).thenThrow(new UnirestException("UniREST test"));
 
         classUnderTest.retrieveNewToken("refreshtoken");
     }
 
     @Test(expected = RabobankSdkException.class)
     public void testRetrieveNewToken_ApiReturnsError() throws Exception {
-        when(jsonTemplate.getWithHeader(GATEKEEPER_API, "refreshtoken")).thenThrow(new UnirestException("UniREST test"));
+        when(jsonTemplate.getWithHeader(GATEKEEPER_API_PATH, "refreshtoken")).thenThrow(new UnirestException("UniREST test"));
 
         classUnderTest.retrieveNewToken("refreshtoken");
     }
