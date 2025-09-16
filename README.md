@@ -20,6 +20,10 @@ the [SDK manual](https://github.com/rabobank-nederland/omnikassa-sdk-doc/blob/ma
 
 ## Release notes
 
+### Version 1.18.1
+
+* Removing omnikassa-sandbox-api suffix for sandbox environment.
+
 ### Version 1.18.0
 
 * Extended SDK to support ideal fast checkout.
