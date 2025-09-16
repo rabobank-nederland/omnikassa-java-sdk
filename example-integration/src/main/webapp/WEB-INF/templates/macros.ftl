@@ -27,6 +27,9 @@
                         <a class="nav-link" href="/webshop/logs">Get Logs</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="/webshop/order/status">Order Status</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="/cards-on-file/cards">Cards On File</a>
                     </li>
                     <li class="nav-item">
@@ -82,6 +85,19 @@
                             form.submit();
                         });
                     });
+
+                    $("[data-order-id]").on("click", function(event) {
+                        var $this = $(this);
+                        $('.order').removeClass('selected');
+                        $this.addClass('selected');
+                        var orderID = $this.find("span").first().text();
+                        $("#orderId").val(orderID);
+                    });
+
+                    const viewer = document.querySelector('#json');
+                    if (viewer) {
+                        viewer.expandAll();
+                    }
 
                 </script>
             </div>
