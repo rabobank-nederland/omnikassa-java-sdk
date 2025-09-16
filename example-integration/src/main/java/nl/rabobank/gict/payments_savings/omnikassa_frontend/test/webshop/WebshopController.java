@@ -141,8 +141,13 @@ class WebshopController {
     String paymentComplete(ModelMap modelMap, HttpServletRequest request) throws RabobankSdkException {
         PaymentCompletedResponse notificationCompletedPaymentResponse = createPaymentCompletedResponse(request);
         logger.info("payment with order_id: " + notificationCompletedPaymentResponse.getOrderID() + " has been completed with status: " + notificationCompletedPaymentResponse.getStatus());
-        modelMap.addAttribute("paymentStatusMessage", PaymentStatusMessage.valueOf(notificationCompletedPaymentResponse.getStatus()).getMessage());
+        modelMap.addAttribute("orderStatus", PaymentStatusMessage.valueOf(notificationCompletedPaymentResponse.getStatus()).name());
         return "fake-webshop-result";
+    }
+
+    @GetMapping(value = "/payment/pending")
+    String paymentPending(ModelMap modelMap, HttpServletRequest request) throws RabobankSdkException {
+        return "fake-webshop-pending";
     }
 
     @PostMapping(value = "/items")
