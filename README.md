@@ -20,6 +20,11 @@ the [SDK manual](https://github.com/rabobank-nederland/omnikassa-sdk-doc/blob/ma
 
 ## Release notes
 
+### Version 1.18.2
+
+* Order status functionality is included in the example integration.
+* Landing page after finishing ideal fast checkout order is included in the example integration.
+
 ### Version 1.18.1
 
 * Removing omnikassa-sandbox-api suffix for sandbox environment.

@@ -13,7 +13,6 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.Rabob
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.AccessToken;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.MerchantOrder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.InitiateRefundRequest;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.MerchantOrderRequest;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.ApiNotification;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.IdealIssuersResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderResponse;
@@ -190,6 +189,7 @@ public final class Endpoint {
      */
     public MerchantOrderStatusResponse retrieveAnnouncement(ApiNotification apiNotification)
             throws RabobankSdkException {
+        validateAccessToken();
         apiNotification.validateSignature(signingKey);
 
         return connector.getAnnouncementData(apiNotification);
@@ -208,6 +208,7 @@ public final class Endpoint {
                                                            UUID transactionId,
                                                            UUID requestId)
             throws RabobankSdkException {
+        validateAccessToken();
         try {
             return connector.postRefundRequest(refundRequest, transactionId, requestId, tokenProvider.getAccessToken());
         } catch (InvalidAccessTokenException e) {
@@ -226,6 +227,7 @@ public final class Endpoint {
      */
     public RefundDetailsResponse fetchRefundTransaction(UUID transactionId, UUID refundId)
             throws RabobankSdkException {
+        validateAccessToken();
         try {
             return connector.getRefundRequest(transactionId, refundId, tokenProvider.getAccessToken());
         } catch (InvalidAccessTokenException e) {
@@ -243,6 +245,7 @@ public final class Endpoint {
      */
     public TransactionRefundableDetailsResponse fetchRefundableTransactionDetails(UUID transactionId)
             throws RabobankSdkException {
+        validateAccessToken();
         try {
             return connector.getRefundableDetails(transactionId, tokenProvider.getAccessToken());
         } catch (InvalidAccessTokenException e) {
@@ -263,7 +266,8 @@ public final class Endpoint {
     public OrderStatusResponse getOrderStatus(String orderId)
             throws RabobankSdkException {
 
-            return connector.getOrderStatus(orderId, tokenProvider.getAccessToken());
+        validateAccessToken();
+        return connector.getOrderStatus(orderId, tokenProvider.getAccessToken());
     }
 
     /**
@@ -292,7 +296,7 @@ public final class Endpoint {
      */
 
     public int deleteShopperPaymentDetails(String shopperRef, String id) throws RabobankSdkException{
-
+        validateAccessToken();
         return connector.deleteShopperPaymentDetails(shopperRef, id, tokenProvider.getAccessToken());
     }
 

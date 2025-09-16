@@ -1,5 +1,10 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.test.webshop.model;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.UUID;
+import lombok.Getter;
+import lombok.Setter;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.IdealFastCheckoutOrder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.MerchantOrder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.MerchantOrder.Builder;
@@ -21,16 +26,28 @@ import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enu
 import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.Language.NL;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-
+@Setter
+@Getter
 public class WebShopOrder {
     private static final String MERCHANT_RETURN_URL = "http://localhost:8082/webshop/payment/complete";
 
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     private final int orderId;
+    private BigDecimal amount;
+    private LocalDateTime timestamp;
+    private UUID omnikassaOrderId;
 
     private final List<OrderItem> orderItems = new ArrayList<>();
 
     public WebShopOrder(int orderId) {
         this.orderId = orderId;
+    }
+
+    public WebShopOrder(int iterator, BigDecimal amount) {
+        this.orderId = iterator;
+        this.amount = amount;
+        this.timestamp = LocalDateTime.now();
     }
 
     public void addItem(OrderItem item) {
@@ -39,10 +56,6 @@ public class WebShopOrder {
 
     public void clear() {
         orderItems.clear();
-    }
-
-    public List<OrderItem> getOrderItems() {
-        return orderItems;
     }
 
     public MerchantOrder prepareMerchantOrder(CustomerInformation customerInformation,
@@ -109,5 +122,9 @@ public class WebShopOrder {
             sum = sum.add(itemPrice);
         }
         return sum;
+    }
+
+    public String getFormattedTimestamp() {
+        return FORMATTER.format(timestamp);
     }
 }
