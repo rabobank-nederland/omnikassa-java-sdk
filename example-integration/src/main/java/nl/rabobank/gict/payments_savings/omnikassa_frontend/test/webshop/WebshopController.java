@@ -269,12 +269,10 @@ class WebshopController {
 
     @SneakyThrows
     private String getOrderStatus(String orderId) {
-        logger.info("Retrieving order status for orderId: " + orderId);
+        logger.info(() -> "Retrieving order status for orderId: {}" + orderId);
         try {
             OrderStatusResponse orderStatusResponse = endpoint.getOrderStatus(orderId);
-            String jsonAsString = OBJECT_MAPPER.writeValueAsString(orderStatusResponse);
-            logger.info(jsonAsString);
-            return jsonAsString;
+            return OBJECT_MAPPER.writeValueAsString(orderStatusResponse);
         } catch (ApiResponseException e){
             return apiResponseExceptionMapping(e);
 
