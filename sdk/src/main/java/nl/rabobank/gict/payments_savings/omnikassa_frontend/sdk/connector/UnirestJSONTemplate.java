@@ -1,6 +1,8 @@
 package nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.connector;
 
+import java.util.HashMap;
 import kong.unirest.GetRequest;
+import kong.unirest.Headers;
 import kong.unirest.HttpMethod;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
@@ -41,10 +43,14 @@ class UnirestJSONTemplate {
     }
 
     public JSONObject postWithHeader(String path, JsonConvertible body, Map<String, String> headers, String token) {
+        Map<String, String> requiredHeaders = new HashMap<>();
+        requiredHeaders.put(CONTENT_TYPE_HEADER, APPLICATION_JSON);
+        requiredHeaders.put(AUTHORIZATION_HEADER, BEARER_TOKEN_PREFIX + token);
+        if (headers != null) {
+            requiredHeaders.putAll(headers);
+        }
         RequestBodyEntity requestBodyEntity = Unirest.post(baseURL + "/" + path)
-                                                     .header(CONTENT_TYPE_HEADER, APPLICATION_JSON)
-                                                     .header(AUTHORIZATION_HEADER, BEARER_TOKEN_PREFIX + token)
-                                                     .body(body.asJson());
+                .headers(requiredHeaders).body(body.asJson());
 
         return requestBodyEntity.asJson().getBody().getObject();
     }
