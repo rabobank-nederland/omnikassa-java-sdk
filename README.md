@@ -22,7 +22,7 @@ the [SDK manual](https://github.com/rabobank-nederland/omnikassa-sdk-doc/blob/ma
 
 ### Version 1.18.3
 
-* Fix for initializing refunds.
+* Resolved an issue with initializing refunds
 
 ### Version 1.18.2
 
