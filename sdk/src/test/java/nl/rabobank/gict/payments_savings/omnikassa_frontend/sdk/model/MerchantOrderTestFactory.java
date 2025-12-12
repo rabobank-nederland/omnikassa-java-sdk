@@ -32,6 +32,7 @@ public class MerchantOrderTestFactory {
                 .withSkipHppResultPage(true)
                 .withPaymentBrandMetaData(getPaymentBrandMetaData())
                 .withShopperBankstatementReference("bankstatementReference")
+                .withCaptureMethod("IMMEDIATE")
                 .build();
     }
 
@@ -41,7 +42,8 @@ public class MerchantOrderTestFactory {
                 .withAmount(Money.fromEuros(EUR, new BigDecimal("4.95")))
                 .withLanguage(Language.NL)
                 .withMerchantReturnURL("http://localhost/")
-                .withDescription("An example description");
+                .withDescription("An example description")
+                .withCaptureMethod("IMMEDIATE");
     }
 
     private static Map<String, Object> getPaymentBrandMetaData() {

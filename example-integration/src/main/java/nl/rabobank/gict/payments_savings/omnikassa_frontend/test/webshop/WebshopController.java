@@ -295,8 +295,9 @@ class WebshopController {
 
     private IdealFastCheckoutOrder prepareIdealFastCheckoutOrder(HttpServletRequest request) {
         Money shippingCost = Money.fromEuros(EUR, BigDecimal.valueOf(Double.parseDouble(request.getParameter("shippingCost"))));
+        String captureMode = request.getParameter("captureMethod");
         Map<String, Object> paymentBrandMetaData = createPaymentBrandMetaData(request);
-        return webShopOrderMap.get(iterator).prepareIdealFastCheckoutOrder(shippingCost, paymentBrandMetaData, fastCheckoutReturnUrl);
+        return webShopOrderMap.get(iterator).prepareIdealFastCheckoutOrder(shippingCost, paymentBrandMetaData, fastCheckoutReturnUrl, captureMode);
     }
 
     private Map<String, Object> createPaymentBrandMetaData(HttpServletRequest request) {
@@ -357,12 +358,13 @@ class WebshopController {
         boolean cof = parseBoolean(request.getParameter("enableCardsOnFile"));
         String initiatingParty = request.getParameter("initiatingParty");
         String shopperBankstatementReference = request.getParameter("shopperBankstatementReference");
+        String captureMode = request.getParameter("captureMethod");
         if (cof && ( shopperRef.isEmpty() || customerInformation.getEmailAddress().isEmpty())) {
             throw new IllegalArgumentException("shopperRef and Customer email are required when Cards on File is enabled");
         }
         return webShopOrderMap.get(iterator).prepareMerchantOrder(customerInformation, shippingDetails, billingDetails,
                                                                   paymentBrand, paymentBrandForce, preselectedIssuerId, cof, shopperRef,
-                                                                  initiatingParty, skipHppResultPage, shopperBankstatementReference);
+                                                                  initiatingParty, skipHppResultPage, shopperBankstatementReference, captureMode);
     }
 
     private CustomerInformation createCustomerInformation(HttpServletRequest request) {

@@ -196,6 +196,17 @@
         </tr>
         <tr>
             <td>
+                <label for="capture_method">Capture Method:</label>
+            </td>
+            <td>
+                <select name="captureMethod" id="capture_method" class="form-select">
+                    <option value="IMMEDIATE" selected="selected">IMMEDIATE</option>
+                    <option value="MANUAL">MANUAL</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
                 <label for="skip_hpp_result_page">Skip HPP result page?</label>
             </td>
             <td>

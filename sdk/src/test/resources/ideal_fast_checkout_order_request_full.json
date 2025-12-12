@@ -37,5 +37,6 @@
     "fastCheckout": {
       "requiredCheckoutFields" : ["CUSTOMER_INFORMATION", "SHIPPING_ADDRESS"]
     }
-  }
+  },
+  "captureMethod" : "IMMEDIATE"
 }

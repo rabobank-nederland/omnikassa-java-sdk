@@ -72,6 +72,7 @@ public class MerchantOrderRequest implements JsonConvertible {
         if (shopperBankstatementReference != null) {
             jsonObject.put("shopperBankstatementReference", shopperBankstatementReference);
         }
+        jsonObject.put("captureMethod", merchantOrder.getCaptureMethod());
         return jsonObject;
     }
 
