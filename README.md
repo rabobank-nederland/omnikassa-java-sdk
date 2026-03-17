@@ -20,6 +20,10 @@ the [SDK manual](https://github.com/rabobank-nederland/omnikassa-sdk-doc/blob/ma
 
 ## Release notes
 
+### Version 1.18.3
+
+* Improved release notes
+
 ### Version 1.18.2
 
 * Order status functionality is included in the example integration.
@@ -30,6 +34,18 @@ the [SDK manual](https://github.com/rabobank-nederland/omnikassa-sdk-doc/blob/ma
 * Removing omnikassa-sandbox-api suffix for sandbox environment.
 
 ### Version 1.18.0
+
+* ⚠️ Manual base URL configuration required.
+
+Updates the SDK to use the new `api.pay.rabobank.nl` domain and now appends the required `omnikassa-api` path internally.
+If you set the base URL yourself, ensure it contains only the domain (no path segments). See the examples below for the correct format.
+
+Correct vs. Incorrect Configuration Examples
+
+| Environment | ❌ Incorrect URL                                            | ✅ Correct URL                      |
+|-------------|------------------------------------------------------------|-------------------------------------|
+| Production  | https://api.pay.rabobank.nl/omnikassa-api/                 | https://api.pay.rabobank.nl/        |
+| Sandbox     | https://api.pay-sandbox.rabobank.nl/omnikassa-api-sandbox/ | https://api.pay-sandbox.rabobank.nl/ |
 
 * Extended SDK to support ideal fast checkout.
 
