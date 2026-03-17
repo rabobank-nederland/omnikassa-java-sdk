@@ -20,10 +20,6 @@ the [SDK manual](https://github.com/rabobank-nederland/omnikassa-sdk-doc/blob/ma
 
 ## Release notes
 
-### Version 1.18.3
-
-* Improved release notes
-
 ### Version 1.18.2
 
 * Order status functionality is included in the example integration.
