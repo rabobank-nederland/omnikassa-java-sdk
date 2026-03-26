@@ -41,9 +41,10 @@ class UnirestJSONTemplate {
     }
 
     public JSONObject postWithHeader(String path, JsonConvertible body, Map<String, String> headers, String token) {
+        headers.put(AUTHORIZATION_HEADER, BEARER_TOKEN_PREFIX + token);
+        headers.put(CONTENT_TYPE_HEADER, APPLICATION_JSON);
         RequestBodyEntity requestBodyEntity = Unirest.post(baseURL + "/" + path)
-                                                     .header(CONTENT_TYPE_HEADER, APPLICATION_JSON)
-                                                     .header(AUTHORIZATION_HEADER, BEARER_TOKEN_PREFIX + token)
+                                                     .headers(headers)
                                                      .body(body.asJson());
 
         return requestBodyEntity.asJson().getBody().getObject();
