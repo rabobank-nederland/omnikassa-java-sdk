@@ -1,0 +1,36 @@
+
+# Gitleaks configuration for omnikassa-frontend-api
+# This file defines a global allowlist to suppress known false positives
+# such as test sources, stubs, generated configs and API specs.
+#
+# Notes:
+# - 'paths' entries are regular expressions matched against file paths.
+# - Escape dots in file names (e.g., api-specifications-production.yml) and
+#   use '.*' to match directories recursively.
+# - Keep this file at the repository root as `.gitleaks.toml`.
+#
+# References:
+# - Gitleaks README (fingerprints & config): https://github.com/gitleaks/gitleaks
+# - Allowlist configuration docs: https://deepwiki.com/gitleaks/gitleaks/4.4-allowlists-and-baselines
+
+[allowlist]
+# Ignore entire directories and specific properties files that frequently
+# contain placeholder values or test tokens.
+
+paths = [
+  "^sdk/src/test.*"
+]
+
+# Optional: add stopwords that, when present in a detected secret, will
+# cause gitleaks to ignore it. Uncomment and adjust if needed.
+# stopwords = ["EXAMPLE", "FAKE", "DUMMY", "PLACEHOLDER"]
+
+# Optional: ignore specific content patterns across the repo.
+# regexes = ["example[-_]?secret", "dummy[-_]?token"]
+
+# If you need rule-specific ignores, you can add entries like:
+# [[rules]]
+# id = "generic-api-key"
+#   [[rules.allowlists]]
+#   description = "Allow test data in stubs"
+#   paths = ["Stubs/.*"]
