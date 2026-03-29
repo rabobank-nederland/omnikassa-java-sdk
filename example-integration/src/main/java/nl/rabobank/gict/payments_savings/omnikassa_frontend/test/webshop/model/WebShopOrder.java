@@ -68,7 +68,8 @@ public class WebShopOrder {
                                               String shopperRef,
                                               String initiatingParty,
                                               boolean skipHppResultPage,
-                                              String shopperBankstatementReference) {
+                                              String shopperBankstatementReference,
+                                              String captureMethod) {
         return new Builder()
                 .withMerchantOrderId(String.valueOf(orderId))
                 .withAmount(Money.fromEuros(EUR, getTotalPrice()))
@@ -86,12 +87,14 @@ public class WebShopOrder {
                 .withInitiatingParty(initiatingParty)
                 .withSkipHppResultPage(skipHppResultPage)
                 .withShopperBankstatementReference(shopperBankstatementReference)
+                .withCaptureMethod(captureMethod)
                 .build();
     }
 
     public IdealFastCheckoutOrder prepareIdealFastCheckoutOrder(Money shippingCost,
                                                                 Map<String, Object> paymentBrandMetaData,
-                                                                String merchantReturnUrl) {
+                                                                String merchantReturnUrl,
+                                                                String captureMethod) {
         return new IdealFastCheckoutOrder.Builder()
                 .withMerchantOrderId(String.valueOf(orderId))
                 .withOrderItems(orderItems)
@@ -101,6 +104,7 @@ public class WebShopOrder {
                 .withDescription("An example description")
                 .withShippingCost(shippingCost)
                 .withPaymentBrandMetaData(paymentBrandMetaData)
+                .withCaptureMethod(captureMethod)
                 .build();
     }
 

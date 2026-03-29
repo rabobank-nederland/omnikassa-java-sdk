@@ -64,5 +64,6 @@
     "issuerId": "RABONL2U"
   },
   "skipHppResultPage": true,
-  "shopperBankstatementReference": "bankstatementReference"
+  "shopperBankstatementReference": "bankstatementReference",
+  "captureMethod" : "IMMEDIATE"
 }

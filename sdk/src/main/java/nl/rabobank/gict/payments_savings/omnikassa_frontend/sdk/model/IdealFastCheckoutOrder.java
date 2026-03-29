@@ -23,6 +23,7 @@ public final class IdealFastCheckoutOrder {
     private final Money shippingCost;
     private final boolean skipHppResultPage;
     private final Map<String, Object> paymentBrandMetaData;
+    private final String captureMethod;
 
     public IdealFastCheckoutOrder(Builder builder) {
         this.merchantOrderId = builder.merchantOrderId;
@@ -36,6 +37,7 @@ public final class IdealFastCheckoutOrder {
         this.skipHppResultPage = builder.skipHppResultPage;
         this.merchantReturnURL = builder.merchantReturnURL;
         this.shippingCost = builder.shippingCost;
+        this.captureMethod = builder.captureMethod;
     }
 
 
@@ -83,18 +85,21 @@ public final class IdealFastCheckoutOrder {
         return paymentBrandMetaData;
     }
 
+    public String getCaptureMethod() {  return captureMethod; }
+
     public static class Builder {
-        private String merchantOrderId;
-        private Money amount;
-        private Language language;
-        private String description;
-        private List<OrderItem> orderItems = new ArrayList<>();
-        private final PaymentBrand paymentBrand = PaymentBrand.IDEAL;
-        private final PaymentBrandForce paymentBrandForce = PaymentBrandForce.FORCE_ALWAYS;
-        private String merchantReturnURL;
-        private Money shippingCost;
-        private Map<String, Object> paymentBrandMetaData;
-        private final boolean skipHppResultPage = false;
+        String merchantOrderId;
+        Money amount;
+        Language language;
+        String description;
+        List<OrderItem> orderItems = Collections.unmodifiableList(new ArrayList<>());
+        final PaymentBrand paymentBrand = PaymentBrand.IDEAL;
+        final PaymentBrandForce paymentBrandForce = PaymentBrandForce.FORCE_ALWAYS;
+        String merchantReturnURL;
+        Money shippingCost;
+        Map<String, Object> paymentBrandMetaData;
+        final boolean skipHppResultPage = false;
+        String captureMethod;
 
         /**
          * @param merchantOrderId | Must not be `null`
@@ -177,6 +182,18 @@ public final class IdealFastCheckoutOrder {
          */
         public IdealFastCheckoutOrder.Builder withPaymentBrandMetaData(@NonNull Map<String, Object> paymentBrandMetaData) {
             this.paymentBrandMetaData = paymentBrandMetaData;
+            return this;
+        }
+
+        /**
+         *
+         * @param captureMethod | Optional
+         *                      | The capture method for the order. Indicates whether the card payment should be captured immediately or manually. By default, the value is IMMEDIATE.
+         *                      | Possible values: null, IMMEDIATE, MANUAL
+         * @return
+         */
+        public IdealFastCheckoutOrder.Builder withCaptureMethod(String captureMethod) {
+            this.captureMethod = captureMethod;
             return this;
         }
 

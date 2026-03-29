@@ -32,6 +32,7 @@ public final class MerchantOrder {
     private Money shippingCost;
 
     private final String initiatingParty;
+    private final String captureMethod;
 
     private MerchantOrder(Builder builder) {
         this.merchantOrderId = builder.merchantOrderId;
@@ -51,6 +52,7 @@ public final class MerchantOrder {
         this.shopperRef = builder.shopperRef;
         this.shopperBankstatementReference = builder.shopperBankstatementReference;
         this.shippingCost = builder.shippingCost;
+        this.captureMethod = builder.captureMethod;
     }
     public String getInitiatingParty() {
         return initiatingParty;
@@ -113,25 +115,28 @@ public final class MerchantOrder {
         return shopperBankstatementReference;
     }
 
+    public String getCaptureMethod() {  return captureMethod; }
+
     public static class Builder {
 
-        private String shopperRef;
-        private String merchantOrderId;
-        private Money amount;
-        private Language language;
-        private String description;
-        private String merchantReturnURL;
-        private List<OrderItem> orderItems = new ArrayList<>();
-        private Address shippingDetails;
-        private Address billingDetails;
-        private CustomerInformation customerInformation;
-        private PaymentBrand paymentBrand;
-        private PaymentBrandForce paymentBrandForce;
-        private Map<String, Object> paymentBrandMetaData = Collections.emptyMap();
-        private String initiatingParty;
-        private boolean skipHppResultPage = false;
-        private String shopperBankstatementReference;
-        private Money shippingCost;
+        String shopperRef;
+        String merchantOrderId;
+        Money amount;
+        Language language;
+        String description;
+        String merchantReturnURL;
+        List<OrderItem> orderItems = Collections.unmodifiableList(new ArrayList<>());
+        Address shippingDetails;
+        Address billingDetails;
+        CustomerInformation customerInformation;
+        PaymentBrand paymentBrand;
+        PaymentBrandForce paymentBrandForce;
+        Map<String, Object> paymentBrandMetaData = Collections.emptyMap();
+        String initiatingParty;
+        boolean skipHppResultPage = false;
+        String shopperBankstatementReference;
+        Money shippingCost;
+        String captureMethod;
 
         /**
          * @param merchantOrderId | Must not be `null`
@@ -298,6 +303,18 @@ public final class MerchantOrder {
          */
         public Builder withShippingCost(Money shippingCost) {
             this.shippingCost = shippingCost;
+            return this;
+        }
+
+        /**
+         *
+         * @param captureMethod | Optional
+         *                      | The capture method for the order. Indicates whether the card payment should be captured immediately or manually. By default, the value is IMMEDIATE.
+         *                      | Possible values: null, IMMEDIATE, MANUAL
+         * @return
+         */
+        public Builder withCaptureMethod(String captureMethod) {
+            this.captureMethod = captureMethod;
             return this;
         }
 

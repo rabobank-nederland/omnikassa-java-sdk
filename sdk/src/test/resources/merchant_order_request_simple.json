@@ -10,5 +10,6 @@
   "merchantReturnURL": "http://localhost/",
   "shopperRef": null,
   "orderItems": [],
-  "skipHppResultPage": false
+  "skipHppResultPage": false,
+  "captureMethod" : "IMMEDIATE"
 }

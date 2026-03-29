@@ -57,6 +57,7 @@ public class IdealFastCheckoutMerchantOrderRequest implements JsonConvertible {
             }
             jsonObject.put("paymentBrandMetaData", paymentBrandMetaDataObject);
         }
+        jsonObject.put("captureMethod", idealFastCheckoutOrder.getCaptureMethod());
 
         return jsonObject;
     }

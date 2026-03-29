@@ -27,6 +27,7 @@ public class IdealFastCheckoutOrderTestFactory {
                 .withMerchantReturnURL("http://localhost/")
                 .withShippingCost(Money.fromEuros(EUR, new BigDecimal("1.25")))
                 .withPaymentBrandMetaData(getPaymentBrandMetaData())
+                .withCaptureMethod("IMMEDIATE")
                 .build();
     }
 
