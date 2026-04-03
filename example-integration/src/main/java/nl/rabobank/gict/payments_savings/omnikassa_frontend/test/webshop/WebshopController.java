@@ -43,7 +43,6 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.order_deta
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.order_details.OrderItem.Builder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.InitiateRefundRequest;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.ApiNotification;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.IdealIssuersResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderResult;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponse;
@@ -202,18 +201,6 @@ class WebshopController {
         return "fake-webshop-paymentbrands";
     }
 
-    @GetMapping("/retrieveIdealIssuers")
-    String retrieveIdealIssuers(ModelMap model) throws RabobankSdkException {
-        updateModelWithIdealIssuers(model);
-        return "fake-webshop-idealissuers";
-    }
-
-    @PostMapping("/refreshIdealIssuers")
-    String refreshIdealIssuers(ModelMap model) throws RabobankSdkException {
-        updateModelWithIdealIssuers(model);
-        return FAKE_WEBSHOP;
-    }
-
     @GetMapping("/initiateRefund")
     String initiateRefund(HttpServletRequest request, ModelMap model) throws RabobankSdkException {
         if (!StringUtils.isEmpty(request.getParameter("transactionId"))) {
@@ -312,11 +299,6 @@ class WebshopController {
             paymentBrandMetaData.put("fastCheckout", new FastCheckout.Builder().build(Arrays.stream(RequiredCheckoutFields.values()).collect(Collectors.toSet())));
         }
         return paymentBrandMetaData;
-    }
-
-    private void updateModelWithIdealIssuers(ModelMap model) throws RabobankSdkException {
-        IdealIssuersResponse idealIssuersResponse = endpoint.retrieveIdealIssuers();
-        model.addAttribute("idealIssuers", idealIssuersResponse.getIssuers());
     }
 
     private void logOrderUpdate(List<MerchantOrderResult> orderResults) {
