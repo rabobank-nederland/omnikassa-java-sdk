@@ -10,7 +10,6 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.AccessToke
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.JsonConvertible;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.InitiateRefundRequest;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.ApiNotification;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.IdealIssuersResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.PaymentBrandsResponse;
@@ -259,20 +258,6 @@ public class ApiConnector {
             @Override
             PaymentBrandsResponse convert(JSONObject result) {
                 return new PaymentBrandsResponse(result);
-            }
-        }.execute();
-    }
-
-    public IdealIssuersResponse retrieveIdealIssuers(final String accessToken) throws RabobankSdkException {
-        return new RequestTemplate<IdealIssuersResponse>() {
-            @Override
-            JSONObject fetch() {
-                return jsonTemplate.getWithHeader("omnikassa-api/ideal/server/api/v2/issuers", accessToken);
-            }
-
-            @Override
-            IdealIssuersResponse convert(JSONObject result) {
-                return new IdealIssuersResponse(result);
             }
         }.execute();
     }

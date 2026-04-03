@@ -21,15 +21,12 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.O
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.ApiNotificationBuilder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderResponseBuilder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponseBuilder;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.IdealIssuerLogo;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.TransactionRefundableDetailsResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.PaymentBrandsResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.cardonfile.ShopperPaymentDetailsResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.orderstatus.OrderStatusResponse;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.IdealIssuersResponse;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.IdealIssuer;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.utils.RefundTestFactory;
 
 import org.apache.commons.codec.binary.Base64;
@@ -44,7 +41,6 @@ import java.util.UUID;
 
 import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.Environment.SANDBOX;
 import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.connector.TokenProvider.FieldName.REFRESH_TOKEN;
-import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.JSONObjectCreator.createJSONObjectForIdealIssuer;
 import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.JSONObjectCreator.createJSONObjectForPaymentBrands;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -319,36 +315,6 @@ public class EndpointTest {
         assertThat(response.getPaymentBrands().get(0).isActive(), is(true));
         assertThat(response.getPaymentBrands().get(1).getName(), is("PAYPAL"));
         assertThat(response.getPaymentBrands().get(1).isActive(), is(false));
-    }
-
-    @Test
-    public void retrieveIdealIssuers() throws RabobankSdkException {
-        tokenProvider.setValidAccessToken();
-        IdealIssuersResponse idealIssuersResponse = new IdealIssuersResponse(createJSONObjectForIdealIssuer());
-        when(apiConnector.retrieveIdealIssuers(any())).thenReturn(idealIssuersResponse);
-
-        IdealIssuersResponse response = endpoint.retrieveIdealIssuers();
-
-        assertIdealIssuersResponse(response);
-    }
-
-    private void assertIdealIssuersResponse(IdealIssuersResponse response) {
-        assertThat(response, notNullValue());
-        assertThat(response.getIssuers(), notNullValue());
-        assertThat(response.getIssuers().size(), is(1));
-
-
-        IdealIssuer idealIssuer = response.getIssuers().get(0);
-        assertThat(idealIssuer.getId(), is("ASNBNL21"));
-        assertThat(idealIssuer.getName(), is("ASN Bank"));
-        assertThat(idealIssuer.getCountryNames(), is("Nederland"));
-
-
-        assertThat(idealIssuer.getLogos(), notNullValue());
-        assertThat(idealIssuer.getLogos().size(), is(1));
-        IdealIssuerLogo logo = idealIssuer.getLogos().get(0);
-        assertThat(logo.getUrl(), is("http://rabobank.nl/static/issuers/ASNBNL21.png"));
-        assertThat(logo.getMimeType(), is("image/png"));
     }
 
     private MerchantOrderStatusResponse prepareMerchantOrderStatusResponseWithValidSignature() {

@@ -6,8 +6,6 @@ import kong.unirest.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import static nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.IdealIssuersResponse.ISSUERS_KEY;
-
 public final class JSONObjectCreator {
 
     public static JSONObject createJSONObjectForPaymentBrands() {
@@ -26,31 +24,5 @@ public final class JSONObjectCreator {
         paymentBrand.put("name", name);
         paymentBrand.put("status", status);
         return paymentBrand;
-    }
-
-    public static JSONObject createJSONObjectForIdealIssuer() {
-        JSONObject jsonIssuersResponse = new JSONObject();
-        JSONArray issuers = new JSONArray();
-        issuers.put(createJSONObjectForIssuer());
-        jsonIssuersResponse.put(ISSUERS_KEY, issuers);
-
-        return  jsonIssuersResponse;
-    }
-
-    private static JSONObject createJSONObjectForIssuer() {
-        JSONObject issuer = new JSONObject();
-
-        JSONArray jsonLogosArray = new JSONArray();
-        JSONObject jsonLogo = new JSONObject();
-        jsonLogo.put("url", "http://rabobank.nl/static/issuers/ASNBNL21.png")
-                .put("mimeType", "image/png");
-        jsonLogosArray.put(jsonLogo);
-
-        issuer.put("id", "ASNBNL21")
-                .put("name", "ASN Bank")
-                .put("countryNames", "Nederland")
-                .put("logos", jsonLogosArray);
-
-        return issuer;
     }
 }
