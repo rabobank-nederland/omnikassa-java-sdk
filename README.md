@@ -20,6 +20,10 @@ the [SDK manual](https://github.com/rabobank-nederland/omnikassa-sdk-doc/blob/ma
 
 ## Release notes
 
+### Version 1.18.4
+
+* Removed GET iDEAL issuers functionality
+
 ### Version 1.18.3
 
 * Resolved an issue with initializing refunds

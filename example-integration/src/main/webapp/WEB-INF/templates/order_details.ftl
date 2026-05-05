@@ -123,23 +123,6 @@
             </tr>
             <tr>
                 <td>
-                    <label for="idealIssuers">Issuer ID:</label>
-                </td>
-                <td>
-                    <select name="issuerId" id="idealIssuers" class="form-select">
-                        <option value="" selected="selected"></option>
-                        <#if idealIssuers??>
-                            <#list idealIssuers as idealIssuer>
-                                <option value="${idealIssuer.id}">${idealIssuer.name}</option>
-                            </#list>
-                        </#if>
-                    </select>
-                    <input type="submit" name="refreshIssuersId" value="Refresh"
-                           formaction="/webshop/refreshIdealIssuers" class="btn btn-secondary"/>
-                </td>
-            </tr>
-            <tr>
-                <td>
                     <label for="initiating_party">initiating Party</label>
                 </td>
                 <td>

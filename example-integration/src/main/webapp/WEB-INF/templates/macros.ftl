@@ -39,9 +39,6 @@
                         <a class="nav-link" href="/webshop/retrievePaymentBrands">Get PaymentBrands</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/webshop/retrieveIdealIssuers">Get iDEAL issuers</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="/webshop/initiateRefund">Initiate Refund</a>
                     </li>
                 </ul>

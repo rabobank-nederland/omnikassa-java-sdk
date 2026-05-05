@@ -14,7 +14,6 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.AccessToke
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.MerchantOrder;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.InitiateRefundRequest;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.ApiNotification;
-import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.IdealIssuersResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.MerchantOrderStatusResponse;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.PaymentBrandsResponse;
@@ -300,7 +299,6 @@ public final class Endpoint {
         return connector.deleteShopperPaymentDetails(shopperRef, id, tokenProvider.getAccessToken());
     }
 
-
     public PaymentBrandsResponse retrievePaymentBrands() throws RabobankSdkException {
         validateAccessToken();
         try {
@@ -308,16 +306,6 @@ public final class Endpoint {
         } catch (InvalidAccessTokenException e) {
             logAndGetNewToken(e);
             return connector.retrievePaymentBrands(tokenProvider.getAccessToken());
-        }
-    }
-
-    public IdealIssuersResponse retrieveIdealIssuers() throws RabobankSdkException {
-        validateAccessToken();
-        try {
-            return connector.retrieveIdealIssuers(tokenProvider.getAccessToken());
-        } catch (InvalidAccessTokenException e) {
-            logAndGetNewToken(e);
-            return connector.retrieveIdealIssuers(tokenProvider.getAccessToken());
         }
     }
 
