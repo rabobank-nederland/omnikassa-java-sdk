@@ -20,6 +20,12 @@ the [SDK manual](https://github.com/rabobank-nederland/omnikassa-sdk-doc/blob/ma
 
 ## Release notes
 
+### Version 1.19.0
+
+* Removed support for retrieving iDEAL issuers.
+* Removed related response models and endpoint methods.
+* Updated the SDK to align with the current payment flow where issuer selection happens on the iDEAL payment page.
+
 ### Version 1.18.4
 
 * Removed GET iDEAL issuers functionality
