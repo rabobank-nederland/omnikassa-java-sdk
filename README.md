@@ -20,6 +20,12 @@ the [SDK manual](https://github.com/rabobank-nederland/omnikassa-sdk-doc/blob/ma
 
 ## Release notes
 
+### Version 1.19.1
+
+* Added SDK support for sending X-Plugin-Name and X-Plugin-Version headers on order announcement calls.
+* Added support for optional plugin metadata in SDK requests via the new ClientMetadata model (pluginName and pluginVersion).
+* Added endpoint methods to set and retrieve full client metadata.
+
 ### Version 1.19.0
 
 * Removed support for retrieving iDEAL issuers.

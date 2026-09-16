@@ -7,6 +7,7 @@ import kong.unirest.json.JSONObject;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.ApiResponseException;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.exceptions.RabobankSdkException;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.AccessToken;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.ClientMetadata;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.JsonConvertible;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.request.InitiateRefundRequest;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.ApiNotification;
@@ -30,10 +31,14 @@ import java.util.UUID;
 public class ApiConnector {
 
     public static final String X_API_USER_AGENT = "X-Api-User-Agent";
+    public static final String X_PLUGIN_NAME = "X-Plugin-Name";
+    public static final String X_PLUGIN_VERSION = "X-Plugin-Version";
     public static final String SMARTPAY_USER_AGENT = "RabobankOmnikassaJavaSDK/1.14";
     private static final String REFUND_TRANSACTIONS_PATH = "omnikassa-api/order/server/api/v2/refund/transactions/";
     private final byte[] signingKey;
     private final UnirestJSONTemplate jsonTemplate;
+
+    private ClientMetadata clientMetadata;
 
     private String userAgent;
     private String partnerReference;
@@ -41,11 +46,29 @@ public class ApiConnector {
     ApiConnector(UnirestJSONTemplate jsonTemplate, byte[] signingKey, String userAgent, String partnerReference) {
         this.jsonTemplate = jsonTemplate;
         this.signingKey = signingKey;
+        this.clientMetadata = ClientMetadata.builder()
+                .userAgent(userAgent)
+                .partnerReference(partnerReference)
+                .build();
     }
 
+    /**
+     * @deprecated constructor. Use ApiConnector(String, byte[], ClientMetadata) which allows
+     *             providing full client metadata (userAgent, partnerReference, pluginName and pluginVersion).
+     */
     public ApiConnector(String baseURL, byte[] signingKey, String userAgent, String partnerReference) {
         this.jsonTemplate = new UnirestJSONTemplate(baseURL);
         this.signingKey = signingKey;
+    }
+
+    /**
+     * New constructor that accepts a ClientMetadata object containing userAgent, partnerReference,
+     * pluginName and pluginVersion. Use the builder to construct the metadata.
+     */
+    public ApiConnector(String baseURL, byte[] signingKey, ClientMetadata clientMetadata) {
+        this.jsonTemplate = new UnirestJSONTemplate(baseURL);
+        this.signingKey = signingKey;
+        this.clientMetadata = clientMetadata;
     }
 
     /**
@@ -64,6 +87,14 @@ public class ApiConnector {
             JSONObject fetch() {
                 Map<String, String> requestHeaders = new HashMap<>();
                 requestHeaders.put(X_API_USER_AGENT, getUserAgentHeaderString());
+                if (clientMetadata != null) {
+                    if (clientMetadata.getPluginName() != null) {
+                        requestHeaders.put(X_PLUGIN_NAME, clientMetadata.getPluginName());
+                    }
+                    if (clientMetadata.getPluginVersion() != null) {
+                        requestHeaders.put(X_PLUGIN_VERSION, clientMetadata.getPluginVersion());
+                    }
+                }
                 return jsonTemplate.postWithHeader("omnikassa-api/order/server/api/v2/order", order, requestHeaders, token);
             }
 
@@ -303,28 +334,47 @@ public class ApiConnector {
 
     private String getUserAgentHeaderString() {
         String userAgentHeader = SMARTPAY_USER_AGENT;
-        if (userAgent != null) {
-            userAgentHeader += " " + userAgent;
+        String clientUA = clientMetadata != null ? clientMetadata.getUserAgent() : null;
+        if (clientUA != null) {
+            userAgentHeader += " " + clientUA;
         }
-        if (this.partnerReference != null) {
-            userAgentHeader += " (pr: " + partnerReference + ")";
+
+        String partnerRef = clientMetadata != null ? clientMetadata.getPartnerReference() : null;
+        if (partnerRef != null) {
+            userAgentHeader += " (pr: " + partnerRef + ")";
         }
         return userAgentHeader;
     }
 
     public void setUserAgent(String userAgent) {
-        this.userAgent = userAgent;
+        this.clientMetadata = ClientMetadata.builder(this.clientMetadata)
+                .userAgent(userAgent)
+                .build();
     }
 
     public void setPartnerReference(String partnerReference) {
-        this.partnerReference = partnerReference;
+        this.clientMetadata = ClientMetadata.builder(this.clientMetadata)
+                .partnerReference(partnerReference)
+                .build();
     }
 
     public String getUserAgent() {
-        return userAgent;
+        return clientMetadata != null ? clientMetadata.getUserAgent() : null;
     }
 
     public String getPartnerReference() {
-        return partnerReference;
+        return clientMetadata != null ? clientMetadata.getPartnerReference() : null;
+    }
+
+    public String getPluginName() {
+        return clientMetadata != null ? clientMetadata.getPluginName() : null;
+    }
+
+    public String getPluginVersion() {
+        return clientMetadata != null ? clientMetadata.getPluginVersion() : null;
+    }
+
+    public void setClientMetadata(ClientMetadata clientMetadata) {
+        this.clientMetadata = clientMetadata;
     }
 }

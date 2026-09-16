@@ -103,11 +103,17 @@ class WebshopController {
                       @Value("${base_url}") String baseUrl,
                       @Value("${user_agent:TestWebshop/1.14}") String userAgent,
                       @Value("${partner_reference}") String partnerReference,
+                      @Value("${plugin_name:}") String pluginName,
+                      @Value("${plugin_version:}") String pluginVersion,
                       @Value("${fast-checkout-return-url}") String fastCheckoutReturnUrl) {
         this.signingKey = getSigningKey(key);
         this.baseUrl = baseUrl;
         TokenProvider tokenProvider = new CustomTokenProvider(token);
-        endpoint = Endpoint.createInstance(baseUrl, signingKey, tokenProvider, userAgent, partnerReference);
+
+        String pluginNameValue = isBlank(pluginName) ? null : pluginName;
+        String pluginVersionValue = isBlank(pluginVersion) ? null : pluginVersion;
+
+        endpoint = Endpoint.createInstance(baseUrl, signingKey, tokenProvider, userAgent, partnerReference, pluginNameValue, pluginVersionValue);
 
         this.fastCheckoutReturnUrl = fastCheckoutReturnUrl;
         
