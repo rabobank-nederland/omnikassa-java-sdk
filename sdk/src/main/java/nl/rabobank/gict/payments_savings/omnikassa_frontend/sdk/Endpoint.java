@@ -23,6 +23,7 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.c
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.orderstatus.OrderStatusResponse;
 
 import java.util.UUID;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.ClientMetadata;
 
 import static org.apache.commons.codec.binary.Base64.decodeBase64;
 
@@ -80,6 +81,35 @@ public final class Endpoint {
                                           String partnerReference) {
         ApiConnector connector = new ApiConnector(baseURL, signingKey, userAgent, partnerReference);
         return new Endpoint(connector, tokenProvider,  new OrderRequestFactory(), signingKey);
+    }
+
+    /**
+     * Creates a new Endpoint instance configured with full client metadata.
+     *
+     * @param baseURL          this is the Url that points to the Rabobank API
+     * @param signingKey       this is the key given by the Rabobank to sign all communication
+     * @param tokenProvider    this must be your own implementation of the tokenProvider, see developer-manual
+     * @param userAgent        this is the User-Agent value you want to give your implementation
+     * @param partnerReference this can be filled with the partner reference, if applicable.
+     * @param pluginName       Optional plugin name to include in the X-Plugin-Name header.
+     * @param pluginVersion    Optional plugin version to include in the X-Plugin-Version header.
+     * @return new instance of Endpoint
+     */
+    public static Endpoint createInstance(String baseURL,
+                                          byte[] signingKey,
+                                          TokenProvider tokenProvider,
+                                          String userAgent,
+                                          String partnerReference,
+                                          String pluginName,
+                                          String pluginVersion) {
+        ClientMetadata clientMetadata = ClientMetadata.builder()
+                .userAgent(userAgent)
+                .partnerReference(partnerReference)
+                .pluginName(pluginName)
+                .pluginVersion(pluginVersion)
+                .build();
+        ApiConnector connector = new ApiConnector(baseURL, signingKey, clientMetadata);
+        return new Endpoint(connector, tokenProvider, new OrderRequestFactory(), signingKey);
     }
 
     /**
@@ -177,6 +207,26 @@ public final class Endpoint {
             logAndGetNewToken(e);
             return doAnnounceOrder(orderRequest);
         }
+    }
+
+    /**
+     * Replace the client metadata used for outgoing requests. Useful to set plugin name and plugin version on a per-client
+     * or per-request basis. This delegates to the underlying connector.
+     */
+    public void setClientMetadata(ClientMetadata clientMetadata) {
+        this.connector.setClientMetadata(clientMetadata);
+    }
+
+    /**
+     * Return a snapshot of the currently configured client metadata.
+     */
+    public ClientMetadata getClientMetadata() {
+        return ClientMetadata.builder()
+                .userAgent(connector.getUserAgent())
+                .partnerReference(connector.getPartnerReference())
+                .pluginName(connector.getPluginName())
+                .pluginVersion(connector.getPluginVersion())
+                .build();
     }
 
     /**

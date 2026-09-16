@@ -9,6 +9,8 @@ import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.Coun
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.enums.TokenStatus;
 import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.response.cardonfile.ShopperPaymentDetailsResponse;
 import static org.junit.Assert.assertNotNull;
+
+import org.hamcrest.MatcherAssert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -58,6 +60,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
+import nl.rabobank.gict.payments_savings.omnikassa_frontend.sdk.model.ClientMetadata;
+import java.util.HashMap;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ApiConnectorTest {
@@ -117,6 +121,42 @@ public class ApiConnectorTest {
 
         assertThat(merchantOrderResponse.getRedirectUrl(), is("http://returnAdress"));
         assertThat(merchantOrderResponse.getOmnikassaOrderId(), is(UUID.fromString("25da863a-60a5-475d-ae47-c0e4bd1bec31")));
+    }
+
+    @Test
+    public void testAnnounceMerchantOrder_IncludesPluginHeaders() throws Exception {
+        MerchantOrderRequest merchantOrderRequest = createMerchantOrderRequest();
+
+        Map<String, String> expectedHeaders = new HashMap<>();
+        expectedHeaders.put("X-Api-User-Agent", "RabobankOmnikassaJavaSDK/1.14");
+        expectedHeaders.put("X-Plugin-Name", "Shopware");
+        expectedHeaders.put("X-Plugin-Version", "123");
+
+        when(jsonTemplate.postWithHeader(ORDER_SERVER_API_PATH, merchantOrderRequest, expectedHeaders, "token")).thenReturn(prepareMerchantOrderResponse());
+
+        classUnderTest.setClientMetadata(ClientMetadata.builder().pluginName("Shopware").pluginVersion("123").build());
+        MerchantOrderResponse merchantOrderResponse = classUnderTest.announceMerchantOrder(merchantOrderRequest, "token");
+
+        MatcherAssert.assertThat(merchantOrderResponse.getRedirectUrl(), is("http://returnAdress"));
+        MatcherAssert.assertThat(merchantOrderResponse.getOmnikassaOrderId(), is(UUID.fromString("25da863a-60a5-475d-ae47-c0e4bd1bec31")));
+    }
+
+    @Test
+    public void testAnnounceMerchantOrder_IncludesPartnerAndPluginInUserAgentAndPluginHeaders() throws Exception {
+        MerchantOrderRequest merchantOrderRequest = createMerchantOrderRequest();
+
+        Map<String, String> expectedHeaders = new HashMap<>();
+        expectedHeaders.put("X-Api-User-Agent", "RabobankOmnikassaJavaSDK/1.14 (pr: 12345)");
+        expectedHeaders.put("X-Plugin-Name", "Shopware");
+        expectedHeaders.put("X-Plugin-Version", "123");
+
+        when(jsonTemplate.postWithHeader(ORDER_SERVER_API_PATH, merchantOrderRequest, expectedHeaders, "token")).thenReturn(prepareMerchantOrderResponse());
+
+        classUnderTest.setClientMetadata(ClientMetadata.builder().partnerReference("12345").pluginName("Shopware").pluginVersion("123").build());
+        MerchantOrderResponse merchantOrderResponse = classUnderTest.announceMerchantOrder(merchantOrderRequest, "token");
+
+        MatcherAssert.assertThat(merchantOrderResponse.getRedirectUrl(), is("http://returnAdress"));
+        MatcherAssert.assertThat(merchantOrderResponse.getOmnikassaOrderId(), is(UUID.fromString("25da863a-60a5-475d-ae47-c0e4bd1bec31")));
     }
 
     @Test(expected = RabobankSdkException.class)
