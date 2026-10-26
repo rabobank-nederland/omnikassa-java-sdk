@@ -40,9 +40,6 @@ public class ApiConnector {
 
     private ClientMetadata clientMetadata;
 
-    private String userAgent;
-    private String partnerReference;
-
     ApiConnector(UnirestJSONTemplate jsonTemplate, byte[] signingKey, String userAgent, String partnerReference) {
         this.jsonTemplate = jsonTemplate;
         this.signingKey = signingKey;
@@ -59,6 +56,10 @@ public class ApiConnector {
     public ApiConnector(String baseURL, byte[] signingKey, String userAgent, String partnerReference) {
         this.jsonTemplate = new UnirestJSONTemplate(baseURL);
         this.signingKey = signingKey;
+        this.clientMetadata = ClientMetadata.builder()
+                .userAgent(userAgent)
+                .partnerReference(partnerReference)
+                .build();
     }
 
     /**

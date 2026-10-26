@@ -85,6 +85,16 @@ public class ApiConnectorTest {
     }
 
     @Test
+    public void testDeprecatedConstructorSetsClientMetadata() {
+        ApiConnector connector = new ApiConnector("http://localhost", SIGNING_KEY, "CustomAgent/1", "partner-123");
+
+        assertEquals("CustomAgent/1", connector.getUserAgent());
+        assertEquals("partner-123", connector.getPartnerReference());
+        assertNull(connector.getPluginName());
+        assertNull(connector.getPluginVersion());
+    }
+
+    @Test
     public void testAnnounceMerchantOrder_HappyFlowWithDefaultUserAgent() throws Exception {
         MerchantOrderRequest merchantOrderRequest = createMerchantOrderRequest();
 
